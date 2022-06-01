@@ -1,6 +1,5 @@
 <template>
   <q-page padding class="">
-    <q-input v-model="text" type="text" label="Label" />
     <q-card class="transparent transparent" flat square>
       <div class="category-title">
         <span class="text-h5 text-weight-medium">Tất cả Trò chơi</span>
@@ -42,7 +41,7 @@
       <div class="category-items row q-mt-sm q-col-gutter-md">
         <GameCard
           class="col-2 col-xs-4 col-sm-3 col-md-2"
-          v-for="n in 53"
+          v-for="n in 1"
           :key="n"
         />
       </div>

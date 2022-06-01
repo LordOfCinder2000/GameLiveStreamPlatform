@@ -5,7 +5,7 @@
       clickable
     >
       <q-item-section avatar>
-        <q-icon color="primary" name="favorite" />
+        <q-icon name="favorite" />
       </q-item-section>
       <q-item-section>Yêu thích</q-item-section>
     </q-item>
@@ -122,7 +122,7 @@
       clickable
     >
       <q-item-section avatar>
-        <q-icon color="primary" name="sports_esports" />
+        <q-icon name="sports_esports" />
       </q-item-section>
       <q-item-section>Game Console</q-item-section>
     </q-item>
@@ -132,7 +132,7 @@
       clickable
     >
       <q-item-section avatar>
-        <q-icon color="primary" name="music_note" />
+        <q-icon name="music_note" />
       </q-item-section>
       <q-item-section>Giải trí</q-item-section>
     </q-item>

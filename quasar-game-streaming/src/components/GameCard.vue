@@ -17,11 +17,10 @@
       </q-img>
 
       <q-card-section class="no-wrap q-pa-sm">
-        <div class="text-h6 ellipsis">
-          <span class="text-hover">Changing Planet</span>
-        </div>
-        <div class="text-subtitle2 text-weight-light ellipsis">
-          <span class="text-hover"> 236,3 N người xem</span>
+        <div class="text-hover text-h6 ellipsis">Changing Planet</div>
+
+        <div class="text-subtitle2 text-weight-light ellipsis text-hover">
+          236,3 N người xem
         </div>
       </q-card-section>
     </q-card>

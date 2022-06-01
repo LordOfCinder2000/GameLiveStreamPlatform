@@ -1,3 +1,4 @@
+<!-- Ban đầu -->
 <template>
   <q-card
     ref="chat"
@@ -10,9 +11,7 @@
     <div class="chat-header col-auto">
       <q-item class="fit">
         <q-item-section avatar></q-item-section>
-        <q-item-section
-          class="text-center vertical-middle text-uppercase text-weight-bold"
-        >
+        <q-item-section class="text-center text-uppercase text-weight-bold">
           Trò chuyện
         </q-item-section>
         <q-item-section style="color: inherit" class="" side>
@@ -23,12 +22,11 @@
       </q-item>
     </div>
     <q-separator />
-    <div ref="chatBody" class="chat-body col fit">
+    <div ref="chatBody" class="chat-body col fit overflow-hidden">
       <q-scroll-area
         ref="chatScroll"
         :thumb-style="{ width: '5px' }"
-        class="fit q-px-md fit"
-        @scroll="chatScrollHandler"
+        class="fit q-px-md"
       >
         <div class="chat-wrapper q-pt-md q-pb-sm column relative-position">
           <span class="q-mb-sm text-center">Chào mừng đến kênh chat</span>
@@ -42,8 +40,10 @@
             :name="usersMessage.name"
             :avatar="usersMessage.avatar"
           >
-            {{ usersMessage.id }} Lorem ipsum dolor sit amet loremor sit amet
-            lorem
+            {{ usersMessage.id }} Lorem ipsum dolor sit amet consectetur
+            adipisicing elit. Eius vel reprehenderit minus libero voluptas,
+            mollitia reiciendis officia aperiam? Exercitationem aspernatur
+            commodi ratione veniam iure cum itaque fugit vero nemo quod?
           </ChatMessage>
 
           <!-- :class="[`bg-green-${n}`]"
@@ -54,14 +54,18 @@
             dense
             style="top: 95%; left: 50%; transform: translate(-50%, -95%)"
             class="fixed-center"
-            :label="btnScrollBottom.label"
+            label="Xem các tin nhắn mới"
             @click="scrollToBottom(300)"
             no-caps
-            :icon="btnScrollBottom.icon"
+            icon="arrow_downward"
             padding="sm"
           />
         </div>
-        <!-- <q-scroll-observer debounce="300" @scroll="chatScrollHandler" /> -->
+        <q-scroll-observer
+          :scroll-target="$refs.chatScroll"
+          debounce="300"
+          @scroll="chatScrollHandler"
+        />
       </q-scroll-area>
     </div>
 
@@ -147,7 +151,6 @@ import {
   nextTick,
   onUpdated,
 } from "vue";
-
 import ChatMessage from "components/chat/ChatMessage.vue";
 import { Mentionable } from "vue-mention";
 
@@ -168,47 +171,61 @@ export default defineComponent({
   },
 
   setup() {
+    onUpdated(() => {
+      console.log("update");
+    });
+
     const collapseChat = ref(false);
     const chat = ref(null);
     const collapseChatTrigger = () => {
+      // console.log(chat.value);
       collapseChat.value = !collapseChat.value;
     };
 
     const chatScroll = ref(null);
+    var percentageMax = 1.0;
     const scrollToBottom = (duration) => {
       const scrollArea = chatScroll.value;
       const scrollTarget = scrollArea.getScrollTarget();
+
+      // console.log("percentage", scrollTarget.scrollHeight);
+      // ms - use 0 to instant scroll
       scrollArea.setScrollPosition(
         "vertical",
         scrollTarget.scrollHeight,
         duration
       );
+      percentageMax = chatScroll.value.getScrollPercentage().top;
     };
-
     const newMessageBtn = ref(false);
-    const btnScrollBottom = ref({
-      label: "Chat bị dừng khi cuộn",
-      icon: "pause",
-    });
     const chatScrollHandler = (info) => {
-      //   console.log("cuon: ", info.verticalPercentage);
-      if (
-        0.93 <= info.verticalPercentage < 1.0 &&
-        info.verticalContainerSize <
-          chatScroll.value.$el.querySelector(".chat-wrapper").offsetHeight
-      ) {
-        newMessageBtn.value = true;
-        btnScrollBottom.value.label = "Chat bị dừng khi cuộn";
-        btnScrollBottom.value.icon = "pause";
+      console.log(chatScroll.value.getScrollPercentage().top);
+      nextTick(() => {
         nextTick(() => {
-          setTimeout(() => {
-            btnScrollBottom.value.label = "Xem các tin nhắn mới";
-            btnScrollBottom.value.icon = "arrow_downward";
-          }, 1000);
+          // chatScroll.value.getScrollTarget().scrollTo(0, chatScroll.value.getScroll().verticalPosition);
+          // console.log(
+          //   chatScroll.value.$el.querySelector(".chat-wrapper").offsetHeight
+          // );chatScroll.value.getScrollPosition().top <
+
+          if (chatScroll.value.getScrollPercentage().top == 0) {
+            percentageMax = 1.0;
+          }
+          if (
+            chatScroll.value.getScrollPercentage().top < percentageMax &&
+            chatScroll.value.getScroll().verticalContainerSize <
+              chatScroll.value.$el.querySelector(".chat-wrapper").offsetHeight
+          ) {
+            newMessageBtn.value = true;
+          } else {
+            // if( chatScroll.value.getScroll().verticalPosition <
+            // chatScroll.value.getScroll().verticalSize )
+            //   newMessageBtn.value = true;
+            newMessageBtn.value = false;
+            percentageMax = chatScroll.value.getScrollPercentage().top;
+          }
         });
-      } else {
-        newMessageBtn.value = false;
-      }
+      });
+      // info.stopPropagation();
     };
 
     const items = ref([
@@ -227,7 +244,7 @@ export default defineComponent({
     var currentTextSelect;
     const getCurrentTextSelect = (e) => {
       currentTextSelect = e.path[3].children[0].children[0].selectionStart;
-      //   console.log("blur: ", currentTextSelect);
+      console.log("blur: ", currentTextSelect);
     };
 
     const chatBody = ref(null);
@@ -240,25 +257,18 @@ export default defineComponent({
     watchEffect(() => {});
 
     let maxChatMessages = 150;
-    let flagScroll = true;
     watch(usersMessages.value, () => {
       if (usersMessages.value && usersMessages.value.length > maxChatMessages) {
+        // usersMessages.value.shift();
         usersMessages.value.splice(
           0,
           usersMessages.value.length - maxChatMessages
         );
       }
       nextTick(() => {
-        // console.log("curren: ", chatScroll.value.getScrollPercentage().top);
-        if (
-          chatScroll.value.getScroll().verticalContainerSize <
-            chatScroll.value.$el.querySelector(".chat-wrapper").offsetHeight &&
-          flagScroll
-        ) {
-          scrollToBottom(0);
-          flagScroll = false;
-        }
-        if (chatScroll.value.getScrollPercentage().top > 0.9) scrollToBottom(0);
+        nextTick(() => {
+          chatScrollHandler();
+        });
       });
     });
 
@@ -287,26 +297,23 @@ export default defineComponent({
       } else {
         chatText.value += emoji.i;
       }
-      //   console.log(chatText.value);
+      console.log(chatText.value);
     };
     const showEmojiHandel = () => {
       showEmojiPicker.value = !showEmojiPicker.value;
-      //   console.log(currentTextSelect);
+      console.log(currentTextSelect);
     };
 
-    sendMessage(0);
     onMounted(() => {
+      sendMessage(100);
+      // setInterval(sendMessage(1), 3000);
       nextTick(() => {
         nextTick(() => {
-          //   scrollToBottom(0);
-          setInterval(() => {
-            sendMessage(1);
-          }, 1000);
+          console.log("scroll bt");
+          scrollToBottom(0);
         });
       });
-    });
-    onUpdated(() => {
-      scrollToBottom(0);
+      // setTimeout(() => {}, 0);
     });
     return {
       chatInput,
@@ -317,7 +324,6 @@ export default defineComponent({
       chatScroll,
       scrollToBottom,
       chatScrollHandler,
-      btnScrollBottom,
       newMessageBtn,
       items,
       chatBody,

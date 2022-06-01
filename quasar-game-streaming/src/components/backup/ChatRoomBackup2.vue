@@ -1,3 +1,4 @@
+<!-- Dùng q-layout và q-scroll-page -->
 <template>
   <q-card
     ref="chat"
@@ -10,9 +11,7 @@
     <div class="chat-header col-auto">
       <q-item class="fit">
         <q-item-section avatar></q-item-section>
-        <q-item-section
-          class="text-center vertical-middle text-uppercase text-weight-bold"
-        >
+        <q-item-section class="text-center text-uppercase text-weight-bold">
           Trò chuyện
         </q-item-section>
         <q-item-section style="color: inherit" class="" side>
@@ -30,7 +29,10 @@
         class="fit q-px-md fit"
         @scroll="chatScrollHandler"
       >
-        <div class="chat-wrapper q-pt-md q-pb-sm column relative-position">
+        <q-layout
+          style="min-height: 0"
+          class="chat-wrapper q-pt-md q-pb-sm column"
+        >
           <span class="q-mb-sm text-center">Chào mừng đến kênh chat</span>
           <!-- <q-intersection
 	   
@@ -48,7 +50,7 @@
 
           <!-- :class="[`bg-green-${n}`]"
 	    class="bg-green" -->
-          <q-btn
+          <!-- <q-btn
             v-if="newMessageBtn"
             color="positive"
             dense
@@ -59,8 +61,16 @@
             no-caps
             :icon="btnScrollBottom.icon"
             padding="sm"
-          />
-        </div>
+          /> -->
+          <q-page-scroller
+            reverse
+            expand
+            position="bottom"
+            :scroll-offset="-200"
+          >
+            <q-btn color="positive" dense label="sd" no-caps />
+          </q-page-scroller>
+        </q-layout>
         <!-- <q-scroll-observer debounce="300" @scroll="chatScrollHandler" /> -->
       </q-scroll-area>
     </div>
@@ -147,7 +157,6 @@ import {
   nextTick,
   onUpdated,
 } from "vue";
-
 import ChatMessage from "components/chat/ChatMessage.vue";
 import { Mentionable } from "vue-mention";
 
@@ -300,7 +309,7 @@ export default defineComponent({
         nextTick(() => {
           //   scrollToBottom(0);
           setInterval(() => {
-            sendMessage(1);
+            // sendMessage(1);
           }, 1000);
         });
       });

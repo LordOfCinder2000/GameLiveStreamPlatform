@@ -1,43 +1,34 @@
 <template>
   <q-tooltip
-    v-if="popover"
-    class="c-tooltip c-tooltip-popover rounded-borders"
-    :class="[`c-tooltip-arrow-${arrowClass}`]"
-    ref="tooltip"
-  >
-    <div
-      class="q-qt-md c-tooltip-text c-tooltip-text-popover border-radius-inherit bg-secondary text-body1 relative-position"
-    >
-      <slot />
-    </div>
-    <div
-      class="absolute visibility-visible"
-      :class="`visibility-visible-${arrowClass}`"
-    ></div>
-    <div class="c-tooltip-arrow bg-positive absolute"></div>
-  </q-tooltip>
-  <q-tooltip
-    v-else
     class="c-tooltip rounded-borders"
-    :class="[`c-tooltip-arrow-${arrowClass}`]"
-    ref="tooltip"
+    :class="[`c-tooltip-arrow-${arrowClass}`, { 'c-tooltip-popover': popover }]"
   >
-    <div
-      class="c-tooltip-text border-radius-inherit bg-secondary relative-position"
+    <q-card
+      :dark="!$q.dark.isActive"
+      flat
+      class="c-tooltip-text border-radius-inherit relative-position"
+      :class="[{ 'q-qt-md c-tooltip-text-popover text-body1': popover }]"
+      :style="{ color: $q.dark.isActive ? 'black' : 'white' }"
     >
       <slot />
-    </div>
-    <div
+    </q-card>
+    <!-- <div
       class="absolute visibility-visible"
       :class="`visibility-visible-${arrowClass}`"
-    ></div>
-    <div class="c-tooltip-arrow bg-secondary absolute"></div>
+    ></div> -->
+    <q-card
+      :dark="!$q.dark.isActive"
+      flat
+      square
+      class="c-tooltip-arrow absolute"
+      :class="{ 'bg-positive': popover }"
+    ></q-card>
   </q-tooltip>
 </template>
 
 <script>
 import { defineComponent, computed, ref, onMounted } from "vue";
-
+import { useQuasar } from "quasar";
 export default defineComponent({
   props: {
     arrow: {
@@ -50,6 +41,7 @@ export default defineComponent({
     },
   },
   setup(props, context) {
+    const $q = useQuasar();
     const arrowClass = computed(() => {
       let arrowClassCorrected = props.arrow.trim().replace(" ", "-");
       let allClasses = [
@@ -77,7 +69,9 @@ export default defineComponent({
     const tooltipModel = ref(false);
 
     const toggle = ref(false);
-
+    onMounted(() => {
+      // console.log(tooltip.value.$el);
+    });
     return {
       toggle,
       arrowClass,
@@ -98,7 +92,7 @@ export default defineComponent({
       //   console.log("before-hide");
       //   toggle.value = true;
       // },
-      // tooltip,
+      tooltip,
       // tooltipModel,
     };
   },
@@ -107,7 +101,9 @@ export default defineComponent({
 
 <style lang="scss">
 $box-shadow: 0 0 30px 0 rgba(0, 0, 0, 0.5);
-
+.q-tooltip--style {
+  color: inherit;
+}
 .c-tooltip {
   box-shadow: $box-shadow;
   overflow: visible;
@@ -150,6 +146,7 @@ $box-shadow: 0 0 30px 0 rgba(0, 0, 0, 0.5);
     }
   }
   &-text {
+    color: inherit;
     z-index: 10;
     padding: 6px;
     &-popover {

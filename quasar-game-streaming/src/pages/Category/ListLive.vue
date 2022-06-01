@@ -1,8 +1,11 @@
 <template>
-  <q-page padding class="bg-">
+  <q-page padding>
     <div>
       <div
         class="banner-image"
+        :class="[
+          $q.dark.isActive ? 'banner-image--dark' : 'banner-image--white',
+        ]"
         :style="`background-image: url(${bannerImg}) `"
       ></div>
       <!-- <q-img
@@ -24,8 +27,11 @@
             spinner-size="82px"
           ></q-img>
         </div>
-        <q-card class="column col q-pb-sm q-pt-sm transparent" dark flat square>
-          <div class="wrap" style="max-width: 500px">
+        <q-card class="column col q-pb-sm q-pt-sm transparent" flat square>
+          <div
+            class="wrap text-weight-medium text-body2"
+            style="max-width: 500px"
+          >
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur,
             hic qui laborum quisquam saepe nemo enim illo voluptas dolore rerum
             officiis debitis corrupti, quia perferendis, deserunt odit.
@@ -74,11 +80,11 @@
         </div>
       </template>
     </q-parallax> -->
-    <div class="category-items-wrapper">
-      <div class="category-items row q-mt-sm q-col-gutter-md">
+    <div class="live-items-wrapper">
+      <div class="live-items row q-mt-sm q-col-gutter-md">
         <VideoCard
           class="col-3 col-xs-12 col-sm-6 col-md-3"
-          v-for="n in 1"
+          v-for="n in 13"
           :key="n"
         />
       </div>
@@ -89,7 +95,7 @@
 <script>
 import { defineComponent, ref } from "vue";
 import VideoCard from "components/VideoCard.vue";
-
+import { useQuasar } from "quasar";
 export default defineComponent({
   name: "ListLive",
   components: {
@@ -97,6 +103,7 @@ export default defineComponent({
   },
 
   setup() {
+    const $q = useQuasar();
     const bannerImg = ref("https://api.lorem.space/image/game?w=2000&h=1440");
 
     return { bannerImg };
@@ -131,7 +138,7 @@ export default defineComponent({
     background: linear-gradient(180deg, rgba(15, 18, 20, 0.4), $dark);
   }
 }
-.banner-image {
+[class*="banner-image"] {
   background-position: center top;
   background-size: cover;
   height: 340px;
@@ -147,16 +154,43 @@ export default defineComponent({
     left: 0;
     bottom: 0;
     right: 0;
-    background: -webkit-gradient(
-      linear,
-      left top,
-      left bottom,
-      from(rgba(15, 18, 20, 0.4)),
-      to($dark)
-    );
-    background: linear-gradient(180deg, rgba(15, 18, 20, 0.4), $dark);
   }
 }
+.banner-image {
+  &--white::before {
+    background: linear-gradient(180deg, rgba(15, 18, 20, 0.4), $white);
+  }
+  &--dark::before {
+    background: linear-gradient(180deg, rgba(15, 18, 20, 0.4), $dark-page);
+  }
+}
+// .banner-image {
+//   background-position: center top;
+//   background-size: cover;
+//   height: 340px;
+//   position: absolute;
+//   top: 0;
+//   left: 0;
+//   bottom: 0;
+//   right: 0;
+//   &::before {
+//     position: absolute;
+//     content: "";
+//     top: 0;
+//     left: 0;
+//     bottom: 0;
+//     right: 0;
+
+//     background: -webkit-gradient(
+//       linear,
+//       left top,
+//       left bottom,
+//       from(rgba(15, 18, 20, 0.4)),
+//       to($white)
+//     );
+//     background: linear-gradient(180deg, rgba(15, 18, 20, 0.4), $white);
+//   }
+// }
 .no-before {
   &:before,
   &::before {

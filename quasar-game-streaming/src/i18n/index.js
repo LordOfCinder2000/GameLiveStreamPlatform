@@ -1,5 +1,6 @@
-import enUS from './en-US'
-
+import enUS from "./en-US";
+import vi from "./vi";
 export default {
-  'en-US': enUS
-}
+  "en-US": enUS,
+  vi: vi,
+};

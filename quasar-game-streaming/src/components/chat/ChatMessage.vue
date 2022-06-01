@@ -53,9 +53,7 @@
           >
             Nhắc đến</c-tooltip
           >
-          <!-- <q-tooltip :offset="[1, 1]" anchor="top middle" self="bottom middle">
-           
-          </q-tooltip> -->
+
           <q-icon name="alternate_email" />
         </q-btn>
       </q-card>
@@ -91,6 +89,7 @@ export default defineComponent({
     });
     onMounted(() => {
       // console.log(randomColor.value);
+      // console.log("message");
     });
 
     const popupUserInfo = ref(null);

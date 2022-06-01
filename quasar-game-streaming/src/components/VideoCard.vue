@@ -82,9 +82,9 @@
           </q-item-section>
           <q-item-section>
             <!-- <q-skeleton square width="90%" class="text-h6" type="text" /> -->
-            <q-skeleton square height="15px" width="90%" />
+            <q-skeleton square height="1rem" width="90%" />
             <q-skeleton square class="text-subtitle2" type="text" width="70%" />
-            <q-skeleton square type="QChip" height="12px" width="40%" />
+            <q-skeleton square type="QChip" height="0.8rem" width="40%" />
           </q-item-section>
         </q-item>
       </q-card>
@@ -93,9 +93,10 @@
 </template>
 
 <script>
-const { ref, defineComponent, onMounted, watch } = require("vue");
+import { ref, defineComponent, onMounted, watch } from "vue";
 
 export default defineComponent({
+  props: {},
   setup() {
     const video = ref(null);
     const loaded = ref(false);
