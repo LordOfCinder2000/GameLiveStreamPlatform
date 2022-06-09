@@ -12,7 +12,7 @@
             class="fit"
             :thumb-style="{ width: '3px', height: '3px' }"
           >
-            <div class="row fit">
+            <div class="row fit overflow-auto">
               <slot name="content"> </slot>
             </div>
           </q-scroll-area>

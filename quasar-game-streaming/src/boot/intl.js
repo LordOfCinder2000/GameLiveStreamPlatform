@@ -1,4 +1,4 @@
-// import { boot } from "quasar/wrappers";
+import { boot } from "quasar/wrappers";
 // import {
 //   createIntl,
 //   createIntlCache,
@@ -22,4 +22,18 @@
 //   );
 //   // Set intl instance on app
 //   app.use(intl);
+// });
+
+// import { useI18n } from "vue-i18n";
+// export default boot(({ app }) => {
+//   console.log(app);
+//   return {
+//     setup() {
+//       const i18n = useI18n();
+//       console.log(i18n);
+//       return {
+//         i18n,
+//       };
+//     },
+//   };
 // });

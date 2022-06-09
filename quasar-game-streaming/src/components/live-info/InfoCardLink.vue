@@ -1,12 +1,12 @@
 <template>
-  <div class="links fit row">
+  <div class="links row">
     <q-item
       clickable
-      class="col col-xs-4 col-md-6"
+      class="col col-xs-4 col-md-6 q-px-xs row"
       v-for="link in links"
       :key="link.id"
     >
-      <q-item-section avatar>
+      <q-item-section avatar class="q-pr-xs col-auto">
         <q-icon color="positive" :name="link.icon" size="xl" />
       </q-item-section>
       <q-item-section>
@@ -14,7 +14,7 @@
           {{ link.url }}
         </q-item-label>
       </q-item-section>
-      <q-item-section side>
+      <q-item-section side class="no-padding">
         <q-icon name="link" size="ls" />
       </q-item-section>
     </q-item>

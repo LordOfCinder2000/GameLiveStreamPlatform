@@ -65,7 +65,7 @@
               <span>Follow</span>
               <!-- <div style="width: 2px; height: 1rem" class="bg-white q-mx-sm" /> -->
               <q-separator
-                class="bg-white"
+                class="bg-white q-my-xs"
                 size="0.1rem"
                 vertical
                 spaced
@@ -103,7 +103,7 @@
           <q-tab name="replay" label="Replay" />
           <q-tab name="followers" label="Followers" />
         </q-tabs>
-        <q-tab-panels v-model="tab" animated>
+        <q-tab-panels keep-alive v-model="tab" animated>
           <q-tab-panel class="no-scroll" name="about">
             <div class="text-h6">About</div>
             <div class="game-replays-wrapper">
@@ -187,16 +187,16 @@ export default defineComponent({
       import("components/buttons/ButtonFilter.vue")
     ),
     UserCard: defineAsyncComponent(() =>
-      import("components/live_info/UserCard.vue")
+      import("components/live-info/UserCard.vue")
     ),
     InfoCard: defineAsyncComponent(() =>
-      import("components/live_info/InfoCard.vue")
+      import("components/live-info/InfoCard.vue")
     ),
     InfoCardLink: defineAsyncComponent(() =>
-      import("components/live_info/InfoCardLink.vue")
+      import("components/live-info/InfoCardLink.vue")
     ),
     InfoCardAbout: defineAsyncComponent(() =>
-      import("components/live_info/InfoCardAbout.vue")
+      import("components/live-info/InfoCardAbout.vue")
     ),
   },
   props: {},
@@ -206,8 +206,8 @@ export default defineComponent({
     const followers = ref([]);
 
     const cardInfos = [
-      { title: "About of me", name: "InfoCardLink" },
-      { title: "Social Link", name: "InfoCardAbout" },
+      { id: 1, title: "About of me", name: "InfoCardAbout" },
+      { id: 2, title: "Social Link", name: "InfoCardLink" },
     ];
 
     onMounted((number = 100) => {

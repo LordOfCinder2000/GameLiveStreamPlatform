@@ -1,7 +1,7 @@
 <template>
   <div v-if="show">
     <q-card class="my-card cursor-pointer">
-      <div class="col relative-position overflow-hidden">
+      <div class="relative-position overflow-hidden">
         <!-- <q-video
           :ratio="16 / 9"
           src="https://www.youtube.com/embed/k3_tw44QsZQ?rel=0"
@@ -22,7 +22,6 @@
             </div>
           </template>
         </q-img>
-
         <q-icon
           size="50px"
           class="play-icon absolute-center"

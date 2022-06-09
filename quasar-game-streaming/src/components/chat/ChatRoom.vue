@@ -281,11 +281,11 @@ export default defineComponent({
       if (currentTextSelect != undefined) {
         chatText.value = [
           chatText.value.slice(0, currentTextSelect),
-          emoji.i,
+          emoji.native,
           chatText.value.slice(currentTextSelect),
         ].join("");
       } else {
-        chatText.value += emoji.i;
+        chatText.value += emoji.native;
       }
       //   console.log(chatText.value);
     };

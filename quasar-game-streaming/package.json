@@ -14,16 +14,15 @@
     "@quasar/extras": "^1.0.0",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
-    "floating-vue": "^2.0.0-beta.16",
+    "emoji-mart-vue-fast": "^10.2.2",
     "pinia": "^2.0.11",
     "quasar": "^2.6.0",
     "vue": "^3.0.0",
     "vue-i18n": "^9.0.0",
-    "vue-intl": "^6.2.6",
     "vue-mention": "^2.0.0-alpha.3",
     "vue-router": "^4.0.0",
-    "vue3-emoji-picker": "^1.1.2",
-    "vue3-popper": "^1.4.2"
+    "vue3-carousel-3d": "^1.0.3",
+    "vue3-emoji-picker": "^1.1.2"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.13.14",

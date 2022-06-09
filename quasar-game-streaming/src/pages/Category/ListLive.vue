@@ -15,10 +15,10 @@
         class="banner-image-test"
         style="max-height: 340px"
       ></q-img> -->
-      <div class="row no-wrap overflow-auto" style="max-height: 340px">
-        <div>
+      <div class="row no-wrap" style="max-height: 340px">
+        <div class="col-auto">
           <q-img
-            class="rounded-borders on-left col"
+            class="rounded-borders on-left"
             height="200px"
             width="150px"
             src="https://api.lorem.space/image/game?w=150&h=200"
@@ -27,7 +27,11 @@
             spinner-size="82px"
           ></q-img>
         </div>
-        <q-card class="column col q-pb-sm q-pt-sm transparent" flat square>
+        <q-card
+          class="column col-8 q-pb-sm q-pt-sm transparent overflow-auto"
+          flat
+          square
+        >
           <div
             class="wrap text-weight-medium text-body2"
             style="max-width: 500px"
@@ -38,12 +42,15 @@
             Suscipit, recusandae eligendi?
           </div>
           <q-space />
-          <div class="row text-h4 ellipsis row">God of war</div>
           <div>
-            <q-icon color="green" name="mdi-broadcast" />
-            <span>11 viewers</span>
+            <div class="text-h4 ellipsis">God of war</div>
+            <div>
+              <q-icon color="green" name="mdi-broadcast" />
+              <span>11 viewers</span>
+            </div>
           </div>
         </q-card>
+        <q-space />
       </div>
     </div>
     <!-- <q-parallax class="absolute-full banner-image" :height="480" :speed="1">
