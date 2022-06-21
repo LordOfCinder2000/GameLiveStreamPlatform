@@ -15,5 +15,5 @@ export function getColumnByScreen(screen) {
 		}
 	});
 
-	return { columns };
+	return columns;
 }

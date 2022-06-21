@@ -37,9 +37,9 @@
 		</div>
 
 		<div class="home-wrapper">
-			<div class="home-wrapper-games">
-				<div class="home-games-title row items-center">
-					<div class="text-h6">
+			<div class="home-wrapper-games q-mt-md">
+				<div class="home-games-title row items-baseline no-wrap">
+					<div class="text-h6 ellipsis">
 						Danh mục
 						<span
 							class="text-positive cursor-pointer link-hover q-pb-xs"
@@ -47,34 +47,55 @@
 							Games
 						</span>
 					</div>
+					<q-space />
+					<div class="ellipsis text-hover">
+						<div>
+							Xem thêm
+							<q-icon
+								class="text-bold"
+								name="arrow_forward_ios"
+							/>
+						</div>
+					</div>
 				</div>
 				<div class="home-games-content q-mt-sm">
 					<div class="no-wrap row q-col-gutter-x-sm items-center">
 						<GameCard
-							v-for="n in columns"
+							v-for="n in gameColumns"
 							:key="n"
 							class="col-xs-4 col-sm-2 col-md-1"
 						/>
 					</div>
 				</div>
 			</div>
-			<div class="home-wrapper-games">
-				<div class="home-games-title row items-center">
-					<div class="text-h6">
-						Danh mục
+			<q-separator class="q-my-lg" />
+			<div class="home-wrapper-pc">
+				<div class="home-pc-title row items-baseline no-wrap">
+					<div class="text-h6 ellipsis">
+						Trực tiếp
 						<span
 							class="text-positive cursor-pointer link-hover q-pb-xs"
 						>
-							Games
+							PC
 						</span>
 					</div>
+					<q-space />
+					<div class="ellipsis text-hover">
+						<div>
+							Xem thêm
+							<q-icon
+								class="text-bold"
+								name="arrow_forward_ios"
+							/>
+						</div>
+					</div>
 				</div>
-				<div class="home-games-content q-mt-sm">
+				<div class="home-pc-content q-mt-sm">
 					<div class="no-wrap row q-col-gutter-x-sm items-center">
-						<GameCard
-							v-for="n in columns"
+						<VideoCard
+							v-for="n in videoColumns"
 							:key="n"
-							class="col-xs-4 col-sm-2 col-md-1"
+							class="col-xs-6 col-sm-4 col-md-3"
 						/>
 					</div>
 				</div>
@@ -158,6 +179,9 @@ import { useQuasar } from "quasar";
 import { getColumnByScreen } from "boot/mixins";
 const GameCard = defineAsyncComponent(() =>
 	import("components/home/HomeGameCardT.vue")
+);
+const VideoCard = defineAsyncComponent(() =>
+	import("components/VideoCard.vue")
 );
 const slides = ref([]);
 const mediaJSON = ref({
@@ -303,10 +327,15 @@ slides.value = mediaJSON.value.categories[0].videos;
 const slide = ref(1);
 
 const $q = useQuasar();
-const { columns } = getColumnByScreen({
+const gameColumns = getColumnByScreen({
 	md: 8,
 	sm: 6,
 	xs: 3,
+});
+const videoColumns = getColumnByScreen({
+	md: 4,
+	sm: 3,
+	xs: 2,
 });
 </script>
 

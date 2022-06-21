@@ -84,32 +84,38 @@ export default {
 </style> -->
 
 <template>
-  <q-popup-proxy transition-show="jump-down" transition-hide="jump-up">
-    <Suspense>
-      <q-card class="emoji-wrapper">
-        <Picker
-          :data="emojiIndex"
-          set="twitter"
-          :i18n="{
-            search: 'Tìm kiếm',
-            categories: { search: 'Kết quả tìm kiếm', recent: 'Hay dùng' },
-          }"
-          :color="color"
-          title="Emoji!"
-          sheetSize="32"
-          @select="$emit('onSelectEmoji', $event)"
-          :class="{ 'emoji-dark--active': $q.dark.isActive }"
-        />
-      </q-card>
-      <template #fallback>
-        <q-skeleton class="column q-pa-sm" style="width: 280px; height: 320px">
-          <q-skeleton class="col" style="height: 30%"> </q-skeleton>
-          <q-skeleton class="col-auto q-mt-md" style="height: 70%">
-          </q-skeleton>
-        </q-skeleton>
-      </template>
-    </Suspense>
-  </q-popup-proxy>
+	<q-popup-proxy transition-show="jump-down" transition-hide="jump-up">
+		<Suspense>
+			<q-card class="emoji-wrapper no-scroll">
+				<Picker
+					:data="emojiIndex"
+					set="twitter"
+					:i18n="{
+						search: 'Tìm kiếm',
+						categories: {
+							search: 'Kết quả tìm kiếm',
+							recent: 'Hay dùng',
+						},
+					}"
+					:color="color"
+					title="Emoji!"
+					sheetSize="32"
+					@select="$emit('onSelectEmoji', $event)"
+					:class="{ 'emoji-dark--active': $q.dark.isActive }"
+				/>
+			</q-card>
+			<template #fallback>
+				<q-skeleton
+					class="column q-pa-sm"
+					style="width: 280px; height: 320px"
+				>
+					<q-skeleton class="col" style="height: 30%"> </q-skeleton>
+					<q-skeleton class="col-auto q-mt-md" style="height: 70%">
+					</q-skeleton>
+				</q-skeleton>
+			</template>
+		</Suspense>
+	</q-popup-proxy>
 </template>
 
 <script setup>
@@ -133,8 +139,8 @@ const emojiIndex = ref(new EmojiIndex(data));
 const input = ref("");
 
 function showEmoji(emoji) {
-  alert(`emoji ${emoji.i} selected, check console for details`);
-  console.log(emoji);
+	alert(`emoji ${emoji.i} selected, check console for details`);
+	console.log(emoji);
 }
 
 const $q = useQuasar();
@@ -143,79 +149,79 @@ const { getPaletteColor } = colors;
 const color = ref(getPaletteColor("positive"));
 
 onMounted(() => {
-  if ($q.dark.isActive) {
-  }
+	if ($q.dark.isActive) {
+	}
 });
 </script>
 
 <style lang="scss">
 .emoji-wrapper {
-  // border: 1px solid $positive;
+	// border: 1px solid $positive;
 }
 .emoji-dark--active {
-  background-color: $dark;
-  color: $white;
-  .emoji-mart-category-label h3,
-  .emoji-mart-skin-swatches {
-    background-color: $dark;
-    color: $white;
-  }
+	background-color: $dark;
+	color: $white;
+	.emoji-mart-category-label h3,
+	.emoji-mart-skin-swatches {
+		background-color: $dark;
+		color: $white;
+	}
 
-  .emoji-mart-anchors svg {
-    fill: $white;
-  }
+	.emoji-mart-anchors svg {
+		fill: $white;
+	}
 }
 .emoji-mart {
-  border: none;
-  background-color: inherit;
-  border-radius: $generic-border-radius;
-  font-size: $body-font-size;
-  button,
-  button span,
-  .emoji-mart-preview-skins {
-    cursor: pointer !important;
-  }
+	border: none;
+	background-color: inherit;
+	border-radius: $generic-border-radius;
+	font-size: $body-font-size;
+	button,
+	button span,
+	.emoji-mart-preview-skins {
+		cursor: pointer !important;
+	}
 
-  .emoji-mart-body .emoji-type-image.emoji-set-twitter {
-    background-image: url(/img/twitter-5.0.1-sheets-256-64.png);
-  }
+	.emoji-mart-body .emoji-type-image.emoji-set-twitter {
+		background-image: url(/img/twitter-5.0.1-sheets-256-64.png);
+	}
 
-  .emoji-mart-category-label h3 {
-    margin: 0.25rem;
-  }
-  .emoji-mart-anchor {
-    padding-bottom: 0.25rem;
-    padding-top: 0.5rem;
-  }
-  .emoji-mart-bar {
-    border-color: $positive;
-  }
-  .emoji-mart-search {
-    margin-bottom: 0.25rem;
-    input {
-      border-radius: $generic-border-radius;
-      font-size: inherit;
-    }
-  }
-  .emoji-mart-preview {
-    height: 4rem;
+	.emoji-mart-category-label h3 {
+		margin: 0.25rem;
+	}
+	.emoji-mart-anchor {
+		padding-bottom: 0.25rem;
+		padding-top: 0.5rem;
+	}
+	.emoji-mart-bar {
+		border-color: $positive;
+	}
+	.emoji-mart-search {
+		margin-bottom: 0.25rem;
+		input {
+			border-radius: $generic-border-radius;
+			font-size: inherit;
+		}
+	}
+	.emoji-mart-preview {
+		height: 4rem;
 
-    .emoji-mart-title-label {
-      font-size: 1rem;
-      color: $positive;
-    }
-  }
-  .emoji-mart-category .emoji-mart-emoji:hover:before,
-  .emoji-mart-emoji-selected:before {
-    background-color: $positive;
-    opacity: 0.8;
-  }
-  .emoji-mart-skin-swatches {
-    border-color: $positive;
-  }
+		.emoji-mart-title-label {
+			font-size: 1rem;
+			color: $positive;
+		}
+	}
+	.emoji-mart-category .emoji-mart-emoji:hover:before,
+	.emoji-mart-emoji-selected:before {
+		background-color: $positive;
+		opacity: 0.8;
+	}
+	.emoji-mart-skin-swatches {
+		border-color: $positive;
+	}
 
-  .emoji-mart-anchor-selected {
-    fill: $positive;
-  }
+	.emoji-mart-anchor-selected {
+		fill: $positive;
+	}
 }
 </style>

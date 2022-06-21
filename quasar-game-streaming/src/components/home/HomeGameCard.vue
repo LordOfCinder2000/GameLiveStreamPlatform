@@ -52,7 +52,7 @@
 				<q-chip
 					class="no-margin"
 					square
-					size="md"
+					size="0.8"
 					dense
 					clickable
 					label=""
@@ -63,7 +63,7 @@
 		</q-card-section>
 	</q-card>
 	<div v-else>
-		<q-card flat class="home-games">
+		<q-card flat class="home-games transparent">
 			<div class="home-games-skeleton flex">
 				<div class="fit relative-position">
 					<q-responsive :ratio="2 / 3">
@@ -76,8 +76,8 @@
 				<q-skeleton square width="90%" />
 				<q-skeleton square class="q-mt-sm" width="60%" height="1rem" />
 				<q-skeleton
-					width="40%"
-					height="1.5rem"
+					width="35%"
+					height="1.2rem"
 					type="QChip"
 					class="rounded-borders q-mt-xs"
 				/>

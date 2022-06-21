@@ -10,11 +10,16 @@
 			<q-item-section>Yêu thích</q-item-section>
 		</q-item>
 		<q-expansion-item
-			icon="desktop_windows"
-			label="Game PC"
 			class="sidebar-item list-header rounded-borders no-border"
 			header-class="rounded-borders text-weight-bold text-body1 text-capitalize q-pa-sm"
 		>
+			<template v-slot:header>
+				<q-item-section avatar>
+					<q-icon name="desktop_windows" />
+				</q-item-section>
+
+				<q-item-section> Game PC </q-item-section>
+			</template>
 			<q-list
 				dark
 				class="overflow-auto list-items rounded-borders bg-grey-8"
@@ -69,11 +74,16 @@
 		</q-expansion-item>
 
 		<q-expansion-item
-			icon="smartphone"
-			label="Game Mobile"
 			class="sidebar-item rounded-borders list-header no-border"
 			header-class="rounded-borders text-weight-bold text-body1 text-capitalize q-pa-sm"
 		>
+			<template v-slot:header>
+				<q-item-section avatar>
+					<q-icon name="smartphone" />
+				</q-item-section>
+
+				<q-item-section> Game Mobile </q-item-section>
+			</template>
 			<q-list
 				dark
 				class="overflow-auto list-items rounded-borders bg-grey-8"
@@ -153,7 +163,7 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-	name: "SideBar",
+	name: "HomeSidebar",
 	props: {
 		title: {
 			type: String,
@@ -179,7 +189,7 @@ export default defineComponent({
 	},
 });
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .sidebar-wrapper {
 	.sidebar-item {
 		margin-bottom: 0.5rem;

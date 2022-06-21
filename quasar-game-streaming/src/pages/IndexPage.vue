@@ -54,7 +54,7 @@
 					<q-chip
 						class="no-margin"
 						square
-						size="md"
+						size="0.8rem"
 						dense
 						clickable
 						label=""

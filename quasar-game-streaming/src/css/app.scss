@@ -1,13 +1,52 @@
 // app global css in SCSS form
 
+@media (max-width: $breakpoint-xs-max) {
+	:root,
+	body {
+		font-size: 10px;
+	}
+}
+
+@media (max-width: $breakpoint-sm-max) and (min-width: $breakpoint-sm-min) {
+	:root,
+	body {
+		font-size: 12px;
+	}
+}
+
+// @media (min-width: $breakpoint-md-min) {
+// 	:root,
+// 	body {
+// 		font-size: 14px;
+// 	}
+// }
+
+::selection {
+	color: #fff;
+	background-color: #32c27c;
+}
+
+// .q-btn,
+// .q-tab__label {
+// 	font-size: 1rem;
+// }
+
+.q-chip,
+.q-field {
+	font-size: 1rem;
+}
+
 .q-page-sticky {
 	z-index: 100;
 }
 
+$scroll-size: 5px;
+
 // Style thanh cuộn
-::-webkit-scrollbar {
-	width: 5px;
-	height: 5px;
+::-webkit-scrollbar,
+.q-scrollarea__thumb {
+	width: $scroll-size;
+	height: $scroll-size;
 }
 
 /* Track */
@@ -18,7 +57,7 @@
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-	background: #bbbbbb;
+	background: $grey-5;
 	border-radius: 5px;
 }
 
@@ -141,6 +180,7 @@
 // Change color when hover
 .text-hover:hover {
 	color: $positive;
+	cursor: pointer;
 }
 
 .btn-hover:hover {

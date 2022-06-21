@@ -23,10 +23,20 @@ module.exports = configure(function (ctx) {
 		// app boot file (/src/boot)
 		// --> boot files are part of "main.js"
 		// https://v2.quasar.dev/quasar-cli-webpack/boot-files
-		boot: ["i18n", "axios", "filters", "ajax-bar"],
+		boot: [
+			"i18n",
+			"axios",
+			"filters",
+			"ajax-bar",
+			"screen-size",
+			"variable-style",
+			"plyr",
+			"utils",
+			"addressbar-color",
+		],
 
 		// https://v2.quasar.dev/quasar-cli-webpack/quasar-config-js#Property%3A-css
-		css: ["app.scss"],
+		css: ["app.scss", "custom.scss"],
 
 		// https://github.com/quasarframework/quasar/tree/dev/extras
 		extras: [
@@ -88,10 +98,13 @@ module.exports = configure(function (ctx) {
 				loadingBar: {
 					/* look at QuasarConfOptions from the API card */
 				},
+				screen: {
+					bodyClasses: true, // <<< add this
+				},
 			},
 
 			// iconSet: 'material-icons', // Quasar icon set
-			// lang: 'en-US', // Quasar language pack
+			lang: "vi", // Quasar language pack
 
 			// For special cases outside of where the auto-import strategy can have an impact
 			// (like functional components as one of the examples),
@@ -101,12 +114,12 @@ module.exports = configure(function (ctx) {
 			// directives: [],
 
 			// Quasar plugins
-			plugins: ["LoadingBar"],
+			plugins: ["LoadingBar", "Notify", "AddressbarColor", "BottomSheet"],
 		},
 
 		animations: "all", // --- includes all animations
 		// https://quasar.dev/options/animations
-		animations: [],
+		// animations: [],
 
 		// https://v2.quasar.dev/quasar-cli-webpack/developing-ssr/configuring-ssr
 		ssr: {

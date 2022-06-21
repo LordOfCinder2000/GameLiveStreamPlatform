@@ -7,7 +7,7 @@
 				:content-active-style="{ width: '100%' }"
 				class="fit"
 			>
-				<q-layout class="">
+				<q-layout>
 					<div class="bg-blue video-container">
 						<q-responsive class="video-container" :ratio="16 / 9">
 							<video

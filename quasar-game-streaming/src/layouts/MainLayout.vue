@@ -193,13 +193,15 @@
 							no-caps
 							color="positive"
 							label="Đăng nhập"
-						/>
+						>
+						</q-btn>
 					</div>
 				</div>
 			</q-toolbar>
 		</q-header>
 
 		<q-drawer
+			v-if="routerName && !routerName.includes('user')"
 			v-model="leftDrawerOpen"
 			show-if-above
 			:mini="miniState && !pinDrawer"
@@ -237,14 +239,14 @@
 					</q-btn>
 				</q-item-label>
 
-				<SideBar />
+				<HomeSidebar />
 			</q-list>
 		</q-drawer>
 
 		<q-page-container class="main-container">
 			<router-view> </router-view>
 			<q-page-scroller
-				v-if="routerName !== 'WatchLive'"
+				v-if="routerName !== 'watch-live'"
 				position="bottom-right"
 				:scroll-offset="150"
 				:offset="[18, 18]"
@@ -254,7 +256,7 @@
 		</q-page-container>
 
 		<q-footer
-			v-if="routerName === 'Home'"
+			v-if="routerName === 'home'"
 			style="height: 200px"
 			:class="[
 				$q.dark.isActive
@@ -264,21 +266,33 @@
 		>
 			<div class="column full-height items-center">
 				<div class="overflow-auto">
-					<div class="col q-pt-lg q-gutter-x-lg">
-						<q-btn
-							padding="xs"
-							flat
-							size="xl"
-							icon="mdi-facebook"
-						/>
-						<q-btn padding="xs" flat size="xl" icon="mdi-youtube" />
-						<q-btn padding="xs" flat size="xl" icon="mdi-twitter" />
-						<q-btn
-							padding="xs"
-							flat
-							size="xl"
-							icon="mdi-instagram"
-						/>
+					<div class="col q-pt-lg">
+						<div class="row no-wrap q-gutter-x-lg">
+							<q-btn
+								padding="xs"
+								flat
+								size="xl"
+								icon="mdi-facebook"
+							/>
+							<q-btn
+								padding="xs"
+								flat
+								size="xl"
+								icon="mdi-youtube"
+							/>
+							<q-btn
+								padding="xs"
+								flat
+								size="xl"
+								icon="mdi-twitter"
+							/>
+							<q-btn
+								padding="xs"
+								flat
+								size="xl"
+								icon="mdi-instagram"
+							/>
+						</div>
 					</div>
 				</div>
 				<div class="col-4"></div>
@@ -297,7 +311,7 @@
 import { defineComponent, ref, watch, onBeforeMount } from "vue";
 import { useQuasar } from "quasar";
 import EssentialLink from "components/EssentialLink.vue";
-import SideBar from "components/SideBar.vue";
+import HomeSidebar from "components/sidebar/HomeSidebar.vue";
 import { useRouter, onBeforeRouteUpdate } from "vue-router";
 import { event } from "quasar";
 const linksList = [
@@ -349,7 +363,7 @@ export default defineComponent({
 	name: "MainLayout",
 
 	components: {
-		SideBar,
+		HomeSidebar,
 		// "q-popper": Popper,
 		// QPopper,
 		"c-tooltip": require("components/CustomTooltip.vue").default,

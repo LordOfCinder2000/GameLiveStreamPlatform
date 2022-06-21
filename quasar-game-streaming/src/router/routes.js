@@ -1,25 +1,56 @@
 const routes = [
 	{
 		path: "/",
+		name: "root",
 		component: () => import("layouts/MainLayout.vue"),
 		children: [
 			{
 				path: "",
-				name: "Home",
+				name: "home",
 				component: () => import("pages/HomePage.vue"),
 			},
 			{
+				path: "test",
+				name: "test",
+				component: () => import("pages/TestPage.vue"),
+			},
+			{
 				path: "games",
-				component: () => import("pages/Category/ListGame.vue"),
+				name: "games",
+				component: () => import("pages/category/ListGame.vue"),
 			},
 			{
 				path: "lives",
-				component: () => import("pages/Category/ListLive.vue"),
+				name: "lives",
+				component: () => import("pages/category/ListLive.vue"),
 			},
 			{
 				path: "ttg",
-				name: "WatchLive",
+				name: "watch-live",
 				component: () => import("pages/WatchLive.vue"),
+			},
+			{
+				path: "user",
+				name: "user",
+				component: () => import("pages/user/UserManage.vue"),
+				redirect: { name: "user-profile" },
+				children: [
+					{
+						path: "profile",
+						name: "user-profile",
+						component: () => import("pages/user/UserProfile.vue"),
+					},
+					{
+						path: "wallet",
+						name: "user-wallet",
+						component: () => import("pages/user/UserWallet.vue"),
+					},
+					{
+						path: "subscribe",
+						name: "user-subscribe",
+						component: () => import("pages/user/UserSubscribe.vue"),
+					},
+				],
 			},
 		],
 	},
