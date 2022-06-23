@@ -5,8 +5,10 @@
 		:target="treeData.target"
 		position="bottom"
 		:breakpoint="$q.screen.width + 1 + 'px'"
+		ref="bs"
+		class="dialog-bottom-sheet-wrapper"
 	>
-		<SwipeToClose v-model="model">
+		<SwipeToClose class="fit" v-model="model" style="max-width: unset">
 			<q-card class="dialog-bottom-sheet">
 				<q-card-section class="text-h5 flex items-center">
 					<q-btn
@@ -70,37 +72,46 @@ import SwipeToClose from "components/SwipeToClose.vue";
 const $q = useQuasar();
 const model = ref(false);
 const selected = ref(null);
-
+const bs = ref(null);
 const props = defineProps({
 	treeData: Object,
 });
-
 const emit = defineEmits(["selected"]);
 
 onMounted(() => {});
 
 watchEffect(() => {});
+
+defineExpose({
+	instance: bs,
+});
 </script>
 
-<style lang="scss" scoped>
-.dialog-bottom-sheet {
-	height: 50vh;
+<style lang="scss">
+.dialog-bottom-sheet-wrapper {
+	.q-dialog__inner--minimized {
+		padding: 0;
+	}
 
-	padding-bottom: 0.5rem;
-	&::after {
-		border-radius: $generic-border-radius;
-		top: 5px;
-		left: 0;
-		right: 0;
-		margin-left: auto;
-		margin-right: auto;
-		position: absolute;
-		content: "";
-		height: 5px;
-		width: 25%;
-		background: $positive;
-		opacity: 0.6;
-		cursor: grab;
+	.dialog-bottom-sheet {
+		height: 50vh;
+		width: 100%;
+		padding-bottom: 0.5rem;
+		&::after {
+			border-radius: $generic-border-radius;
+			top: 5px;
+			left: 0;
+			right: 0;
+			margin-left: auto;
+			margin-right: auto;
+			position: absolute;
+			content: "";
+			height: 5px;
+			width: 25%;
+			background: $positive;
+			opacity: 0.6;
+			cursor: grab;
+		}
 	}
 }
 </style>

@@ -1,11 +1,29 @@
 <template>
-	<div>
+	<div class="root">
 		<div :style="style" ref="artRef"></div>
-		<BottomSheet
+		<!-- <BottomSheet
+			ref="bs"
 			:treeData="settingMobile"
 			@selected="selectSettingMobile"
-			class="lt-sm"
+			v-if="$q.screen.lt.sm"
+		/> -->
+
+		<VideoPlayerHeader :viewers="2332" class="art-layer-header" />
+
+		<!-- Test render vnode -->
+		<q-btn
+			ref="testBtn"
+			class="test-btn"
+			color="primary"
+			label="OK"
+			@click="insert"
 		/>
+
+		<div
+			class="test-container"
+			style="width: 200px; height: 50px; background-color: red"
+			ref="testContainer"
+		></div>
 	</div>
 </template>
 <script setup>
@@ -14,21 +32,27 @@ import {
 	onMounted,
 	nextTick,
 	onBeforeUnmount,
-	watchEffect,
 	computed,
-	isRef,
-	watch,
 	defineAsyncComponent,
 	getCurrentInstance,
+	watchEffect,
+	toRefs,
 } from "vue";
 
 import Artplayer from "artplayer";
-import { useQuasar, getCssVar, extend } from "quasar";
+import { useQuasar, getCssVar } from "quasar";
 import * as globalFunction from "boot/utils";
+// import VideoPlayerHeader from "components/video-player/VideoPlayerHeader.vue";
 
+//#region Khởi tạo biến
 const BottomSheet = defineAsyncComponent(() =>
 	import("components/video-player/BottomSheet.vue")
 );
+const VideoPlayerHeader = defineAsyncComponent(() =>
+	import("components/video-player/VideoPlayerHeader.vue")
+);
+
+const { appContext } = getCurrentInstance();
 const $q = useQuasar();
 const utils = Artplayer.utils;
 
@@ -50,11 +74,13 @@ const props = defineProps({
 	style: Object,
 });
 
-// const option = extend(true, props.option);
+// const option = extend(true,{}, props.option);
 const option = computed(() => {
 	return props.option;
 });
+//#endregion
 
+//#region Cài đặt khi ở mobile
 const defaultMobileSetting = ref({
 	playbackRate: 1,
 	aspectRatio: "default",
@@ -66,7 +92,7 @@ const defaultMobileSetting = ref({
 const settingMobile = ref({
 	title: "Setting",
 	name: "root",
-	target: ".art-control-setting",
+	// target: ".art-control-setting",
 	root: true,
 	children: [
 		{
@@ -186,6 +212,47 @@ globalFunction.addDefaultForDeep(
 	defaultMobileSetting.value
 );
 
+let VNodeBottomSheet = null;
+watchEffect(
+	() => {
+		// if (instance.value) {
+		// 	VNodeBottomSheet?.destroy();
+		// 	VNodeBottomSheet = globalFunction.renderComponent({
+		// 		el: instance.value.query(".art-control-setting"),
+		// 		component: $q.screen.lt.sm ? BottomSheet : null,
+		// 		props: {
+		// 			treeData: settingMobile.value,
+		// 			onSelected(event) {
+		// 				selectSettingMobile(event);
+		// 			},
+		// 		},
+		// 		appContext,
+		// 	});
+		// }
+	},
+	{
+		flush: "post",
+	}
+);
+
+const mountBottomSheet = (playerDOM) => {
+	const settingControl = playerDOM.query(".art-control-setting");
+	VNodeBottomSheet?.destroy();
+	VNodeBottomSheet = globalFunction.renderComponent({
+		el: settingControl,
+		component: BottomSheet,
+		props: {
+			treeData: settingMobile.value,
+			onSelected(event) {
+				selectSettingMobile(event);
+			},
+		},
+		appContext,
+		condition: toRefs($q.screen.lt).sm,
+	});
+};
+//#endregion
+
 onMounted(() => {
 	instance.value = new Artplayer(
 		{
@@ -194,7 +261,7 @@ onMounted(() => {
 			muted: true,
 			theme: getCssVar("positive"),
 			autoSize: true,
-			autoMini: true,
+			// autoMini: true,
 			flip: true,
 			playbackRate: true,
 			aspectRatio: true,
@@ -212,14 +279,19 @@ onMounted(() => {
 			lock: true,
 			fastForward: true,
 			autoOrientation: true,
+			autoPlayback: true,
+			moreVideoAttr: {
+				crossOrigin: "anonymous",
+			},
 			container: artRef.value,
 		},
 		() => {
-			let array = Object.getOwnPropertyNames(Artplayer);
+			let array = Object.getOwnPropertyNames(Element);
 			fixPlayer(instance.value);
 			customPlayer(instance.value);
 			screenSizeHandle(instance.value);
 			hasLayerHandel(instance.value);
+			mountBottomSheet(instance.value);
 		}
 	);
 
@@ -228,11 +300,13 @@ onMounted(() => {
 	});
 });
 
+//#region Hiệu chỉnh player
 const screenSizeHandle = (playerDOM) => {
 	/** Xử lý hiển thị trên các size màn hình */
 	const pip = playerDOM.query(".art-control-pip");
 	const settingPanel = playerDOM.query(".art-settings");
 	const settingControl = playerDOM.query(".art-control-setting");
+
 	const qualitySelector = playerDOM.query(
 		".art-control-quality .art-selector-list"
 	);
@@ -345,15 +419,18 @@ const customPlayer = (playerDOM) => {
 		}
 	});
 };
+//#endregion
 
+//#region Phần layer top và bottom
 const layerHeader = {
 	index: 1,
-	name: "header",
+	name: "headers",
 	disable: false,
-	html: `<div class="fit  flex flex-center bg-red">Tao ne1<div>`,
 	style: {
-		height: "10%",
-		opacity: ".8",
+		height: "55px",
+		"background-image": "linear-gradient(#000,#0006,#0000)",
+		"background-position": "bottom",
+		"background-repeat": "repeat-x",
 	},
 
 	mounted: function (...args) {
@@ -361,30 +438,25 @@ const layerHeader = {
 	},
 };
 
-const layerHeader2 = {
-	index: 2,
-	name: "bottom",
-	disable: false,
-	html: `<div  class="fit  flex flex-center bg-red">Tao ne1<div>`,
-	style: {
-		position: "absolute",
-		height: "10%",
-		opacity: ".8",
-		bottom: "0",
-		width: "100%",
-		background: "transparent",
-	},
-
-	mounted: function (...args) {
-		// console.info("Component mount completion");
-	},
-};
-
+const viewers = ref(1000);
+let vNodeLayerHeader = null;
 const hasLayerHandel = (playerDOM) => {
+	vNodeLayerHeader?.destroy();
+	vNodeLayerHeader = globalFunction.renderComponent({
+		el: document.createDocumentFragment(),
+		component: VideoPlayerHeader,
+		props: {
+			viewers: viewers.value,
+			class: ["art-layer-header"],
+		},
+		appContext,
+	});
 	if (props.hasLayer) {
-		playerDOM.layers.add(layerHeader);
-		playerDOM.layers.add(layerHeader2);
-		layerBottomHandel(playerDOM);
+		playerDOM.layers.add({
+			...layerHeader,
+			html: vNodeLayerHeader.vNode.el,
+		});
+		// layerBottomHandel(playerDOM);
 	}
 };
 
@@ -399,6 +471,7 @@ const layerBottomHandel = (playerDOM) => {
 	// temp.classList.add("art-controls");
 	// utils.append(bottomInfo, temp);
 };
+//#endregion
 
 onBeforeUnmount(() => {
 	if (instance.value && instance.value.destroy) {
@@ -406,28 +479,54 @@ onBeforeUnmount(() => {
 	}
 });
 
-const handler = (m) => {
-	const attrObserver = new MutationObserver((mutations) => {
-		mutations.forEach((mu) => {
-			if (mu.type !== "attributes" && mu.attributeName !== "class")
-				return;
-			console.log("class was modified!");
-		});
-	});
+// =================================================================================== TEST=====================================//
 
-	const el = document.querySelectorAll(".art-video-player");
-	console.log(el);
-	attrObserver.observe(el, { attributes: true });
+const testContainer = ref(null);
+const testBtn = ref(null);
+const result = ref(null);
+const insert = async () => {
+	viewers.value += 1;
+
+	// const bottomLayer = instance.value.query(".art-bottom");
+	// const videoPlayer = instance.value.query(".art-video-player");
+	// const testContainer = document.querySelector(".test-container");
+	// // // Mỗi lần ấn là render mới
+	// result.value?.destroy();
+	// result.value = globalFunction.renderComponent({
+	// 	el: testContainer,
+	// 	component: await VideoPlayerHeader,
+	// 	props: {
+	// 		class: ["absolute-bottom", "art-layer-header"],
+	// 		style: {},
+	// 		treeData: settingMobile.value,
+	// 		onSelected(event) {
+	// 			selectSettingMobile(event);
+	// 		},
+	// 	},
+	// 	appContext,
+	// });
 };
 </script>
 
 <style lang="scss">
 .art-video-player {
+	.art-layer-header {
+		opacity: 0;
+		visibility: hidden;
+		transition: all 0.2s ease-in-out;
+	}
+	&.art-control-show {
+		.art-layer-header {
+			opacity: 1;
+			visibility: visible;
+		}
+	}
 	.art-video {
 		cursor: default;
 	}
 
 	.art-mask {
+		background: rgba(0, 0, 0, 0.5);
 		.art-state {
 			bottom: unset;
 			right: unset;
@@ -437,15 +536,7 @@ const handler = (m) => {
 		z-index: 65 !important;
 	}
 	.art-bottom {
-		.art-progress {
-			// flex: unset !important;
-			.art-progress-tip {
-				// top: -30px !important;
-			}
-		}
-		// height: 105px;
 		padding-top: 45px;
-		// padding-top: 0;
 	}
 	.art-control-thumbnails {
 		border-radius: $generic-border-radius;
@@ -467,7 +558,11 @@ const handler = (m) => {
 	}
 	.art-controls {
 		.art-control {
-			font-size: 0.8rem !important;
+			font-size: 0.7rem !important;
+			padding-top: 2px !important;
+			.art-selector-value {
+				font-weight: bold;
+			}
 			.art-icon-setting {
 				transform: rotate(-90deg);
 				transition: transform 0.5s;
@@ -482,10 +577,6 @@ const handler = (m) => {
 			&:hover .art-icon svg {
 				fill: $positive;
 			}
-			// &:hover .art-icon {
-			// 	border-radius: 4px;
-			// 	background-color: $positive;
-			// }
 		}
 	}
 
@@ -542,12 +633,6 @@ const handler = (m) => {
 		}
 	}
 
-	.art-controls-right {
-		.hint--top:last-of-type:after {
-			// left: -0.4rem !important;
-		}
-	}
-
 	.art-icon-state {
 		&:hover svg {
 			fill: $positive !important;
@@ -576,14 +661,6 @@ const handler = (m) => {
 		background: white;
 		font-size: 0.8rem !important;
 		line-height: 0.8rem !important;
-	}
-}
-
-.screen--sm {
-	.art-control-quality {
-		.art-selector-list {
-			// display: none;
-		}
 	}
 }
 </style>

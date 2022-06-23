@@ -10,10 +10,15 @@
 				<q-layout>
 					<div class="bg-blue video-container">
 						<q-responsive class="video-container" :ratio="16 / 9">
-							<video
+							<!-- <video
 								controls
 								src="https://www.w3schools.com/tags/movie.ogg"
-							></video>
+							></video> -->
+							<VideoArtPlayer
+								:option="option"
+								:style="style"
+								:hasLayer="true"
+							/>
 						</q-responsive>
 					</div>
 
@@ -43,11 +48,11 @@
 import { defineComponent, ref, watchEffect } from "vue";
 import ChatRoom from "components/chat/ChatRoom.vue";
 import LiveInfo from "components/live-info/LiveInfo.vue";
+import VideoArtPlayer from "components/video-player/VideoArtPlayer.vue";
 import { useQuasar, debounce } from "quasar";
 export default defineComponent({
 	name: "WatchLive",
-	components: { ChatRoom, LiveInfo },
-
+	components: { ChatRoom, LiveInfo, VideoArtPlayer },
 	setup() {
 		const chat = ref(null);
 		const liveInfo = ref(null);
@@ -60,6 +65,50 @@ export default defineComponent({
 				liveInfo.value.collapseChat = chat.value.collapseChat;
 			}
 		});
+		const option = ref({
+			url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+			poster: "https://artplayer.org/assets/sample/poster.jpg",
+			title: "My title",
+
+			thumbnails: {
+				url: "https://artplayer.org/assets/sample/thumbnails.png",
+				number: 60,
+				column: 10,
+			},
+
+			quality: [
+				{
+					default: true,
+					name: "1080",
+					html: "FHD 1080",
+					label: "FHD 1080",
+					url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+				},
+				{
+					name: "720",
+					html: "HD 720",
+					label: "HD 720",
+					url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
+				},
+				{
+					name: "480",
+					html: "SD 480",
+					label: "SD 480",
+					url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+				},
+				{
+					name: "360",
+					html: "SD 360",
+					label: "SD 360",
+					url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
+				},
+			],
+		});
+		const style = ref({
+			width: "100%",
+			height: "100%",
+		});
+
 		return {
 			chat,
 			liveInfo,
@@ -69,6 +118,8 @@ export default defineComponent({
 					chat.value.collapseChat = true;
 				}
 			}, 300),
+			option,
+			style,
 		};
 	},
 });

@@ -1,4 +1,4 @@
-import { createVNode, render, computed } from "vue";
+import { h, render, computed } from "vue";
 
 export function query(selector, parent = document) {
 	return parent.querySelector(selector);
@@ -114,17 +114,40 @@ export function addDefaultForDeep(object, property, id, defaultObj) {
 		}
 	});
 }
+import { watchEffect, isRef } from "vue";
+export function renderComponent({
+	el,
+	component,
+	props,
+	appContext,
+	condition = { value: true },
+}) {
+	let vNode;
+	watchEffect(
+		() => {
+			if (component && condition?.value) {
+				vNode = h(component, props);
 
-export function renderComponent({ el, component, props, appContext }) {
-	let vnode = createVNode(component, props);
-	vnode.appContext = { ...appContext };
-	render(vnode, el);
-
-	return () => {
-		// destroy vnode
-		render(null, el);
-		vnode = undefined;
+				vNode.appContext = { ...appContext };
+				render(vNode, el);
+			} else {
+				render(null, el);
+			}
+		},
+		{
+			flush: "pre",
+		}
+	);
+	return {
+		destroy() {
+			render(null, el);
+			vNode = undefined;
+		},
+		vNode,
 	};
+}
+export function logTest({ message }) {
+	return message;
 }
 
 /**
@@ -144,7 +167,7 @@ onUnmounted(() => destroyComp?.())
 const insert = async () => {
   destroyComp?.()
   destroyComp = renderComponent({
-    el: container.value,
+    el: document.createDocumentFragment(),
     component: (await import('@/components/HelloWorld.vue')).default
     props: {
       key: counter,

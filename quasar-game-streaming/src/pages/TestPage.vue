@@ -1,24 +1,283 @@
 <template>
 	<q-page padding>
+		<div style="width: 80%">
+			<VideoPlayerHeader :viewers="1" />
+		</div>
+
 		<VideoArtPlayer
+			v-for="(video, index) in videos"
+			:key="index"
 			@get-instance="getInstance"
-			:option="option"
 			:style="style"
+			:option="video"
 			:hasLayer="true"
 		/>
+		<!-- <VideoArtPlayer
+			@get-instance="getInstance"
+			:style="style"
+			:option="option"
+			:hasLayer="true"
+		/> -->
 	</q-page>
 </template>
 
 <script setup>
 import { ref, onMounted, nextTick } from "vue";
-import { getCssVar } from "quasar";
-
+import { getCssVar, extend } from "quasar";
+import VideoPlayerHeader from "components/video-player/VideoPlayerHeader.vue";
 import VideoArtPlayer from "components/video-player/VideoArtPlayer.vue";
 
 import artplayerPluginDanmuku from "artplayer-plugin-danmuku";
 
 const img = "https://artplayer.org/assets/sample/layer.png";
 const art = ref(null);
+
+const videos = ref([
+	{
+		url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+		poster: "https://artplayer.org/assets/sample/poster.jpg",
+		title: "My title",
+
+		thumbnails: {
+			url: "https://artplayer.org/assets/sample/thumbnails.png",
+			number: 60,
+			column: 10,
+		},
+
+		quality: [
+			{
+				default: true,
+				name: "auto",
+				html: "Auto",
+				label: "Auto",
+				url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+			},
+			{
+				name: "1080",
+				html: "FHD 1080",
+				label: "FHD 1080",
+				url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+			},
+			{
+				name: "720",
+				html: "HD 720",
+				label: "HD 720",
+				url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
+			},
+			{
+				name: "480",
+				html: "SD 480",
+				label: "SD 480",
+				url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+			},
+			{
+				name: "360",
+				html: "SD 360",
+				label: "SD 360",
+				url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
+			},
+		],
+		settings: [
+			{
+				html: "Select Quality",
+				width: 150,
+				tooltip: "Auto",
+				selector: [
+					{
+						default: true,
+						name: "auto",
+						html: "Auto",
+						label: "Auto",
+						url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+					},
+					{
+						name: "1080",
+						html: "FHD 1080",
+						label: "FHD 1080",
+						url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+					},
+					{
+						name: "720",
+						html: "HD 720",
+						label: "HD 720",
+						url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
+					},
+					{
+						name: "480",
+						html: "SD 480",
+						label: "SD 480",
+						url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+					},
+					{
+						name: "360",
+						html: "SD 360",
+						label: "SD 360",
+						url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
+					},
+				],
+				onSelect: function (item, $dom, event) {
+					console.info(item, $dom, event);
+					art.value.switchQuality(item.url, item.html);
+					// Change the tooltip
+					return item.html;
+				},
+			},
+		],
+
+		plugins: [
+			// artplayerPluginDanmuku({
+			// 	danmuku: [
+			// 		{
+			// 			text: "666", // Danmu text
+			// 			time: 5, // Video time
+			// 			color: "#fff", // Danmu color
+			// 			border: false, // Danmu border
+			// 			mode: 0, // Danmu mode: 0-scroll or 1-static
+			// 		},
+			// 	],
+			// 	// speed: 5,
+			// 	// opacity: 1,
+			// 	// fontSize: 25,
+			// 	// color: "#FFFFFF",
+			// 	// mode: 1,
+			// 	// margin: [10, "25%"],
+			// 	// antiOverlap: true,
+			// 	// useWorker: false,
+			// 	// synchronousPlayback: false,
+			// 	// filter: (danmu) => danmu.text.length < 50,
+			// 	// lockTime: 5,
+			// 	// maxLength: 100,
+			// 	// minWidth: 200,
+			// 	// maxWidth: 400,
+			// 	// theme: "dark",
+			// 	// beforeEmit: (danmu) => !!danmu.text.trim(),
+			// 	// mount: document.querySelector(".art-danmuku"),
+			// }),
+		],
+	},
+	{
+		url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+		poster: "https://artplayer.org/assets/sample/poster.jpg",
+		title: "My title",
+
+		thumbnails: {
+			url: "https://artplayer.org/assets/sample/thumbnails.png",
+			number: 60,
+			column: 10,
+		},
+
+		quality: [
+			{
+				default: true,
+				name: "auto",
+				html: "Auto",
+				label: "Auto",
+				url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+			},
+			{
+				name: "1080",
+				html: "FHD 1080",
+				label: "FHD 1080",
+				url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+			},
+			{
+				name: "720",
+				html: "HD 720",
+				label: "HD 720",
+				url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
+			},
+			{
+				name: "480",
+				html: "SD 480",
+				label: "SD 480",
+				url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+			},
+			{
+				name: "360",
+				html: "SD 360",
+				label: "SD 360",
+				url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
+			},
+		],
+		settings: [
+			{
+				html: "Select Quality",
+				width: 150,
+				tooltip: "Auto",
+				selector: [
+					{
+						default: true,
+						name: "auto",
+						html: "Auto",
+						label: "Auto",
+						url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+					},
+					{
+						name: "1080",
+						html: "FHD 1080",
+						label: "FHD 1080",
+						url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+					},
+					{
+						name: "720",
+						html: "HD 720",
+						label: "HD 720",
+						url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
+					},
+					{
+						name: "480",
+						html: "SD 480",
+						label: "SD 480",
+						url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+					},
+					{
+						name: "360",
+						html: "SD 360",
+						label: "SD 360",
+						url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
+					},
+				],
+				onSelect: function (item, $dom, event) {
+					console.info(item, $dom, event);
+					art.value.switchQuality(item.url, item.html);
+					// Change the tooltip
+					return item.html;
+				},
+			},
+		],
+
+		plugins: [
+			// artplayerPluginDanmuku({
+			// 	danmuku: [
+			// 		{
+			// 			text: "666", // Danmu text
+			// 			time: 5, // Video time
+			// 			color: "#fff", // Danmu color
+			// 			border: false, // Danmu border
+			// 			mode: 0, // Danmu mode: 0-scroll or 1-static
+			// 		},
+			// 	],
+			// 	// speed: 5,
+			// 	// opacity: 1,
+			// 	// fontSize: 25,
+			// 	// color: "#FFFFFF",
+			// 	// mode: 1,
+			// 	// margin: [10, "25%"],
+			// 	// antiOverlap: true,
+			// 	// useWorker: false,
+			// 	// synchronousPlayback: false,
+			// 	// filter: (danmu) => danmu.text.length < 50,
+			// 	// lockTime: 5,
+			// 	// maxLength: 100,
+			// 	// minWidth: 200,
+			// 	// maxWidth: 400,
+			// 	// theme: "dark",
+			// 	// beforeEmit: (danmu) => !!danmu.text.trim(),
+			// 	// mount: document.querySelector(".art-danmuku"),
+			// }),
+		],
+	},
+]);
 const option = ref({
 	url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
 	poster: "https://artplayer.org/assets/sample/poster.jpg",
@@ -33,6 +292,12 @@ const option = ref({
 	quality: [
 		{
 			default: true,
+			name: "auto",
+			html: "Auto",
+			label: "Auto",
+			url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+		},
+		{
 			name: "1080",
 			html: "FHD 1080",
 			label: "FHD 1080",
@@ -55,6 +320,52 @@ const option = ref({
 			html: "SD 360",
 			label: "SD 360",
 			url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
+		},
+	],
+	settings: [
+		{
+			html: "Select Quality",
+			width: 150,
+			tooltip: "Auto",
+			selector: [
+				{
+					default: true,
+					name: "auto",
+					html: "Auto",
+					label: "Auto",
+					url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+				},
+				{
+					name: "1080",
+					html: "FHD 1080",
+					label: "FHD 1080",
+					url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+				},
+				{
+					name: "720",
+					html: "HD 720",
+					label: "HD 720",
+					url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
+				},
+				{
+					name: "480",
+					html: "SD 480",
+					label: "SD 480",
+					url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+				},
+				{
+					name: "360",
+					html: "SD 360",
+					label: "SD 360",
+					url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
+				},
+			],
+			onSelect: function (item, $dom, event) {
+				console.info(item, $dom, event);
+				art.value.switchQuality(item.url, item.html);
+				// Change the tooltip
+				return item.html;
+			},
 		},
 	],
 
@@ -89,7 +400,8 @@ const option = ref({
 		// }),
 	],
 });
-const style = ref({ width: "100%", height: "800px", margin: "60px auto 0" });
+
+const style = ref({ width: "800px", height: "500px", margin: "60px auto 0" });
 const getInstance = (instance) => {
 	art.value = instance;
 };
