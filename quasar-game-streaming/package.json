@@ -12,7 +12,7 @@
 	},
 	"dependencies": {
 		"@quasar/extras": "^1.0.0",
-		"artplayer": "^4.4.7",
+		"artplayer": "^4.5.2",
 		"artplayer-plugin-danmuku": "^4.4.8",
 		"axios": "^0.21.1",
 		"core-js": "^3.6.5",

@@ -22,10 +22,11 @@
 				<span class="cursor-pointer">League of Legend</span>
 
 				<q-chip
-					class="chip-live on-right bg-positive"
+					class="chip-live-view on-right bg-positive"
 					size="0.8rem"
 					dense
 					square
+					text-color="white"
 				>
 					{{ viewers }} viewers
 				</q-chip>
@@ -38,7 +39,7 @@
 					color="red"
 					square
 					text-color="white"
-					class="text-bold"
+					class="text-bold chip-live"
 				>
 					TRỰC TIẾP
 				</q-chip>
@@ -48,22 +49,43 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 const props = defineProps({
-	viewers: Number,
+	viewers: Object,
+});
+const viewers = computed(() => {
+	return props.viewers;
 });
 </script>
 
 <style lang="scss">
+.q-item {
+	padding: 16px;
+	transition: color 0.3s, background-color 0.3s;
+	.q-chip--dense {
+		padding: 0 0.4em;
+		margin-left: 12px;
+	}
+	.q-item__label + .q-item__label {
+		margin-top: 4px;
+	}
+	.q-item__section--side:first-child {
+		padding-right: 16px;
+	}
+}
 .chip-live {
-	.q-chip__content::before {
-		display: block;
-		width: 0.25rem;
-		height: 0.25rem;
-		margin-right: 0.25rem;
-		background: red;
-		border-radius: 50%;
-		content: "";
+	margin: 4px !important;
+	padding: 0.5em 0.9em !important;
+	&-view {
+		&::before {
+			display: block;
+			width: 0.25rem;
+			height: 0.25rem;
+			margin-right: 0.25rem;
+			background: red;
+			border-radius: 50%;
+			content: "";
+		}
 	}
 }
 </style>

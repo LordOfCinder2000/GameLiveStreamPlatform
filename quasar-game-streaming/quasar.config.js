@@ -33,6 +33,7 @@ module.exports = configure(function (ctx) {
 			"plyr",
 			"utils",
 			"addressbar-color",
+			"class",
 		],
 
 		// https://v2.quasar.dev/quasar-cli-webpack/quasar-config-js#Property%3A-css
@@ -114,7 +115,12 @@ module.exports = configure(function (ctx) {
 			// directives: [],
 
 			// Quasar plugins
-			plugins: ["LoadingBar", "Notify", "AddressbarColor", "BottomSheet"],
+			plugins: [
+				"LoadingBar",
+				"Notify",
+				"AddressbarColor",
+				"LocalStorage",
+			],
 		},
 
 		animations: "all", // --- includes all animations

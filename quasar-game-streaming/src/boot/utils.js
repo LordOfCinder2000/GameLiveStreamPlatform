@@ -1,5 +1,14 @@
 import { h, render, computed } from "vue";
 
+export function appendFunction(targetFn, appendFn) {
+	var cached_function = targetFn;
+	return function (...targetFnVal) {
+		var result = cached_function.apply(this, arguments);
+		appendFn(...targetFnVal);
+		return result;
+	};
+}
+
 export function query(selector, parent = document) {
 	return parent.querySelector(selector);
 }
@@ -50,14 +59,14 @@ export function getStyle(element, key, numberType = true) {
 	return numberType ? parseFloat(value) : value;
 }
 
-export function sublings(target) {
+export function siblings(target) {
 	return Array.from(target.parentElement.children).filter(
 		(item) => item !== target
 	);
 }
 
 export function inverseClass(target, className) {
-	sublings(target).forEach((item) => removeClass(item, className));
+	siblings(target).forEach((item) => removeClass(item, className));
 	addClass(target, className);
 }
 
@@ -149,37 +158,3 @@ export function renderComponent({
 export function logTest({ message }) {
 	return message;
 }
-
-/**
- * 
- * Append component trong thẻ script
- * <script setup>
-import { ref, onUnmounted, getCurrentInstance } from 'vue'
-import renderComponent from './renderComponent'
-
-const { appContext } = getCurrentInstance()
-const container = ref()
-let counter = 1
-let destroyComp = null
-
-onUnmounted(() => destroyComp?.())
-
-const insert = async () => {
-  destroyComp?.()
-  destroyComp = renderComponent({
-    el: document.createDocumentFragment(),
-    component: (await import('@/components/HelloWorld.vue')).default
-    props: {
-      key: counter,
-      msg: 'Message ' + counter++,
-    },
-    appContext,
-  })
-}
-</script>
-
-<template>
-  <button @click="insert">Insert component</button>
-  <div ref="container"></div>
-</template>
- */

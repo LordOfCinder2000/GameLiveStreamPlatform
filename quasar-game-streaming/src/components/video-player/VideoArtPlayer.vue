@@ -1,29 +1,28 @@
 <template>
-	<div class="root">
+	<div>
 		<div :style="style" ref="artRef"></div>
+		<!-- <img src="~assets/svg/video-player/pause.svg" /> -->
 		<!-- <BottomSheet
 			ref="bs"
 			:treeData="settingMobile"
 			@selected="selectSettingMobile"
 			v-if="$q.screen.lt.sm"
 		/> -->
-
-		<VideoPlayerHeader :viewers="2332" class="art-layer-header" />
-
+		<!-- <VideoPlayerHeader :viewers="2332" class="art-layer-header" /> -->
 		<!-- Test render vnode -->
-		<q-btn
+		<!-- <q-btn
 			ref="testBtn"
 			class="test-btn"
 			color="primary"
 			label="OK"
 			@click="insert"
-		/>
+		/> -->
 
-		<div
+		<!-- <div
 			class="test-container"
 			style="width: 200px; height: 50px; background-color: red"
 			ref="testContainer"
-		></div>
+		></div> -->
 	</div>
 </template>
 <script setup>
@@ -37,23 +36,24 @@ import {
 	getCurrentInstance,
 	watchEffect,
 	toRefs,
+	toRef,
 } from "vue";
 
 import Artplayer from "artplayer";
-import { useQuasar, getCssVar } from "quasar";
+import { useQuasar, getCssVar, format, QIcon, QChip } from "quasar";
 import * as globalFunction from "boot/utils";
-// import VideoPlayerHeader from "components/video-player/VideoPlayerHeader.vue";
+import { Storage } from "boot/class";
+import VideoPlayerHeader from "components/video-player/VideoPlayerHeader.vue";
+import ComponentSVG from "components/svg/ComponentSVG.vue";
 
 //#region Khởi tạo biến
 const BottomSheet = defineAsyncComponent(() =>
 	import("components/video-player/BottomSheet.vue")
 );
-const VideoPlayerHeader = defineAsyncComponent(() =>
-	import("components/video-player/VideoPlayerHeader.vue")
-);
 
 const { appContext } = getCurrentInstance();
 const $q = useQuasar();
+const { capitalize } = format;
 const utils = Artplayer.utils;
 
 const artRef = ref(null);
@@ -68,8 +68,9 @@ const props = defineProps({
 		type: Boolean,
 		default: true,
 	},
-	headerOption: {
-		type: Object,
+	viewers: {
+		type: Number,
+		default: 0,
 	},
 	style: Object,
 });
@@ -81,14 +82,16 @@ const option = computed(() => {
 //#endregion
 
 //#region Cài đặt khi ở mobile
-const defaultMobileSetting = ref({
+const defaultSetting = ref({
 	playbackRate: 1,
 	aspectRatio: "default",
 	flip: "normal",
 	quality: (() => {
-		return props.option.quality.find((val) => val.default === true).name;
+		return option.value.qualityCustom.find((val) => val.default === true)
+			?.name;
 	})(),
 });
+
 const settingMobile = ref({
 	title: "Setting",
 	name: "root",
@@ -101,7 +104,7 @@ const settingMobile = ref({
 			label: "Quality",
 			iconBack: "arrow_back",
 			icon: "hd",
-			children: props.option.quality,
+			children: option.value.qualityCustom,
 		},
 		{
 			title: "Play speed",
@@ -194,22 +197,30 @@ const settingMobile = ref({
 });
 const selectSettingMobile = (value) => {
 	if (!value.option.root) {
-		defaultMobileSetting.value[value.option.name] = value.selected.name;
+		let storageObj = {
+			html: value.selected.label,
+			value: value.selected.value,
+		};
+		defaultSetting.value[value.option.name] = value.selected.name;
 		if (value.option.name === "quality") {
+			storageObj.html = value.selected.html;
+			storageObj.url = value.selected.url;
 			instance.value.switchQuality(
 				value.selected.url,
 				value.selected.html
 			);
-			return;
+		} else {
+			instance.value[value.option.name] = value.selected.value;
 		}
-		instance.value[value.option.name] = value.selected.value;
+		instance.value.storage.set(value.option.name, storageObj);
 	}
 };
+
 globalFunction.addDefaultForDeep(
 	settingMobile.value,
 	"children",
 	"name",
-	defaultMobileSetting.value
+	defaultSetting.value
 );
 
 let VNodeBottomSheet = null;
@@ -253,14 +264,73 @@ const mountBottomSheet = (playerDOM) => {
 };
 //#endregion
 
+//#region Local storage
+const setStorageQuality = (playerDOM) => {
+	if (
+		playerDOM.storage.get("quality") &&
+		playerDOM.storage.get("quality").url
+	) {
+		playerDOM
+			.switchQuality(
+				playerDOM.storage.get("quality").url,
+				playerDOM.storage.get("quality").html
+			)
+			.then(() => {
+				setStorageValue(playerDOM);
+			});
+	} else {
+		setStorageValue(playerDOM);
+	}
+};
+
+let appendOne = true;
+const setStorageValue = (playerDOM) => {
+	Object.keys(defaultSetting.value).forEach((key, index) => {
+		// GET
+		if (playerDOM.storage.get(key) && key !== "quality") {
+			playerDOM[key] = playerDOM.storage.get(key).value;
+			playerDOM.notice.show = "";
+
+			playerDOM.setting.option[index].$tooltip.innerHTML = capitalize(
+				playerDOM.storage.get(key)?.html.toString()
+					? playerDOM.storage.get(key).html?.toString()
+					: ""
+			);
+		}
+		// Sync mobile and web setting
+		defaultSetting.value[key] = playerDOM.storage.get(key).value;
+		if (appendOne) {
+			playerDOM.setting.option[index].onSelect =
+				globalFunction.appendFunction(
+					playerDOM.setting.option[index].onSelect,
+					(selector) => {
+						let storageObj = {
+							html: selector.html,
+							value: selector.value,
+						};
+						if (selector.url) {
+							storageObj.url = selector.url;
+						}
+						playerDOM.storage.set(key, storageObj);
+					}
+				);
+		}
+	});
+	appendOne = false;
+	console.log(defaultSetting.value);
+};
+//#endregion
+
 onMounted(() => {
 	instance.value = new Artplayer(
 		{
 			...option.value,
+			url: option.value.qualityCustom.find((q) => q.default === true).url,
 			pip: true,
 			muted: true,
+			autoplay: true,
 			theme: getCssVar("positive"),
-			autoSize: true,
+			// autoSize: true,
 			// autoMini: true,
 			flip: true,
 			playbackRate: true,
@@ -275,6 +345,7 @@ onMounted(() => {
 			icons: {
 				loading:
 					'<img src="https://artplayer.org/assets/img/ploading.gif">',
+				state: "",
 			},
 			lock: true,
 			fastForward: true,
@@ -283,6 +354,52 @@ onMounted(() => {
 			moreVideoAttr: {
 				crossOrigin: "anonymous",
 			},
+			settings: [
+				{
+					html: "Select Quality",
+					width: 200,
+					tooltip: "Auto",
+					selector: [...option.value.qualityCustom],
+					onSelect: (item, $dom, event) => {
+						instance.value
+							.switchQuality(item.url, item.html)
+							.then(() => {
+								setStorageValue(instance.value);
+							});
+						return item.html;
+					},
+				},
+			],
+			controls: [
+				{
+					name: "quality",
+					disable: option.value.qualityCustom.length === 0,
+					position: "right",
+					index: 10,
+					html: (() => {
+						const qualityDefault =
+							option.value.qualityCustom.find(
+								(item) => item.default
+							) || option.value.qualityCustom[0];
+						return qualityDefault ? qualityDefault.html : "";
+					})(),
+					selector: option.value.qualityCustom,
+					onSelect(item) {
+						instance.value
+							.switchQuality(item.url, item.html)
+							.then(() => {
+								setStorageValue(instance.value);
+							});
+						console.log(item);
+						let storageObj = {
+							html: item.html,
+							value: item.value,
+							url: item.url,
+						};
+						instance.value.storage.set("quality", storageObj);
+					},
+				},
+			],
 			container: artRef.value,
 		},
 		() => {
@@ -292,6 +409,8 @@ onMounted(() => {
 			screenSizeHandle(instance.value);
 			hasLayerHandel(instance.value);
 			mountBottomSheet(instance.value);
+			showBtnPauseState(instance.value);
+			setStorageQuality(instance.value);
 		}
 	);
 
@@ -376,8 +495,15 @@ const fixPlayer = (playerDOM) => {
 	});
 
 	//Fix Tooltip cho fullscreen
-	const fullscreen = instance.value.query(".art-control-fullscreen");
+	const fullscreen = playerDOM.query(".art-control-fullscreen");
 	fullscreen.classList.add("hint--top-left");
+
+	//Fix hiển thị nút play
+	playerDOM.on("video:seeked", () => {
+		if (!playerDOM.playing) {
+			playerDOM.mask.show = true;
+		}
+	});
 };
 
 const customPlayer = (playerDOM) => {
@@ -419,42 +545,157 @@ const customPlayer = (playerDOM) => {
 		}
 	});
 };
+
+// Pause và replay
+const iconName = ref("play_circle_outline");
+const pauseDisplay = ref(false);
+let vNodePause = null;
+let vNodeState = null;
+const showBtnPauseState = (playerDOM) => {
+	// Play
+
+	watchEffect(() => {
+		const iconState = playerDOM.query(".art-icon-state");
+		vNodeState?.destroy();
+		vNodeState = globalFunction.renderComponent({
+			el: iconState,
+			component: QIcon,
+			props: {
+				name: iconName.value,
+				size: "60px",
+				class: ["cursor-pointer", "art-icon", "art-icon-state"],
+			},
+			appContext,
+		});
+		// globalFunction.replaceElement(vNodeState.vNode.el, iconState);
+	});
+
+	// Pause
+	const layerPause = {
+		index: 2,
+		name: "pausePlayer",
+		html: "",
+		disable: false,
+		click: function () {
+			playerDOM.pause();
+		},
+		mounted: function (pausePlayer) {
+			pausePlayer.classList.add("absolute-center");
+			vNodePause?.destroy();
+			vNodePause = globalFunction.renderComponent({
+				el: pausePlayer,
+				component: QIcon,
+				props: {
+					name: "pause_circle_outline",
+					size: "60px",
+					class: ["art-layer-pause", "cursor-pointer"],
+				},
+				appContext,
+				condition: pauseDisplay,
+			});
+		},
+	};
+
+	playerDOM.layers.add(layerPause);
+
+	playerDOM.on("video:seeked", () => {
+		if (!playerDOM.playing) {
+			iconName.value = "play_circle_outline";
+		}
+	});
+	playerDOM.on("video:pause", () => {
+		pauseDisplay.value = false;
+		iconName.value = "play_circle_outline";
+	});
+	playerDOM.on("video:playing", () => {
+		pauseDisplay.value = true;
+	});
+	playerDOM.on("video:ended", () => {
+		iconName.value = "replay";
+	});
+};
 //#endregion
 
-//#region Phần layer top và bottom
+//#region Phần layer top và bottom và state
 const layerHeader = {
 	index: 1,
-	name: "headers",
+	name: "headerPlayer",
 	disable: false,
 	style: {
-		height: "55px",
 		"background-image": "linear-gradient(#000,#0006,#0000)",
 		"background-position": "bottom",
 		"background-repeat": "repeat-x",
 	},
-
-	mounted: function (...args) {
-		// console.info("Component mount completion");
-	},
 };
 
-const viewers = ref(1000);
+const layerLive = {
+	index: 1,
+	name: "live",
+	disable: false,
+	html: "",
+};
+
+const layerHeaderDisplay = ref(false);
+const layerLiveDisplay = ref(true);
 let vNodeLayerHeader = null;
+let vNodeLayerLive = null;
 const hasLayerHandel = (playerDOM) => {
-	vNodeLayerHeader?.destroy();
-	vNodeLayerHeader = globalFunction.renderComponent({
-		el: document.createDocumentFragment(),
-		component: VideoPlayerHeader,
-		props: {
-			viewers: viewers.value,
-			class: ["art-layer-header"],
-		},
-		appContext,
-	});
 	if (props.hasLayer) {
+		// Header Layer
 		playerDOM.layers.add({
 			...layerHeader,
-			html: vNodeLayerHeader.vNode.el,
+			html: "",
+		});
+		const layerHeaders = playerDOM.query(".art-layer-headerPlayer");
+
+		vNodeLayerHeader?.destroy();
+		vNodeLayerHeader = globalFunction.renderComponent({
+			el: layerHeaders,
+			component: VideoPlayerHeader,
+			props: {
+				viewers: toRef(props, "viewers"),
+				class: ["art-layer-header"],
+			},
+			appContext,
+			condition: layerHeaderDisplay,
+		});
+		// Live layer
+
+		playerDOM.layers.add(layerLive);
+		const live = playerDOM.query(".art-layer-live");
+		live.classList.add("q-item", "absolute-top-right");
+		vNodeLayerLive?.destroy();
+		vNodeLayerLive = globalFunction.renderComponent({
+			el: live,
+			component: QChip,
+			props: {
+				size: "0.7rem",
+				color: "red",
+				square: true,
+				"text-color": "white",
+				class: ["text-bold", "chip-live"],
+				label: "TRỰC TIẾP",
+			},
+			appContext,
+			condition: layerLiveDisplay,
+		});
+		playerDOM.on("fullscreen", (value) => {
+			if (value) {
+				layerHeaderDisplay.value = true;
+				layerLiveDisplay.value = false;
+			} else {
+				layerHeaderDisplay.value = false;
+				layerLiveDisplay.value = true;
+			}
+		});
+		playerDOM.on("fullscreenWeb", (value) => {
+			if (value) {
+				layerHeaderDisplay.value = true;
+				layerLiveDisplay.value = false;
+			} else {
+				layerHeaderDisplay.value = false;
+				layerLiveDisplay.value = true;
+			}
 		});
 		// layerBottomHandel(playerDOM);
 	}
@@ -471,12 +712,14 @@ const layerBottomHandel = (playerDOM) => {
 	// temp.classList.add("art-controls");
 	// utils.append(bottomInfo, temp);
 };
+
 //#endregion
 
 onBeforeUnmount(() => {
 	if (instance.value && instance.value.destroy) {
 		instance.value.destroy(false);
 	}
+	instance.value.destroy();
 });
 
 // =================================================================================== TEST=====================================//
@@ -510,17 +753,32 @@ const insert = async () => {
 
 <style lang="scss">
 .art-video-player {
-	.art-layer-header {
+	font-family: inherit;
+	font-size: 1rem;
+	.art-layer-pause:hover {
+		color: $positive;
+	}
+	.art-layer-header,
+	.art-layer-pause,
+	.art-layer-live {
 		opacity: 0;
 		visibility: hidden;
 		transition: all 0.2s ease-in-out;
 	}
 	&.art-control-show {
-		.art-layer-header {
+		.art-layer-header,
+		.art-layer-pause,
+		.art-layer-live {
 			opacity: 1;
 			visibility: visible;
 		}
 	}
+	&.art-loading-show {
+		.art-layer-pause {
+			display: none;
+		}
+	}
+
 	.art-video {
 		cursor: default;
 	}
@@ -532,15 +790,28 @@ const insert = async () => {
 			right: unset;
 		}
 	}
+	.art-notice {
+		font-size: inherit;
+	}
 	.art-layers {
 		z-index: 65 !important;
+		.art-layer-autoPlayback {
+			z-index: inherit;
+			.art-autoPlayback-jump {
+				color: $positive;
+			}
+			.art-autoPlayback-close svg {
+				fill: $positive;
+			}
+		}
 	}
 	.art-bottom {
+		z-index: 66px;
 		padding-top: 45px;
 	}
 	.art-control-thumbnails {
 		border-radius: $generic-border-radius;
-		border: 2px solid $positive !important;
+		outline: 3px solid $positive;
 	}
 	.art-control-progress {
 		.art-control-progress-inner {
@@ -636,6 +907,9 @@ const insert = async () => {
 	.art-icon-state {
 		&:hover svg {
 			fill: $positive !important;
+		}
+		&:hover {
+			color: $positive !important;
 		}
 	}
 

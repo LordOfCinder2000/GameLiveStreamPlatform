@@ -8,7 +8,7 @@
 				class="fit"
 			>
 				<q-layout>
-					<div class="bg-blue video-container">
+					<div class="bg-positive video-container">
 						<q-responsive class="video-container" :ratio="16 / 9">
 							<!-- <video
 								controls

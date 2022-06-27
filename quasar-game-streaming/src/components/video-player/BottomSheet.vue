@@ -94,7 +94,7 @@ defineExpose({
 	}
 
 	.dialog-bottom-sheet {
-		height: 50vh;
+		min-height: 50vh;
 		width: 100%;
 		padding-bottom: 0.5rem;
 		&::after {
