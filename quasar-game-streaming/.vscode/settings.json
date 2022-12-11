@@ -13,5 +13,15 @@
 	},
 	"[html]": {
 		"editor.defaultFormatter": "esbenp.prettier-vscode"
-	}
+	},
+	"cSpell.words": [
+		"composables",
+		"Localizable",
+		"oidc",
+		"openapi",
+		"persistedstate",
+		"succ",
+		"vuelidate"
+	],
+	"typescript.tsdk": "node_modules/typescript/lib"
 }

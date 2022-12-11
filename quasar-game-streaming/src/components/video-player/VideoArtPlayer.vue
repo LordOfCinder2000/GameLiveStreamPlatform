@@ -1,29 +1,5 @@
 <template>
-	<div>
-		<div :style="style" ref="artRef"></div>
-		<!-- <img src="~assets/svg/video-player/pause.svg" /> -->
-		<!-- <BottomSheet
-			ref="bs"
-			:treeData="settingMobile"
-			@selected="selectSettingMobile"
-			v-if="$q.screen.lt.sm"
-		/> -->
-		<!-- <VideoPlayerHeader :viewers="2332" class="art-layer-header" /> -->
-		<!-- Test render vnode -->
-		<!-- <q-btn
-			ref="testBtn"
-			class="test-btn"
-			color="primary"
-			label="OK"
-			@click="insert"
-		/> -->
-
-		<!-- <div
-			class="test-container"
-			style="width: 200px; height: 50px; background-color: red"
-			ref="testContainer"
-		></div> -->
-	</div>
+	<div :style="style" ref="artRef"></div>
 </template>
 <script setup>
 import {
@@ -31,12 +7,14 @@ import {
 	onMounted,
 	nextTick,
 	onBeforeUnmount,
+	onUnmounted,
 	computed,
 	defineAsyncComponent,
 	getCurrentInstance,
 	watchEffect,
 	toRefs,
 	toRef,
+	toRaw,
 } from "vue";
 
 import Artplayer from "artplayer";
@@ -58,7 +36,7 @@ const utils = Artplayer.utils;
 
 const artRef = ref(null);
 const instance = ref(null);
-const emit = defineEmits(["get-instance"]);
+const emit = defineEmits(["get-instance", ""]);
 const props = defineProps({
 	option: {
 		type: Object,
@@ -67,6 +45,10 @@ const props = defineProps({
 	hasLayer: {
 		type: Boolean,
 		default: true,
+	},
+	roomMode: {
+		type: Boolean,
+		default: false,
 	},
 	viewers: {
 		type: Number,
@@ -87,7 +69,7 @@ const defaultSetting = ref({
 	aspectRatio: "default",
 	flip: "normal",
 	quality: (() => {
-		return option.value.qualityCustom.find((val) => val.default === true)
+		return option.value.qualityCustom?.find((val) => val.default === true)
 			?.name;
 	})(),
 });
@@ -224,27 +206,28 @@ globalFunction.addDefaultForDeep(
 );
 
 let VNodeBottomSheet = null;
-watchEffect(
-	() => {
-		// if (instance.value) {
-		// 	VNodeBottomSheet?.destroy();
-		// 	VNodeBottomSheet = globalFunction.renderComponent({
-		// 		el: instance.value.query(".art-control-setting"),
-		// 		component: $q.screen.lt.sm ? BottomSheet : null,
-		// 		props: {
-		// 			treeData: settingMobile.value,
-		// 			onSelected(event) {
-		// 				selectSettingMobile(event);
-		// 			},
-		// 		},
-		// 		appContext,
-		// 	});
-		// }
-	},
-	{
-		flush: "post",
-	}
-);
+// watchEffect(
+// () => {
+// 	if (instance.value) {
+// 		console.log(instance.value.fullscreenWeb);
+// 		// VNodeBottomSheet?.destroy();
+// 		// VNodeBottomSheet = globalFunction.renderComponent({
+// 		// 	el: instance.value.query(".art-control-setting"),
+// 		// 	component: $q.screen.lt.sm ? BottomSheet : null,
+// 		// 	props: {
+// 		// 		treeData: settingMobile.value,
+// 		// 		onSelected(event) {
+// 		// 			selectSettingMobile(event);
+// 		// 		},
+// 		// 	},
+// 		// 	appContext,
+// 		// });
+// 	}
+// },
+// {
+// 	flush: "post",
+// }
+// );
 
 const mountBottomSheet = (playerDOM) => {
 	const settingControl = playerDOM.query(".art-control-setting");
@@ -287,20 +270,38 @@ let appendOne = true;
 const setStorageValue = (playerDOM) => {
 	Object.keys(defaultSetting.value).forEach((key, index) => {
 		// GET
-		if (playerDOM.storage.get(key) && key !== "quality") {
-			playerDOM[key] = playerDOM.storage.get(key).value;
+		if (playerDOM.storage.get(key)) {
+			if (key !== "quality") {
+				playerDOM[key] = playerDOM.storage.get(key).value;
+			}
 			playerDOM.notice.show = "";
-
 			playerDOM.setting.option[index].$tooltip.innerHTML = capitalize(
 				playerDOM.storage.get(key)?.html.toString()
 					? playerDOM.storage.get(key).html?.toString()
 					: ""
 			);
+			// Sync mobile and web setting
+			defaultSetting.value[key] = playerDOM.storage.get(key).value;
 		}
-		// Sync mobile and web setting
-		defaultSetting.value[key] = playerDOM.storage.get(key).value;
+
 		if (appendOne) {
-			playerDOM.setting.option[index].onSelect =
+			// if (key !== "quality") {
+			// 	instance.value.setting.option[index].onSelect = (
+			// 		item,
+			// 		$dom,
+			// 		event
+			// 	) => {
+			// 		const instance = Artplayer.instances.find((ins) =>
+			// 			globalFunction.includeFromEvent(
+			// 				event,
+			// 				ins.template.$player
+			// 			)
+			// 		);
+			// 		instance[key] = item.value;
+			// 		return item.html;
+			// 	};
+			// }
+			instance.value.setting.option[index].onSelect =
 				globalFunction.appendFunction(
 					playerDOM.setting.option[index].onSelect,
 					(selector) => {
@@ -317,7 +318,6 @@ const setStorageValue = (playerDOM) => {
 		}
 	});
 	appendOne = false;
-	console.log(defaultSetting.value);
 };
 //#endregion
 
@@ -325,10 +325,11 @@ onMounted(() => {
 	instance.value = new Artplayer(
 		{
 			...option.value,
-			url: option.value.qualityCustom.find((q) => q.default === true).url,
+			url: option.value.qualityCustom?.find((q) => q.default === true)
+				.url,
 			pip: true,
 			muted: true,
-			autoplay: true,
+			// autoplay: true,
 			theme: getCssVar("positive"),
 			// autoSize: true,
 			// autoMini: true,
@@ -338,7 +339,7 @@ onMounted(() => {
 			setting: true,
 			hotkey: true,
 			fullscreen: true,
-			fullscreenWeb: true,
+			fullscreenWeb: props.roomMode,
 			miniProgressBar: true,
 			playsInline: true,
 			whitelist: ["*"],
@@ -350,7 +351,7 @@ onMounted(() => {
 			lock: true,
 			fastForward: true,
 			autoOrientation: true,
-			autoPlayback: true,
+			autoPlayback: !option.value.isLive,
 			moreVideoAttr: {
 				crossOrigin: "anonymous",
 			},
@@ -359,8 +360,14 @@ onMounted(() => {
 					html: "Select Quality",
 					width: 200,
 					tooltip: "Auto",
-					selector: [...option.value.qualityCustom],
-					onSelect: (item, $dom, event) => {
+					selector: option.value.qualityCustom,
+					onSelect(item, $dom, event) {
+						// const instance = Artplayer.instances.find((ins) =>
+						// 	globalFunction.includeFromEvent(
+						// 		event,
+						// 		ins.template.$player
+						// 	)
+						// );
 						instance.value
 							.switchQuality(item.url, item.html)
 							.then(() => {
@@ -385,12 +392,12 @@ onMounted(() => {
 					})(),
 					selector: option.value.qualityCustom,
 					onSelect(item) {
+						console.log(instance.value);
 						instance.value
 							.switchQuality(item.url, item.html)
 							.then(() => {
 								setStorageValue(instance.value);
 							});
-						console.log(item);
 						let storageObj = {
 							html: item.html,
 							value: item.value,
@@ -416,6 +423,8 @@ onMounted(() => {
 
 	nextTick(() => {
 		emit("get-instance", instance.value);
+		console.log("artplayer: ", instance.value);
+		// console.clear();
 	});
 });
 
@@ -504,6 +513,8 @@ const fixPlayer = (playerDOM) => {
 			playerDOM.mask.show = true;
 		}
 	});
+
+	// Fix quality luôn select instance cuối
 };
 
 const customPlayer = (playerDOM) => {
@@ -523,28 +534,50 @@ const customPlayer = (playerDOM) => {
 	});
 	const progressLoading = playerDOM.query(".art-progress-highlight ");
 
-	// Thêm hoạt ảnh cho phẩn progress bả
-	if (!playerDOM.loading.show) {
-		progressLoading.classList.add("art-progress-highlight--loading");
-		setTimeout(() => {
-			progressLoading.classList.remove("art-progress-highlight--loading");
-		}, 500);
-	}
-	playerDOM.on("video:seeking", () => {
-		if (playerDOM.loading.show) {
-			progressLoading.classList.add("art-progress-highlight--loading");
-		}
-	});
-	playerDOM.on("video:seeked", () => {
+	if (!option.value.isLive) {
+		// Thêm hoạt ảnh cho phẩn progress bả
 		if (!playerDOM.loading.show) {
+			progressLoading.classList.add("art-progress-highlight--loading");
 			setTimeout(() => {
 				progressLoading.classList.remove(
 					"art-progress-highlight--loading"
 				);
 			}, 500);
 		}
-	});
+		playerDOM.on("video:seeking", () => {
+			if (playerDOM.loading.show) {
+				progressLoading.classList.add(
+					"art-progress-highlight--loading"
+				);
+			}
+		});
+		playerDOM.on("video:seeked", () => {
+			if (!playerDOM.loading.show) {
+				setTimeout(() => {
+					progressLoading.classList.remove(
+						"art-progress-highlight--loading"
+					);
+				}, 500);
+			}
+		});
+	}
+
+	// Remove context
+	if (!$q.platform.is.mobile) {
+		globalFunction.remove(playerDOM.contextmenu.aspectRatio);
+		globalFunction.remove(playerDOM.contextmenu.flip);
+		globalFunction.remove(playerDOM.contextmenu.playbackRate);
+	}
+
+	// Event fullscreenWeb click
+
+	// playerDOM.proxy(playerDOM.controls.fullscreenWeb, "click", (event) => {
+
+	// 	fullscreenWeb.value = playerDOM.fullscreenWeb;
+	// });
 };
+
+const fullscreenWeb = ref(false);
 
 // Pause và replay
 const iconName = ref("play_circle_outline");
@@ -674,8 +707,8 @@ const hasLayerHandel = (playerDOM) => {
 				square: true,
 				"text-color": "white",
 				class: ["text-bold", "chip-live"],
-				label: "TRỰC TIẾP",
 			},
+			slots: { default: () => "TRỰC TIẾP" },
 			appContext,
 			condition: layerLiveDisplay,
 		});
@@ -718,8 +751,14 @@ const layerBottomHandel = (playerDOM) => {
 onBeforeUnmount(() => {
 	if (instance.value && instance.value.destroy) {
 		instance.value.destroy(false);
+	} else {
+		instance.value.destroy();
 	}
-	instance.value.destroy();
+});
+
+onUnmounted(() => {
+	// console.info((Artplayer.instances = null));
+	// instance.value.destroy();
 });
 
 // =================================================================================== TEST=====================================//
@@ -728,8 +767,7 @@ const testContainer = ref(null);
 const testBtn = ref(null);
 const result = ref(null);
 const insert = async () => {
-	viewers.value += 1;
-
+	// viewers.value += 1;
 	// const bottomLayer = instance.value.query(".art-bottom");
 	// const videoPlayer = instance.value.query(".art-video-player");
 	// const testContainer = document.querySelector(".test-container");

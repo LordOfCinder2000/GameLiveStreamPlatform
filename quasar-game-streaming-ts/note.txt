@@ -1,0 +1,188 @@
+axios@0.21.4
+
+<template>
+	<q-page class="no-scroll row">
+		<div class="live-wrapper col">
+			<q-scroll-area
+				:thumb-style="{ width: '3px' }"
+				:content-style="{ width: '100%' }"
+				:content-active-style="{ width: '100%' }"
+				class="fit"
+			>
+				<q-layout>
+					<div class="bg-positive video-container">
+						<q-responsive class="video-container" :ratio="16 / 9">
+							<!-- <video
+								controls
+								src="https://www.w3schools.com/tags/movie.ogg"
+							></video> -->
+							<VideoArtPlayer
+								:option="video.option"
+								:style="style"
+								:hasLayer="true"
+								:roomMode="true"
+								:viewers="video.viewers"
+								@get-instance="getInstance"
+							/>
+						</q-responsive>
+					</div>
+
+					<div class="live-info-wrapper q-pa-none">
+						<LiveInfo ref="liveInfo" />
+					</div>
+
+					<q-page-scroller
+						position="bottom-right"
+						:scroll-offset="300"
+						:offset="[18, 18]"
+					>
+						<q-btn fab icon="keyboard_arrow_up" color="positive" />
+					</q-page-scroller>
+				</q-layout>
+			</q-scroll-area>
+		</div>
+		<q-separator v-if="!collapseChat" vertical />
+		<div class="relative-position col-auto">
+			<ChatRoom ref="chat" width="380px" />
+		</div>
+		<q-resize-observer @resize="onResize" />
+	</q-page>
+</template>
+
+<script lang="ts" setup>
+import { defineComponent, ref, watchEffect, onUnmounted } from "vue";
+import ChatRoom from "components/chat/ChatRoom.vue";
+import LiveInfo from "components/live-info/LiveInfo.vue";
+import VideoArtPlayer from "components/video-player/VideoArtPlayer.vue";
+import { useQuasar, debounce } from "quasar";
+import Hls from "hls.js";
+export default defineComponent({
+	name: "WatchLive",
+	components: { ChatRoom, LiveInfo, VideoArtPlayer },
+	emits: ["layout-toggle"],
+	setup(props, { emit }) {
+		const chat = ref(null);
+		const liveInfo = ref(null);
+
+		const collapseChat = ref(false);
+		const $q = useQuasar();
+		watchEffect(() => {
+			if (chat.value && liveInfo.value) {
+				collapseChat.value = chat.value.collapseChat;
+				liveInfo.value.collapseChat = chat.value.collapseChat;
+			}
+		});
+		const video = ref({
+			viewers: 99999,
+			option: {
+				poster: "https://artplayer.org/assets/sample/poster.jpg",
+				title: "My title",
+				isLive: false,
+
+				qualityCustom: [
+					{
+						default: true,
+						name: "auto",
+						value: "auto",
+						html: "Auto",
+						label: "Auto",
+						url: "http://localhost:5080/LiveApp/streams/773138423575237591372146.mp4",
+					},
+
+					{
+						name: "1080",
+						value: "1080",
+						html: "FHD 1080",
+						label: "FHD 1080",
+						url: "http://localhost:5080/LiveApp/streams/773138423575237591372146.mp4",
+					},
+					{
+						name: "720",
+						value: "720",
+						html: "HD 720",
+						label: "HD 720",
+						url: "http://localhost:5080/LiveApp/streams/711200394903524301125827.mp4",
+					},
+					{
+						name: "480",
+						value: "480",
+						html: "SD 480",
+						label: "SD 480",
+						url: "http://localhost:5080/LiveApp/streams/529291712799189862402603.mp4",
+					},
+					{
+						name: "360",
+						value: "360",
+						html: "SD 360",
+						label: "SD 360",
+						url: "http://localhost:5080/LiveApp/streams/260109087413472613097364.mp4",
+					},
+				],
+
+				customType: {
+					m3u8: function (video, url) {
+						if (Hls.isSupported()) {
+							const hls = new Hls();
+							hls.loadSource(url);
+							hls.attachMedia(video);
+						} else {
+							const canPlay = video.canPlayType(
+								"application/vnd.apple.mpegurl"
+							);
+							if (canPlay === "probably" || canPlay === "maybe") {
+								video.src = url;
+							} else {
+								art.notice.show =
+									"Does not support playback of m3u8";
+							}
+						}
+					},
+				},
+			},
+		});
+		const style = ref({
+			width: "100%",
+			height: "100%",
+		});
+
+		const getInstance = (art) => {
+			art.proxy(art.controls.fullscreenWeb, "click", (event) => {
+				emit("layout-toggle", !art.fullscreenWeb);
+			});
+		};
+		onUnmounted(() => {
+			emit("layout-toggle", true);
+		});
+		return {
+			chat,
+			liveInfo,
+			collapseChat,
+			onResize: debounce(() => {
+				if ($q.screen.lt.md) {
+					chat.value.collapseChat = true;
+				}
+			}, 300),
+			video,
+			style,
+			getInstance,
+		};
+	},
+});
+</script>
+
+<style lang="scss" scoped>
+.live-wrapper {
+	// width: calc(100% - 380px);
+	.video-container {
+		max-height: calc(100vh - 190px);
+		min-height: 0;
+		video {
+			object-fit: cover;
+			background: no-repeat center center;
+		}
+	}
+	.q-scrollarea__content {
+		width: 100%;
+	}
+}
+</style>

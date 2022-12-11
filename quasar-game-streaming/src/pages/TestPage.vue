@@ -1,30 +1,154 @@
 <template>
-	<q-page padding>
+	<q-page padding class="">
 		<VideoArtPlayer
-			v-for="(video, index) in videos"
-			:key="index"
-			@get-instance="getInstance"
 			:style="style"
-			:option="video.option"
+			:option="videos[0].option"
 			:hasLayer="true"
-			:viewers="video.viewers"
+			:viewers="videos[0].viewers"
+		/>
+		<VideoArtPlayer
+			:style="style"
+			:option="videos[1].option"
+			:hasLayer="true"
+			:viewers="videos[1].viewers"
+		/>
+		<VideoArtPlayer
+			:style="style"
+			:option="videos[2].option"
+			:hasLayer="true"
+			:viewers="videos[2].viewers"
 		/>
 	</q-page>
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick, watch } from "vue";
+import { ref, onMounted, nextTick, watch, defineAsyncComponent } from "vue";
+// import { proxy } from "src/proxy";
 import { getCssVar, extend } from "quasar";
-import VideoPlayerHeader from "components/video-player/VideoPlayerHeader.vue";
-import VideoArtPlayer from "components/video-player/VideoArtPlayer.vue";
-import ComponentSVG from "components/svg/ComponentSVG.vue";
+
+// import VideoPlayerHeader from "components/video-player/VideoPlayerHeader.vue";
+// import VideoArtPlayer from "components/video-player/VideoArtPlayer.vue";
+// import ComponentSVG from "components/svg/ComponentSVG.vue";
 import artplayerPluginDanmuku from "artplayer-plugin-danmuku";
 import { appendFunction } from "boot/utils";
+import { useAuthComp } from "composables";
+const VideoArtPlayer = defineAsyncComponent(() =>
+	import("components/video-player/VideoArtPlayer.vue")
+);
 
+// console.log(proxy);
+
+const show = ref(false);
 const img = "https://artplayer.org/assets/sample/layer.png";
 const art = ref(null);
 
 const videos = ref([
+	{
+		viewers: 99999,
+		option: {
+			poster: "https://artplayer.org/assets/sample/poster.jpg",
+			title: "My title",
+
+			// thumbnails: {
+			// 	url: "https://artplayer.org/assets/sample/thumbnails.png",
+			// 	number: 60,
+			// 	column: 10,
+			// },
+
+			qualityCustom: [
+				{
+					default: true,
+					name: "auto",
+					value: "auto",
+					html: "Auto",
+					label: "Auto",
+					url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+				},
+
+				{
+					name: "1080",
+					value: "1080",
+					html: "FHD 1080",
+					label: "FHD 1080",
+					url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+				},
+				{
+					name: "720",
+					value: "720",
+					html: "HD 720",
+					label: "HD 720",
+					url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
+				},
+				{
+					name: "480",
+					value: "480",
+					html: "SD 480",
+					label: "SD 480",
+					url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+				},
+				{
+					name: "360",
+					value: "360",
+					html: "SD 360",
+					label: "SD 360",
+					url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
+				},
+			],
+		},
+	},
+	{
+		viewers: 99999,
+		option: {
+			poster: "https://artplayer.org/assets/sample/poster.jpg",
+			title: "My title",
+
+			// thumbnails: {
+			// 	url: "https://artplayer.org/assets/sample/thumbnails.png",
+			// 	number: 60,
+			// 	column: 10,
+			// },
+
+			qualityCustom: [
+				{
+					default: true,
+					name: "auto",
+					value: "auto",
+					html: "Auto",
+					label: "Auto",
+					url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+				},
+
+				{
+					name: "1080",
+					value: "1080",
+					html: "FHD 1080",
+					label: "FHD 1080",
+					url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+				},
+				{
+					name: "720",
+					value: "720",
+					html: "HD 720",
+					label: "HD 720",
+					url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
+				},
+				{
+					name: "480",
+					value: "480",
+					html: "SD 480",
+					label: "SD 480",
+					url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+				},
+				{
+					name: "360",
+					value: "360",
+					html: "SD 360",
+					label: "SD 360",
+					url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
+				},
+			],
+		},
+	},
 	{
 		viewers: 99999,
 		option: {
@@ -203,14 +327,15 @@ const option = ref({
 });
 
 // const temp = videos.value;
-const temp = extend(true, {}, videos.value);
-for (let index = 0; index < 0; index++) {
-	videos.value.push(temp[0]);
-}
+// const temp = extend(true, {}, videos.value);
+// for (let index = 0; index < 2; index++) {
+// 	videos.value.push(temp[0]);
+// }
 
-const style = ref({ width: "", height: "200px", margin: "60px auto 0" });
+const style = ref({ height: "200px", margin: "60px auto 0" });
 const getInstance = (instance) => {
-	art.value = instance;
+	// console.log(instance);
+	// art.value = instance;
 };
 watch(videos, (e) => {
 	console.log(e);
@@ -222,13 +347,12 @@ const onClick = () => {
 
 onMounted(() => {
 	nextTick(() => {
-		console.log(art.value);
+		// console.log(art.value);
 		// art.value.setting.option[0].onSelect = function (item, $dom, event, e) {
 		// 	console.log(item, $dom, event, e);
 		// };
 		// 	console.info(art.value.setting.option[0].onSelect);
 		// var someFunction = art.value.setting.option[0].onSelect;
-
 		// art.value.plugins.artplayerPluginDanmuku.emit({
 		// 	text: "666", // Danmu text
 		// 	time: 5, // Video time

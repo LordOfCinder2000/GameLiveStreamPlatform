@@ -18,7 +18,29 @@
 					<template
 						v-slot="{ index, isCurrent, leftIndex, rightIndex }"
 					>
-						<video
+						<div
+							class="fit video-container"
+							:data-index="index"
+							:class="{
+								current: isCurrent,
+								onLeft: leftIndex >= 0,
+								onRight: rightIndex >= 0,
+							}"
+						>
+							<VideoArtPlayer
+								v-if="isCurrent"
+								class="fit"
+								:option="slide.option"
+								:viewers="slide.viewers"
+							/>
+							<q-img
+								v-else
+								loading="eager"
+								:src="slide.option.poster"
+								class="fit"
+							/>
+						</div>
+						<!-- <video
 							class="video-container fit"
 							muted
 							:poster="slide.thumb"
@@ -30,7 +52,7 @@
 							}"
 							controls
 							:src="slide.sources[0]"
-						></video>
+						></video> -->
 					</template>
 				</Carousel3dSlide>
 			</Carousel3dContent>
@@ -173,10 +195,14 @@
 </template>
 
 <script setup>
-import { ref, onMounted, defineAsyncComponent, watchEffect, toRef } from "vue";
+import { ref, defineAsyncComponent, computed } from "vue";
 import { Carousel3dContent, Carousel3dSlide } from "components/carousel-3d";
-import { useQuasar } from "quasar";
+import { useQuasar, extend } from "quasar";
 import { getColumnByScreen } from "boot/mixins";
+
+const VideoArtPlayer = defineAsyncComponent(() =>
+	import("components/video-player/VideoArtPlayer.vue")
+);
 const GameCard = defineAsyncComponent(() =>
 	import("components/home/HomeGameCardT.vue")
 );
@@ -322,6 +348,11 @@ const mediaJSON = ref({
 		},
 	],
 });
+
+const urlVideo = mediaJSON.value.categories[0].videos.map((val) => {
+	return { poster: val.thumb, url: val.sources[0] };
+});
+console.log(urlVideo);
 slides.value = mediaJSON.value.categories[0].videos;
 
 const slide = ref(1);
@@ -337,6 +368,64 @@ const videoColumns = getColumnByScreen({
 	sm: 3,
 	xs: 2,
 });
+
+slides.value = [];
+const videos = ref({
+	viewers: 99999,
+	option: {
+		poster: "https://artplayer.org/assets/sample/poster.jpg",
+		title: "My title",
+		isLive: true,
+
+		qualityCustom: [
+			{
+				default: true,
+				name: "auto",
+				value: "auto",
+				html: "Auto",
+				label: "Auto",
+				url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+			},
+
+			{
+				name: "1080",
+				value: "1080",
+				html: "FHD 1080",
+				label: "FHD 1080",
+				url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+			},
+			{
+				name: "720",
+				value: "720",
+				html: "HD 720",
+				label: "HD 720",
+				url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
+			},
+			{
+				name: "480",
+				value: "480",
+				html: "SD 480",
+				label: "SD 480",
+				url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+			},
+			{
+				name: "360",
+				value: "360",
+				html: "SD 360",
+				label: "SD 360",
+				url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
+			},
+		],
+	},
+});
+
+urlVideo.forEach((element) => {
+	let temp = extend(true, {}, videos.value);
+
+	temp.option.poster = element.poster;
+	temp.option.qualityCustom[0].url = element.url;
+	slides.value.push(temp);
+});
 </script>
 
 <style lang="scss" scoped>
@@ -344,6 +433,11 @@ const videoColumns = getColumnByScreen({
 	.row > .col-md-1 {
 		height: auto;
 		width: 12.5%;
+	}
+}
+.carousel-wrapper {
+	:deep(.art-layer.art-layer-live) {
+		padding: 0.5rem !important;
 	}
 }
 

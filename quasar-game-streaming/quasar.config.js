@@ -12,10 +12,28 @@ const ESLintPlugin = require("eslint-webpack-plugin");
 
 const { configure } = require("quasar/wrappers");
 
+const path = require("path");
+
+const fs = require("fs");
+
 module.exports = configure(function (ctx) {
 	return {
 		// https://v2.quasar.dev/quasar-cli-webpack/supporting-ts
-		supportTS: false,
+		supportTS: {
+			// tsLoaderConfig: {
+			// 	// `appendTsSuffixTo: [/\.vue$/]` and `transpileOnly: true` are added by default and cannot be overridden
+			// 	resolve: {
+			// 		// Add `.ts` and `.tsx` as a resolvable extension.
+			// 		extensions: [".ts", ".tsx", ".js", ".vue", ".jsx"],
+			// 	},
+			// },
+			tsCheckerConfig: {
+				eslint: {
+					enabled: true,
+					files: "./src/**/*.{ts,tsx,js,jsx,vue}",
+				},
+			},
+		},
 
 		// https://v2.quasar.dev/quasar-cli-webpack/prefetch-feature
 		// preFetch: true,
@@ -34,6 +52,10 @@ module.exports = configure(function (ctx) {
 			"utils",
 			"addressbar-color",
 			"class",
+			"auth",
+			"openapi-client",
+			// "auth/oidc-oauth2",
+			// "oidc-store",
 		],
 
 		// https://v2.quasar.dev/quasar-cli-webpack/quasar-config-js#Property%3A-css
@@ -55,7 +77,7 @@ module.exports = configure(function (ctx) {
 
 		// Full list of options: https://v2.quasar.dev/quasar-cli-webpack/quasar-config-js#Property%3A-build
 		build: {
-			vueRouterMode: "hash", // available values: 'hash', 'history'
+			vueRouterMode: "history", // available values: 'hash', 'history'
 
 			// transpile: false,
 			// publicPath: '/',
@@ -77,20 +99,53 @@ module.exports = configure(function (ctx) {
 			// https://v2.quasar.dev/quasar-cli-webpack/handling-webpack
 			// "chain" is a webpack-chain object https://github.com/neutrinojs/webpack-chain
 
-			chainWebpack(chain) {
-				chain
-					.plugin("eslint-webpack-plugin")
-					.use(ESLintPlugin, [{ extensions: ["js", "vue"] }]);
+			// chainWebpack(chain) {
+			// 	chain
+			// 		.plugin("eslint-webpack-plugin")
+			// 		.use(ESLintPlugin, [{ extensions: ["js", "vue"] }]);
+			// },
+			extendWebpack(cfg) {
+				// (cfg.resolve.extensions = [".js", ".jsx", ".ts", ".tsx"]),
+				cfg.resolve.alias = {
+					...cfg.resolve.alias,
+
+					// Add your own alias like this
+					composables: path.resolve(__dirname, "./src/composables"),
+					modules: path.resolve(__dirname, "./src/modules"),
+					apis: path.resolve(__dirname, "./src/apis"),
+				};
 			},
+
+			env: require("dotenv").config({
+				path: `.env.${process.env.NODE_ENV}`,
+			}).parsed,
+			// `.env.${process.env.NODE_ENV}`,
 		},
 
 		// Full list of options: https://v2.quasar.dev/quasar-cli-webpack/quasar-config-js#Property%3A-devServer
 		devServer: {
 			server: {
-				type: "http",
+				type: "https",
+			},
+			https: {
+				key: fs.readFileSync("ssl/localhost.decrypted.key"),
+				cert: fs.readFileSync("ssl/localhost.crt"),
+				ca: fs.readFileSync("ssl/CA.pem"),
 			},
 			port: 8080,
 			open: true, // opens browser window automatically
+			// proxy: {
+			// 	"/api": {
+			// 		target: "https://api.olidono.org/api/abp/api-definition",
+			// 		changeOrigin: true,
+			// 		rewrite: (path) => path.replace(/^\/api/, ""),
+			// 	},
+			// 	"/Abp": {
+			// 		target: "https://api.olidono.org",
+			// 		changeOrigin: true,
+			// 		rewrite: (path) => path.replace(/^\/api/, ""),
+			// 	},
+			// },
 		},
 
 		// https://v2.quasar.dev/quasar-cli-webpack/quasar-config-js#Property%3A-framework
@@ -120,6 +175,8 @@ module.exports = configure(function (ctx) {
 				"Notify",
 				"AddressbarColor",
 				"LocalStorage",
+				"SessionStorage",
+				"Cookies",
 			],
 		},
 

@@ -148,10 +148,10 @@ const { getPaletteColor } = colors;
 
 const color = ref(getPaletteColor("positive"));
 
-onMounted(() => {
-	if ($q.dark.isActive) {
-	}
-});
+// onMounted(() => {
+// 	if ($q.dark.isActive) {
+// 	}
+// });
 </script>
 
 <style lang="scss">

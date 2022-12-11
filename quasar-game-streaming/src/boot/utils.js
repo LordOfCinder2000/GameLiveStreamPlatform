@@ -107,7 +107,8 @@ export function addClassToMany(target, className) {
  * @param defaultObj : data default reactive giúp thay đổi giá trị property default của @param object
  */
 export function addDefaultForDeep(object, property, id, defaultObj) {
-	if (!object.hasOwnProperty(property)) {
+	// object.hasOwnProperty(property)
+	if (!Object.prototype.hasOwnProperty.call(object, property)) {
 		return;
 	}
 	Object.keys(object).some(function (key) {
@@ -129,13 +130,14 @@ export function renderComponent({
 	component,
 	props,
 	appContext,
+	slots,
 	condition = { value: true },
 }) {
 	let vNode;
 	watchEffect(
 		() => {
 			if (component && condition?.value) {
-				vNode = h(component, props);
+				vNode = h(component, props, slots);
 
 				vNode.appContext = { ...appContext };
 				render(vNode, el);

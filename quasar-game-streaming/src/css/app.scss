@@ -191,3 +191,9 @@ $scroll-size: 5px;
 //   box-shadow: 0 14px 28px rgba(0, 255, 0, 1), 0 10px 10px rgba(0, 255, 0, 1);
 //   transform: translate(-5px, -5px);
 // }
+
+//Notify
+.q-notifications__list,
+.q-loading-bar {
+	z-index: 9999;
+}

@@ -1,0 +1,217 @@
+// app global css in SCSS form
+
+// body {
+// 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+// 		"Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
+// 		"Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+// }
+
+@media (max-width: $breakpoint-xs-max) {
+	:root,
+	body {
+		font-size: 10px;
+	}
+}
+
+@media (max-width: $breakpoint-sm-max) and (min-width: $breakpoint-sm-min) {
+	:root,
+	body {
+		font-size: 12px;
+	}
+}
+
+// @media (min-width: $breakpoint-md-min) {
+// 	:root,
+// 	body {
+// 		font-size: 14px;
+// 	}
+// }
+
+::selection {
+	color: #fff;
+	background-color: #32c27c;
+}
+
+// .q-btn,
+// .q-tab__label {
+// 	font-size: 1rem;
+// }
+
+.q-chip,
+.q-field {
+	font-size: 1rem;
+}
+
+.q-page-sticky {
+	z-index: 100;
+}
+
+$scroll-size: 5px;
+
+// Style thanh cuộn
+::-webkit-scrollbar,
+.q-scrollarea__thumb {
+	width: $scroll-size;
+	height: $scroll-size;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+	background: #f5f5f5;
+	border-radius: 5px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+	background: $grey-5;
+	border-radius: 5px;
+}
+
+//   /* Handle on hover */
+//   ::-webkit-scrollbar-thumb:hover {
+//     background: #b30000;
+//   }
+
+/*  Tạo riêng css  */
+// Hiệu ứng xoay
+@-webkit-keyframes rotating /* Safari and Chrome */ {
+	from {
+		-webkit-transform: rotate(0deg);
+		-o-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
+	to {
+		-webkit-transform: rotate(360deg);
+		-o-transform: rotate(360deg);
+		transform: rotate(360deg);
+	}
+}
+@keyframes rotating {
+	from {
+		-ms-transform: rotate(0deg);
+		-moz-transform: rotate(0deg);
+		-webkit-transform: rotate(0deg);
+		-o-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
+	to {
+		-ms-transform: rotate(360deg);
+		-moz-transform: rotate(360deg);
+		-webkit-transform: rotate(360deg);
+		-o-transform: rotate(360deg);
+		transform: rotate(360deg);
+	}
+}
+.rotating {
+	-webkit-animation: rotating 2s linear infinite;
+	-moz-animation: rotating 2s linear infinite;
+	-ms-animation: rotating 2s linear infinite;
+	-o-animation: rotating 2s linear infinite;
+	animation: rotating 2s linear infinite;
+}
+
+// Link hover
+.link-hover {
+	position: relative;
+	text-decoration: none;
+	&:hover {
+		&::before {
+			transform: scaleX(1);
+		}
+	}
+	&::before {
+		content: "";
+		position: absolute;
+		display: block;
+		width: 100%;
+		height: 4px;
+		bottom: 0;
+		left: 0;
+		background-color: $positive;
+		transform: scaleX(0);
+		transition: transform 0.3s ease;
+	}
+}
+
+// Card hover
+.card-hover {
+	position: relative;
+	transition: all 0.15s ease;
+
+	&:before,
+	&:after {
+		content: "";
+		display: block;
+		width: 8px;
+		height: 8px;
+		position: absolute;
+		transition: all 0.15s ease;
+	}
+	&:before {
+		top: 0;
+		left: 0;
+		transform-origin: top left;
+		transform: rotate(-45deg) scale(0);
+	}
+	&:after {
+		right: 0;
+		bottom: 0;
+		transform-origin: bottom right;
+		transform: rotate(45deg) scale(0);
+		z-index: 1;
+	}
+	&:hover {
+		.card-hover__thumbnail {
+			transform: translate(6px, -6px);
+		}
+		&:before {
+			transform: rotate(-45deg) scale(1);
+			background-color: $positive;
+		}
+		&:after {
+			transform: rotate(45deg) scale(1);
+			background-color: $positive;
+		}
+		background-color: $positive;
+	}
+	.card-hover__thumbnail {
+		display: block;
+		transform: translate(0, 0);
+		transition: all 0.15s ease;
+		position: relative;
+		z-index: 2;
+	}
+}
+
+// Change color when hover
+.text-hover:hover {
+	color: $positive;
+	cursor: pointer;
+}
+
+.btn-hover:hover {
+	background-color: $positive;
+}
+
+// .card-shadow-hover:hover {
+//   box-shadow: 0 14px 28px rgba(0, 255, 0, 1), 0 10px 10px rgba(0, 255, 0, 1);
+//   transform: translate(-5px, -5px);
+// }
+
+//Notify
+.q-notifications__list,
+.q-loading-bar {
+	z-index: 9999;
+}
+
+// Vue mention
+.mention-item {
+	cursor: pointer;
+	margin: 0.3rem 0.5rem;
+	padding: 0.5rem;
+	border-radius: 4px;
+}
+
+.mention-selected {
+	background: $positive;
+}

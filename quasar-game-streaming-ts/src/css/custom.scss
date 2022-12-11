@@ -1,0 +1,16 @@
+.body--light {
+	.text-list-active {
+		color: $list-active !important;
+	}
+	.bg-list-active {
+		background: rgba(0, 0, 0, 0.04) !important;
+	}
+}
+.body--dark {
+	.text-list-active {
+		color: $list-active !important;
+	}
+	.bg-list-active {
+		background: hsla(0, 0%, 100%, 0.06) !important;
+	}
+}

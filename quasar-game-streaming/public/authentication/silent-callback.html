@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Login user</title>
+	</head>
+	<body>
+		<script src="oidc-client-ts.min.js"></script>
+		<script>
+			console.log("Login user");
+			new oidc.UserManager({
+				userStore: new oidc.WebStorageStateStore({
+					store: window.localStorage,
+				}),
+			}).signinCallback();
+		</script>
+	</body>
+</html>

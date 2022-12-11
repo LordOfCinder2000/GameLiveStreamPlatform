@@ -6,7 +6,7 @@
 		<div
 			class="carousel-3d-slider"
 			:style="{
-				width: this.slideWidth + 'px',
+				'max-width': this.slideWidth + 'px',
 				height: this.slideHeight + 'px',
 			}"
 		>
@@ -334,6 +334,7 @@ export default {
 
 			// const diff2 = diff < 0 ? 0 : diff;
 			const diff2 = diff < 0 ? -diff : diff;
+
 			let timeBuff = 0;
 			let i = 0;
 
@@ -341,10 +342,10 @@ export default {
 				i += 1;
 				const timeout = diff2 === 1 ? 0 : timeBuff;
 
-				setTimeout(
-					() => (diff < 0 ? this.goPrev(diff2) : this.goNext(diff2)),
-					timeout
-				);
+				setTimeout(() => {
+					// diff < 0 ? this.goPrev() : this.goNext();
+					this.goSlide(index);
+				}, timeout);
 
 				timeBuff += this.animationSpeed / diff2;
 			}
@@ -506,7 +507,7 @@ export default {
 		setSize() {
 			this.$el.style.cssText += "height:" + this.slideHeight + "px;";
 			this.$el.childNodes[0].style.cssText +=
-				"width:" +
+				"max-width:" +
 				this.slideWidth +
 				"px;" +
 				" height:" +

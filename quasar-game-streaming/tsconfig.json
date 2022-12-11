@@ -1,0 +1,37 @@
+{
+	"extends": "@quasar/app-webpack/tsconfig-preset",
+	"compilerOptions": {
+		"baseUrl": ".",
+		"noImplicitThis": false,
+		"noImplicitAny": false,
+		"paths": {
+			"src/*": ["src/*"],
+			"app/*": ["*"],
+			"components/*": ["src/components/*"],
+			"layouts/*": ["src/layouts/*"],
+			"pages/*": ["src/pages/*"],
+			"assets/*": ["src/assets/*"],
+			"boot/*": ["src/boot/*"],
+			"stores/*": ["src/stores/*"],
+			"composables/*": ["src/composables/*"],
+			"composables": ["src/composables"],
+			"modules/*": ["src/modules/*"],
+			"apis/*": ["src/apis/*"],
+			"apis": ["src/apis"]
+		}
+	},
+	"vueCompilerOptions": {
+		"experimentalDisableTemplateSupport": true
+	}
+	// "overrides": [
+	// 	{
+	// 		"files": ["**/*.ts", "**/*.tsx"],
+	// 		"plugins": ["@typescript-eslint"],
+	// 		"extends": ["plugin:@typescript-eslint/eslint-recommended"],
+	// 		"parser": "@typescript-eslint/parser",
+	// 		"parserOptions": {
+	// 			"project": ["./tsconfig.json"]
+	// 		}
+	// 	}
+	// ]
+}
