@@ -701,7 +701,13 @@ const hasLayerHandel = (playerDOM) => {
 
 		playerDOM.layers.add(layerLive);
 		const live = playerDOM.query(".art-layer-live");
-		live.classList.add("q-item", "absolute-top-right");
+		live.classList.add(
+			"q-toolbar",
+			"row",
+			"items-center",
+			"justify-end",
+			"absolute-top-right"
+		);
 		vNodeLayerLive?.destroy();
 		vNodeLayerLive = globalFunction.renderComponent({
 			el: live,
@@ -711,7 +717,11 @@ const hasLayerHandel = (playerDOM) => {
 				color: "red",
 				square: true,
 				"text-color": "white",
-				class: ["text-bold", "chip-live"],
+				class: ["text-bold"],
+				style: {
+					"margin-right": "12px",
+					padding: "0.5em 0.9em",
+				},
 			},
 			slots: { default: () => "TRỰC TIẾP" },
 			appContext,
@@ -815,9 +825,9 @@ const insert = async () => {
 	}
 	&.art-control-show {
 		.art-layer-header {
-			background-image: none;
-			background-position: bottom;
-			background-repeat: repeat-x;
+			// background-image: none;
+			// background-position: bottom;
+			// background-repeat: repeat-x;
 		}
 		.art-layer-header,
 		.art-layer-pause,

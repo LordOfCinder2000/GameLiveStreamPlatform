@@ -16,6 +16,14 @@ export class AuthCookieService {
         return this.httpRequest.request({
             method: 'GET',
             url: '/api/auth-cookie/remove-identity-cookie',
+            errors: {
+                400: `Bad Request`,
+                401: `Unauthorized`,
+                403: `Forbidden`,
+                404: `Not Found`,
+                500: `Server Error`,
+                501: `Server Error`,
+            },
         });
     }
 

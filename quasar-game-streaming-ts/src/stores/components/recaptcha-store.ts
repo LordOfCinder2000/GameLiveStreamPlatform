@@ -8,9 +8,14 @@ export const useReCaptchaStore = defineStore("recaptcha-store", {
 	getters: {},
 	actions: {
 		async validateReCaptchaToken(token: string, ip?: string) {
-			await apiClient.reCaptcha.validateReCaptchaToken(token).then(() => {
-				this.recaptchaValid = true;
-			});
+			await apiClient.reCaptcha
+				.validateReCaptchaToken(token)
+				.then(() => {
+					this.recaptchaValid = true;
+				})
+				.catch((error) => {
+					console.log(error);
+				});
 		},
 	},
 });

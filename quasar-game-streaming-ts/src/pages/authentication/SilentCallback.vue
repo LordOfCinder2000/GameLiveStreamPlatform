@@ -9,7 +9,7 @@ onMounted(() => {
 
 	oidcSignInSilentCallback()
 		.then((suc) => {
-			console.log("silent login:");
+			console.log("silent login:", suc);
 		})
 		.catch((err) => {
 			console.log("failed", err);

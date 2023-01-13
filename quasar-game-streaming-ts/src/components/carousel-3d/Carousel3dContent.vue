@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import autoplay from "src/components/carousel-3d/mixins/autoplay";
+import autoplay from "components/carousel-3d/mixins/autoplay";
 import Controls3dCarousel from "components/carousel-3d/Carousel3dControls.vue";
 import { ref, onMounted } from "vue";
 const noop = () => {};

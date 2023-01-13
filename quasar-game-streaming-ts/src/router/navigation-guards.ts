@@ -6,36 +6,33 @@ export async function channelNavigationGuard(
 	to: RouteLocationNormalized,
 	from: RouteLocationNormalized
 ) {
-	const { findChannelByUserName } = useChannelStore();
-	const { getChatRoomById } = useChatRoomStore();
+	const { getChannelByUserName } = useChannelStore();
+	const { getChatRoomByAdminId } = useChatRoomStore();
 
-	return await findChannelByUserName(to.params["channel"] as string)
-		.then(async (channel) => {
-			if (!channel) {
-				return { name: "error-404" };
-			}
-			await getChatRoomById(channel.id ?? "")
-				.then((chatRoom) => {
-					if (!chatRoom) {
-						return { name: "error-404" };
-					}
-				})
-				.catch(() => {
-					return { name: "error-404" };
-				});
-		})
-		.catch(() => {
+	try {
+		const channel = await getChannelByUserName(
+			to.params["channel"] as string
+		);
+		if (!channel) {
 			return { name: "error-404" };
-		});
+		}
+		const chatRoom = await getChatRoomByAdminId(channel.id ?? "");
+		if (!chatRoom) {
+			return { name: "error-404" };
+		}
+	} catch (error) {
+		return { name: "error-404" };
+	}
 }
 
 export async function chatRoomNavigationGuard(
 	to: RouteLocationNormalized,
 	from: RouteLocationNormalized
 ) {
-	const { getChatRoomById } = useChatRoomStore();
-	const { channel } = useChannelStore();
-	await getChatRoomById(channel.id ?? "")
+	const { getChatRoomByAdminId } = useChatRoomStore();
+	const channelStore = useChannelStore();
+
+	await getChatRoomByAdminId(channelStore.channel.id ?? "")
 		.then((chatRoom) => {
 			if (!chatRoom) {
 				return { name: "error-404" };

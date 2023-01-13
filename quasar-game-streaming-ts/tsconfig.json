@@ -20,7 +20,9 @@
 			"apis/*": ["src/apis/*"],
 			"apis": ["src/apis"],
 			"directives/*": ["src/directives/*"],
-			"directives": ["src/directives"]
+			"directives": ["src/directives"],
+			"types/*": ["src/types/*"],
+			"types": ["src/types"]
 		}
 	}
 }

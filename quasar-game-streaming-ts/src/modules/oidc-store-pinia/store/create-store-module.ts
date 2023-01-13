@@ -544,50 +544,44 @@ const createStoreModule = <T>(
 		signOutOidcSilent(payload?: any) {
 			/* istanbul ignore next */
 			return new Promise((resolve, reject) => {
-				try {
-					oidcUserManager
-						.getUser()
-						.then((user) => {
-							if (user) {
-								const args = objectAssign([
-									payload || {},
-									{
-										id_token_hint: user
-											? user.id_token
-											: null,
-									},
-								]);
-								if (payload && payload.id_token_hint) {
-									args.id_token_hint = payload.id_token_hint;
-								}
-								oidcClient
-									.createSignoutRequest(args)
-									.then((signoutRequest) => {
-										openUrlWithIframe(signoutRequest.url)
-											.then(() => {
-												this["removeOidcUser"]();
-
-												//@ts-ignore
-												// window.location.reload(true);
-												// const logoutChannel =
-												// 	new BroadcastChannel(
-												// 		"logout"
-												// 	);
-												// logoutChannel.postMessage(
-												// 	"reload"
-												// );
-
-												resolve(true);
-											})
-											.catch((err) => reject(err));
-									})
-									.catch((err) => reject(err));
+				oidcUserManager
+					.getUser()
+					.then((user) => {
+						if (user) {
+							const args = objectAssign([
+								payload || {},
+								{
+									id_token_hint: user ? user.id_token : null,
+								},
+							]);
+							if (payload && payload.id_token_hint) {
+								args.id_token_hint = payload.id_token_hint;
 							}
-						})
-						.catch((err) => reject(err));
-				} catch (err) {
-					reject(err);
-				}
+							oidcClient
+								.createSignoutRequest(args)
+								.then((signoutRequest) => {
+									openUrlWithIframe(signoutRequest.url)
+										.then(() => {
+											this["removeOidcUser"]();
+
+											//@ts-ignore
+											// window.location.reload(true);
+											// const logoutChannel =
+											// 	new BroadcastChannel(
+											// 		"logout"
+											// 	);
+											// logoutChannel.postMessage(
+											// 	"reload"
+											// );
+
+											resolve(true);
+										})
+										.catch((err) => reject(err));
+								})
+								.catch((err) => reject(err));
+						}
+					})
+					.catch((err) => reject(err));
 			});
 		},
 		removeUser() {

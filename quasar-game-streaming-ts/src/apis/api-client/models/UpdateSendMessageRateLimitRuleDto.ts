@@ -2,8 +2,8 @@
 /* tslint:disable */
 /* eslint-disable */
 
+import type { RateLimitTimeType } from './RateLimitTimeType';
+
 export type UpdateSendMessageRateLimitRuleDto = {
-    id: string;
-    period: string;
-    limit: number;
+    period: RateLimitTimeType;
 };

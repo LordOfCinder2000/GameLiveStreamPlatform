@@ -3,68 +3,78 @@
 		style="min-height: 2rem"
 		@mouseenter="showMention = true"
 		@mouseleave="showMention = false"
-		class="chat-message-container row items-baseline q-px-xs q-py-xs rounded-borders cursor-pointer q-hoverable relative-position"
+		class="chat-message-container q-hoverable row items-baseline q-px-xs q-py-xs rounded-borders relative-position"
 	>
-		<!-- <span class="q-focus-helper"></span> -->
+		<span class="q-focus-helper"></span>
 		<div class="col-auto">
 			<span v-if="showTimestamp" class="q-mr-xs">
-				{{ chatMessage.timestamp }}
+				{{ chatMessage.creationTime }}
 			</span>
 		</div>
-		<div class="chat-message-avatar col-auto">
-			<q-avatar @click="showPopupUserInfo = true" size="2rem">
-				<q-img
-					spinner-size="1rem"
-					spinner-color="positive"
-					initial-ratio="1"
-					:src="chatMessage.avatar"
-					placeholder-src="https://astatic.trovocdn.net/cat/img/e8ec087.webp"
-				>
-					<template v-slot:error>
-						<q-img src="~assets/images/default-avatar.webp" />
-					</template>
-				</q-img>
-			</q-avatar>
+		<div class="chat-message-avatar cursor-pointer col-auto">
+			<ProfileAvatar
+				@click="showPopupUserInfo = true"
+				size="2rem"
+				:src="chatMessage.avatar"
+			/>
 
-			<q-popup-proxy v-model="showPopupUserInfo" no-parent-event>
-				<ChatUserInfo
-					:name="chatMessage.name"
-					:avatar="chatMessage.avatar"
-				/>
-			</q-popup-proxy>
+			<ChatUserInfo
+				v-model="showPopupUserInfo"
+				v-bind="{
+					channelId: chatMessage.senderChannelId ?? '',
+					avatar: chatMessage.avatar ?? '',
+				}"
+				no-parent-event
+				:channelId="chatMessage.senderChannelId ?? ''"
+			/>
 		</div>
 
 		<div class="chat-message-content q-ml-sm col">
 			<div class="chat-message-user">
 				<div
-					class="chat-message-name q-hoverable"
+					class="chat-message-name cursor-pointer"
 					@click="showPopupUserInfo = true"
 				>
-					<span class="q-focus-helper"></span>
 					<span
-						class="text-subtitle2 text-bold"
+						class="text-subtitle2 text-bold q-mr-xs"
 						:style="{ color: randomColor }"
-						>{{ chatMessage.name }}
+					>
+						{{ chatMessage.senderUserName }}
 						<span>:</span>
 					</span>
 				</div>
 			</div>
 
-			<span class="chat-message-text q-ml-xs">
-				<slot name="default"> {{ chatMessage.message }}</slot>
-			</span>
+			<div
+				:class="[
+					'chat-message-text',
+					{ 'chat-message-text--blur': blurMessage },
+				]"
+			>
+				<slot name="default" v-once>
+					<span
+						v-html="
+							$filters.mentionHighlight(chatMessage.content ?? '')
+						"
+					></span>
+				</slot>
+			</div>
 		</div>
 		<div v-if="showMention" class="chat-mention absolute-top-right">
-			<q-card class="my-card">
-				<q-btn dense flat>
+			<q-card>
+				<q-btn
+					dense
+					flat
+					@click="emit('mention', chatMessage.senderUserName ?? '')"
+				>
 					<c-tooltip
 						:offset="[5, 5]"
 						arrow="bottom"
 						anchor="top middle"
 						self="bottom middle"
 					>
-						Nhắc đến</c-tooltip
-					>
+						Nhắc đến
+					</c-tooltip>
 
 					<q-icon name="alternate_email" />
 				</q-btn>
@@ -75,27 +85,35 @@
 
 <script lang="ts" setup>
 import { QPopupProxy } from "quasar";
-import { defineAsyncComponent, ref, computed } from "vue";
-export interface ChatMessage {
-	id: string | number;
-	timestamp: string;
-	name: string;
+import { ChatMessageDto } from "boot/openapi-client";
+import { defineAsyncComponent, ref, computed, watch } from "vue";
+
+export interface ChatMessageDtoExtend extends ChatMessageDto {
+	id: string;
 	avatar: string;
-	message: string;
+}
+export interface Props {
+	chatMessage: ChatMessageDtoExtend;
+	showTimestamp: boolean;
+	blurMessage: boolean;
 }
 
-export interface Props {
-	chatMessage: ChatMessage;
-	showTimestamp: boolean;
-}
+const ProfileAvatar = defineAsyncComponent(
+	() => import("components/ProfileAvatar.vue")
+);
 const ChatUserInfo = defineAsyncComponent(
 	() => import("components/chat/ChatUserInfo.vue")
 );
 const CTooltip = defineAsyncComponent(
 	() => import("components/CustomTooltip.vue")
 );
+const emit = defineEmits<{
+	(e: "mention", value: string): void;
+}>();
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+	blurMessage: false,
+});
 const showMention = ref(false);
 const showPopupUserInfo = ref(false);
 
@@ -123,6 +141,12 @@ const randomColor = computed(() => {
 	}
 	&-text {
 		line-height: 150%;
+		display: inline-block;
+		&--blur {
+			// color: transparent;
+			// text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+			filter: blur(0.17rem);
+		}
 	}
 }
 </style>

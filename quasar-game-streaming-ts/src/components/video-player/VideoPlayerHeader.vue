@@ -22,7 +22,8 @@
 				<span class="cursor-pointer">League of Legend</span>
 
 				<q-chip
-					class="chip-live-view on-right bg-positive"
+					class="chip-live-view on-right"
+					color="positive"
 					size="0.8rem"
 					dense
 					square
@@ -58,7 +59,7 @@ const viewers = computed(() => {
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .q-item {
 	padding: 16px;
 	transition: color 0.3s, background-color 0.3s;
@@ -74,9 +75,8 @@ const viewers = computed(() => {
 	}
 }
 .chip-live {
-	margin: 4px !important;
-	padding: 0.5em 0.9em !important;
-	&-view {
+	padding: 0.5em 0.9em;
+	.chip-live-view {
 		&::before {
 			display: block;
 			width: 0.25rem;

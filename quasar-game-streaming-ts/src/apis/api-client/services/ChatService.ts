@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { ChatMessageDto } from '../models/ChatMessageDto';
+import type { CreateChatMessageDto } from '../models/CreateChatMessageDto';
 import type { SendMessageInput } from '../models/SendMessageInput';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -42,14 +42,16 @@ requestBody?: SendMessageInput,
      * @throws ApiError
      */
     public joinChatRoom(
-connectionId?: string,
+connectionId: string,
 roomId?: string,
 ): CancelablePromise<any> {
         return this.httpRequest.request({
             method: 'POST',
-            url: '/api/chat/join-chat-room',
-            query: {
+            url: '/api/chat/join-chat-room/{connectionId}',
+            path: {
                 'connectionId': connectionId,
+            },
+            query: {
                 'roomId': roomId,
             },
             errors: {
@@ -64,16 +66,21 @@ roomId?: string,
     }
 
     /**
+     * @param connectionId 
      * @param requestBody 
      * @returns any Success
      * @throws ApiError
      */
     public sendMessageToChatRoom(
-requestBody?: ChatMessageDto,
+connectionId: string,
+requestBody?: CreateChatMessageDto,
 ): CancelablePromise<any> {
         return this.httpRequest.request({
             method: 'POST',
-            url: '/api/chat/send-message-to-chat-room',
+            url: '/api/chat/send-message-to-chat-room/{connectionId}',
+            path: {
+                'connectionId': connectionId,
+            },
             body: requestBody,
             mediaType: 'application/json-patch+json',
             errors: {
@@ -94,14 +101,16 @@ requestBody?: ChatMessageDto,
      * @throws ApiError
      */
     public leaveChatRoom(
-connectionId?: string,
+connectionId: string,
 roomId?: string,
 ): CancelablePromise<any> {
         return this.httpRequest.request({
             method: 'POST',
-            url: '/api/chat/leave-chat-room',
-            query: {
+            url: '/api/chat/leave-chat-room/{connectionId}',
+            path: {
                 'connectionId': connectionId,
+            },
+            query: {
                 'roomId': roomId,
             },
             errors: {

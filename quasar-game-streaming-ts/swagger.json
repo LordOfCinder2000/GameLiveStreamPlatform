@@ -2,6 +2,7 @@
 	"openapi": "3.0.1",
 	"info": {
 		"title": "GameStreaming API",
+		"description": "b278cac9-4990-a284-6e5f-3a0763c7e12a",
 		"version": "v1"
 	},
 	"paths": {
@@ -2468,378 +2469,6 @@
 				}
 			}
 		},
-		"/api/app/channel/follows": {
-			"get": {
-				"tags": ["Channel"],
-				"operationId": "GetFollows",
-				"parameters": [
-					{
-						"name": "IsLive",
-						"in": "query",
-						"schema": {
-							"type": "boolean"
-						}
-					},
-					{
-						"name": "ChannelId",
-						"in": "query",
-						"schema": {
-							"type": "string",
-							"format": "uuid"
-						}
-					},
-					{
-						"name": "IncludeDetails",
-						"in": "query",
-						"schema": {
-							"type": "boolean"
-						}
-					},
-					{
-						"name": "Filter",
-						"in": "query",
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"name": "FollowType",
-						"in": "query",
-						"schema": {
-							"$ref": "#/components/schemas/FollowType"
-						}
-					},
-					{
-						"name": "Sorting",
-						"in": "query",
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"name": "SkipCount",
-						"in": "query",
-						"schema": {
-							"maximum": 2147483647,
-							"minimum": 0,
-							"type": "integer",
-							"format": "int32"
-						}
-					},
-					{
-						"name": "MaxResultCount",
-						"in": "query",
-						"schema": {
-							"maximum": 2147483647,
-							"minimum": 1,
-							"type": "integer",
-							"format": "int32"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Success",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/PagedResultDtoOfChannelDto"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/PagedResultDtoOfChannelDto"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/PagedResultDtoOfChannelDto"
-								}
-							}
-						}
-					},
-					"403": {
-						"description": "Forbidden",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "Unauthorized",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "Bad Request",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "Not Found",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					},
-					"501": {
-						"description": "Server Error",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "Server Error",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/api/app/channel/{id}/chat-room": {
-			"get": {
-				"tags": ["Channel"],
-				"operationId": "GetChatRoom",
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string",
-							"format": "uuid"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Success",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/ChatRoomDto"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ChatRoomDto"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ChatRoomDto"
-								}
-							}
-						}
-					},
-					"403": {
-						"description": "Forbidden",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "Unauthorized",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "Bad Request",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "Not Found",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					},
-					"501": {
-						"description": "Server Error",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "Server Error",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					}
-				}
-			}
-		},
 		"/api/app/channel/by-user-name": {
 			"get": {
 				"tags": ["Channel"],
@@ -2850,6 +2479,165 @@
 						"in": "query",
 						"schema": {
 							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/ChannelDto"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ChannelDto"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ChannelDto"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/app/channel/{id}": {
+			"get": {
+				"tags": ["Channel"],
+				"operationId": "Get",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
 						}
 					}
 				],
@@ -3152,14 +2940,15 @@
 				}
 			}
 		},
-		"/api/chat/join-chat-room": {
+		"/api/chat/join-chat-room/{connectionId}": {
 			"post": {
 				"tags": ["Chat"],
 				"operationId": "JoinChatRoom",
 				"parameters": [
 					{
 						"name": "connectionId",
-						"in": "query",
+						"in": "path",
+						"required": true,
 						"schema": {
 							"type": "string"
 						}
@@ -3300,30 +3089,40 @@
 				}
 			}
 		},
-		"/api/chat/send-message-to-chat-room": {
+		"/api/chat/send-message-to-chat-room/{connectionId}": {
 			"post": {
 				"tags": ["Chat"],
 				"operationId": "SendMessageToChatRoom",
+				"parameters": [
+					{
+						"name": "connectionId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
 				"requestBody": {
 					"content": {
 						"application/json-patch+json": {
 							"schema": {
-								"$ref": "#/components/schemas/ChatMessageDto"
+								"$ref": "#/components/schemas/CreateChatMessageDto"
 							}
 						},
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/ChatMessageDto"
+								"$ref": "#/components/schemas/CreateChatMessageDto"
 							}
 						},
 						"text/json": {
 							"schema": {
-								"$ref": "#/components/schemas/ChatMessageDto"
+								"$ref": "#/components/schemas/CreateChatMessageDto"
 							}
 						},
 						"application/*+json": {
 							"schema": {
-								"$ref": "#/components/schemas/ChatMessageDto"
+								"$ref": "#/components/schemas/CreateChatMessageDto"
 							}
 						}
 					}
@@ -3455,14 +3254,15 @@
 				}
 			}
 		},
-		"/api/chat/leave-chat-room": {
+		"/api/chat/leave-chat-room/{connectionId}": {
 			"post": {
 				"tags": ["Chat"],
 				"operationId": "LeaveChatRoom",
 				"parameters": [
 					{
 						"name": "connectionId",
-						"in": "query",
+						"in": "path",
+						"required": true,
 						"schema": {
 							"type": "string"
 						}
@@ -3930,10 +3730,10 @@
 				}
 			}
 		},
-		"/api/app/chat-room/{id}/messgae-rate-limit": {
+		"/api/app/chat-room/{id}/setting": {
 			"get": {
 				"tags": ["ChatRoom"],
-				"operationId": "GetMessgaeRateLimit",
+				"operationId": "GetSetting",
 				"parameters": [
 					{
 						"name": "id",
@@ -3951,17 +3751,17 @@
 						"content": {
 							"text/plain": {
 								"schema": {
-									"$ref": "#/components/schemas/SendMessageRateLimitRuleDto"
+									"$ref": "#/components/schemas/ChatRoomSettingDto"
 								}
 							},
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/SendMessageRateLimitRuleDto"
+									"$ref": "#/components/schemas/ChatRoomSettingDto"
 								}
 							},
 							"text/json": {
 								"schema": {
-									"$ref": "#/components/schemas/SendMessageRateLimitRuleDto"
+									"$ref": "#/components/schemas/ChatRoomSettingDto"
 								}
 							}
 						}
@@ -4087,39 +3887,50 @@
 						}
 					}
 				}
-			}
-		},
-		"/api/app/chat-room/change-send-messgae-rate-limit": {
-			"post": {
+			},
+			"patch": {
 				"tags": ["ChatRoom"],
-				"operationId": "ChangeSendMessgaeRateLimit",
+				"operationId": "PatchSetting",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					}
+				],
 				"requestBody": {
 					"content": {
 						"application/json-patch+json": {
 							"schema": {
-								"$ref": "#/components/schemas/UpdateSendMessageRateLimitRuleDto"
-							}
-						},
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/UpdateSendMessageRateLimitRuleDto"
-							}
-						},
-						"text/json": {
-							"schema": {
-								"$ref": "#/components/schemas/UpdateSendMessageRateLimitRuleDto"
-							}
-						},
-						"application/*+json": {
-							"schema": {
-								"$ref": "#/components/schemas/UpdateSendMessageRateLimitRuleDto"
+								"$ref": "#/components/schemas/JsonPatchDocument"
 							}
 						}
 					}
 				},
 				"responses": {
 					"200": {
-						"description": "Success"
+						"description": "Success",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/ChatRoomSettingDto"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ChatRoomSettingDto"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ChatRoomSettingDto"
+								}
+							}
+						}
 					},
 					"403": {
 						"description": "Forbidden",
@@ -4248,137 +4059,6 @@
 			"post": {
 				"tags": ["ChatRoom"],
 				"operationId": "Create",
-				"responses": {
-					"200": {
-						"description": "Success"
-					},
-					"403": {
-						"description": "Forbidden",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "Unauthorized",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "Bad Request",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "Not Found",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					},
-					"501": {
-						"description": "Server Error",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "Server Error",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/api/app/chat-room/conversation": {
-			"post": {
-				"tags": ["ChatRoom"],
-				"operationId": "CreateConversation",
 				"requestBody": {
 					"content": {
 						"application/json-patch+json": {
@@ -4406,438 +4086,6 @@
 				"responses": {
 					"200": {
 						"description": "Success"
-					},
-					"403": {
-						"description": "Forbidden",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "Unauthorized",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "Bad Request",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "Not Found",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					},
-					"501": {
-						"description": "Server Error",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "Server Error",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/api/app/chat-room/{id}/set-rate-limit": {
-			"post": {
-				"tags": ["ChatRoom"],
-				"operationId": "SetRateLimit",
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string",
-							"format": "uuid"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Success"
-					},
-					"403": {
-						"description": "Forbidden",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "Unauthorized",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "Bad Request",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "Not Found",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					},
-					"501": {
-						"description": "Server Error",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "Server Error",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/api/app/chat-room/seed-rate-limit": {
-			"post": {
-				"tags": ["ChatRoom"],
-				"operationId": "SeedRateLimit",
-				"responses": {
-					"200": {
-						"description": "Success"
-					},
-					"403": {
-						"description": "Forbidden",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "Unauthorized",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "Bad Request",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "Not Found",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					},
-					"501": {
-						"description": "Server Error",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "Server Error",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/api/app/chat-room/{id}/exist": {
-			"post": {
-				"tags": ["ChatRoom"],
-				"operationId": "Exist",
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"type": "string",
-							"format": "uuid"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Success",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"type": "boolean"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"type": "boolean"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"type": "boolean"
-								}
-							}
-						}
 					},
 					"403": {
 						"description": "Forbidden",
@@ -4977,13 +4225,6 @@
 						}
 					},
 					{
-						"name": "IncludeDetails",
-						"in": "query",
-						"schema": {
-							"type": "boolean"
-						}
-					},
-					{
 						"name": "Sorting",
 						"in": "query",
 						"schema": {
@@ -5017,17 +4258,1192 @@
 						"content": {
 							"text/plain": {
 								"schema": {
-									"$ref": "#/components/schemas/PagedResultDtoOfChannelDto"
+									"$ref": "#/components/schemas/PagedResultDtoOfChannelChatRoomDto"
 								}
 							},
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/PagedResultDtoOfChannelDto"
+									"$ref": "#/components/schemas/PagedResultDtoOfChannelChatRoomDto"
 								}
 							},
 							"text/json": {
 								"schema": {
-									"$ref": "#/components/schemas/PagedResultDtoOfChannelDto"
+									"$ref": "#/components/schemas/PagedResultDtoOfChannelChatRoomDto"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/app/chat-room/{id}/channel-joined-info/{channelId}": {
+			"get": {
+				"tags": ["ChatRoom"],
+				"operationId": "GetChannelJoinedInfo",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					},
+					{
+						"name": "channelId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/ChannelChatRoomInfoDto"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ChannelChatRoomInfoDto"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ChannelChatRoomInfoDto"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/app/chat-room/{id}/set-channel-moderator/{channelId}": {
+			"put": {
+				"tags": ["ChatRoom"],
+				"operationId": "SetChannelModerator",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					},
+					{
+						"name": "channelId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/ChannelChatRoomDto"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ChannelChatRoomDto"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ChannelChatRoomDto"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/app/chat-room/{id}/unset-channel-moderator/{channelId}": {
+			"put": {
+				"tags": ["ChatRoom"],
+				"operationId": "UnsetChannelModerator",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					},
+					{
+						"name": "channelId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/ChannelChatRoomDto"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ChannelChatRoomDto"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ChannelChatRoomDto"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/app/chat-room/{id}/block-channel/{channelId}": {
+			"put": {
+				"tags": ["ChatRoom"],
+				"operationId": "BlockChannel",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					},
+					{
+						"name": "channelId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					},
+					{
+						"name": "blockTime",
+						"in": "query",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/ChatRoomBlockTimeType"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/ChannelChatRoomDto"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ChannelChatRoomDto"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ChannelChatRoomDto"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/app/chat-room/{id}/unblock-channel/{channelId}": {
+			"put": {
+				"tags": ["ChatRoom"],
+				"operationId": "UnblockChannel",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					},
+					{
+						"name": "channelId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/ChannelChatRoomDto"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ChannelChatRoomDto"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ChannelChatRoomDto"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/app/chat-room/by-admin-id/{adminId}": {
+			"get": {
+				"tags": ["ChatRoom"],
+				"operationId": "GetByAdminId",
+				"parameters": [
+					{
+						"name": "adminId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/ChatRoomDto"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ChatRoomDto"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ChatRoomDto"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/app/chat-room/{id}/moderators": {
+			"get": {
+				"tags": ["ChatRoom"],
+				"operationId": "GetListModerators",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/ChannelChatRoomDto"
+									}
+								}
+							},
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/ChannelChatRoomDto"
+									}
+								}
+							},
+							"text/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/ChannelChatRoomDto"
+									}
 								}
 							}
 						}
@@ -5159,32 +5575,26 @@
 			"post": {
 				"tags": ["DefaultImage"],
 				"operationId": "Upload",
-				"parameters": [
-					{
-						"name": "FileTypeName",
-						"in": "query",
-						"required": true,
-						"schema": {
-							"$ref": "#/components/schemas/DefaultImageType"
-						}
-					}
-				],
 				"requestBody": {
 					"content": {
-						"multipart/form-data": {
+						"application/json-patch+json": {
 							"schema": {
-								"type": "object",
-								"properties": {
-									"Content": {
-										"type": "string",
-										"format": "binary"
-									}
-								}
-							},
-							"encoding": {
-								"Content": {
-									"style": "form"
-								}
+								"$ref": "#/components/schemas/UploadDefaultImageDto"
+							}
+						},
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UploadDefaultImageDto"
+							}
+						},
+						"text/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UploadDefaultImageDto"
+							}
+						},
+						"application/*+json": {
+							"schema": {
+								"$ref": "#/components/schemas/UploadDefaultImageDto"
 							}
 						}
 					}
@@ -13172,161 +13582,6 @@
 				}
 			}
 		},
-		"/api/app/s-mSSending/send": {
-			"post": {
-				"tags": ["SMSSending"],
-				"operationId": "Send",
-				"requestBody": {
-					"content": {
-						"application/json-patch+json": {
-							"schema": {
-								"$ref": "#/components/schemas/SMSSendingDto"
-							}
-						},
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/SMSSendingDto"
-							}
-						},
-						"text/json": {
-							"schema": {
-								"$ref": "#/components/schemas/SMSSendingDto"
-							}
-						},
-						"application/*+json": {
-							"schema": {
-								"$ref": "#/components/schemas/SMSSendingDto"
-							}
-						}
-					}
-				},
-				"responses": {
-					"200": {
-						"description": "Success"
-					},
-					"403": {
-						"description": "Forbidden",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "Unauthorized",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "Bad Request",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "Not Found",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					},
-					"501": {
-						"description": "Server Error",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "Server Error",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							},
-							"text/json": {
-								"schema": {
-									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
-								}
-							}
-						}
-					}
-				}
-			}
-		},
 		"/api/account/social-link": {
 			"get": {
 				"tags": ["SocialLink"],
@@ -18252,42 +18507,30 @@
 			"get": {
 				"tags": ["UserLookup"],
 				"operationId": "Search",
-				"parameters": [
-					{
-						"name": "Filter",
-						"in": "query",
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"name": "Sorting",
-						"in": "query",
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"name": "SkipCount",
-						"in": "query",
-						"schema": {
-							"maximum": 2147483647,
-							"minimum": 0,
-							"type": "integer",
-							"format": "int32"
-						}
-					},
-					{
-						"name": "MaxResultCount",
-						"in": "query",
-						"schema": {
-							"maximum": 2147483647,
-							"minimum": 1,
-							"type": "integer",
-							"format": "int32"
+				"requestBody": {
+					"content": {
+						"application/json-patch+json": {
+							"schema": {
+								"$ref": "#/components/schemas/UserLookupSearchInputDto"
+							}
+						},
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UserLookupSearchInputDto"
+							}
+						},
+						"text/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UserLookupSearchInputDto"
+							}
+						},
+						"application/*+json": {
+							"schema": {
+								"$ref": "#/components/schemas/UserLookupSearchInputDto"
+							}
 						}
 					}
-				],
+				},
 				"responses": {
 					"200": {
 						"description": "Success",
@@ -18436,15 +18679,30 @@
 			"get": {
 				"tags": ["UserLookup"],
 				"operationId": "GetCount",
-				"parameters": [
-					{
-						"name": "Filter",
-						"in": "query",
-						"schema": {
-							"type": "string"
+				"requestBody": {
+					"content": {
+						"application/json-patch+json": {
+							"schema": {
+								"$ref": "#/components/schemas/UserLookupCountInputDto"
+							}
+						},
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UserLookupCountInputDto"
+							}
+						},
+						"text/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UserLookupCountInputDto"
+							}
+						},
+						"application/*+json": {
+							"schema": {
+								"$ref": "#/components/schemas/UserLookupCountInputDto"
+							}
 						}
 					}
-				],
+				},
 				"responses": {
 					"200": {
 						"description": "Success",
@@ -19096,12 +19354,106 @@
 				},
 				"additionalProperties": false
 			},
+			"ChannelChatRoomActionDto": {
+				"type": "object",
+				"properties": {
+					"channelId": {
+						"type": "string",
+						"format": "uuid"
+					},
+					"ownerChannelUserName": {
+						"type": "string",
+						"nullable": true
+					},
+					"role": {
+						"$ref": "#/components/schemas/ChatRoomRoleType"
+					},
+					"connectedTime": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"blockTime": {
+						"$ref": "#/components/schemas/ChatRoomBlockTimeType"
+					},
+					"action": {
+						"$ref": "#/components/schemas/ChannelChatRoomActionType"
+					}
+				},
+				"additionalProperties": false
+			},
+			"ChannelChatRoomActionType": {
+				"enum": ["Block", "SetRole", "Join", "Leave"],
+				"type": "string"
+			},
+			"ChannelChatRoomDto": {
+				"type": "object",
+				"properties": {
+					"channelId": {
+						"type": "string",
+						"format": "uuid"
+					},
+					"ownerChannelUserName": {
+						"type": "string",
+						"nullable": true
+					},
+					"role": {
+						"$ref": "#/components/schemas/ChatRoomRoleType"
+					},
+					"connectedTime": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"blockTime": {
+						"$ref": "#/components/schemas/ChatRoomBlockTimeType"
+					}
+				},
+				"additionalProperties": false
+			},
+			"ChannelChatRoomInfoDto": {
+				"type": "object",
+				"properties": {
+					"channelId": {
+						"type": "string",
+						"format": "uuid"
+					},
+					"ownerChannelUserName": {
+						"type": "string",
+						"nullable": true
+					},
+					"role": {
+						"$ref": "#/components/schemas/ChatRoomRoleType"
+					},
+					"connectedTime": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"blockTime": {
+						"$ref": "#/components/schemas/ChatRoomBlockTimeType"
+					},
+					"followers": {
+						"type": "integer",
+						"format": "int64"
+					},
+					"followings": {
+						"type": "integer",
+						"format": "int64"
+					}
+				},
+				"additionalProperties": false
+			},
 			"ChannelDto": {
 				"type": "object",
 				"properties": {
 					"id": {
 						"type": "string",
 						"format": "uuid"
+					},
+					"ownerUserName": {
+						"type": "string",
+						"nullable": true
 					},
 					"isLive": {
 						"type": "boolean"
@@ -19112,9 +19464,22 @@
 			"ChatMessageDto": {
 				"type": "object",
 				"properties": {
+					"creationTime": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"creatorId": {
+						"type": "string",
+						"format": "uuid",
+						"nullable": true
+					},
 					"senderChannelId": {
 						"type": "string",
 						"format": "uuid",
+						"nullable": true
+					},
+					"senderUserName": {
+						"type": "string",
 						"nullable": true
 					},
 					"receivedChatRoomId": {
@@ -19136,6 +19501,18 @@
 					}
 				},
 				"additionalProperties": false
+			},
+			"ChatRoomBlockTimeType": {
+				"enum": [
+					"NoBlock",
+					"FiveMinutes",
+					"ThirtyMinutes",
+					"SixtyMinutes",
+					"OneDay",
+					"OneWeek",
+					"OneYear"
+				],
+				"type": "string"
 			},
 			"ChatRoomDto": {
 				"type": "object",
@@ -19168,6 +19545,22 @@
 						"format": "uuid"
 					},
 					"conversation": {
+						"type": "boolean"
+					}
+				},
+				"additionalProperties": false
+			},
+			"ChatRoomRoleType": {
+				"enum": ["Member", "Admin", "Moderator"],
+				"type": "string"
+			},
+			"ChatRoomSettingDto": {
+				"type": "object",
+				"properties": {
+					"sendMessageRateLimitRule": {
+						"$ref": "#/components/schemas/SendMessageRateLimitRuleDto"
+					},
+					"followerSendMessageOnly": {
 						"type": "boolean"
 					}
 				},
@@ -19260,11 +19653,13 @@
 					},
 					"title": {
 						"maxLength": 100,
+						"minLength": 0,
 						"type": "string",
 						"nullable": true
 					},
 					"content": {
 						"maxLength": 2000,
+						"minLength": 0,
 						"type": "string",
 						"nullable": true
 					}
@@ -19273,6 +19668,11 @@
 			},
 			"CreateChatRoomDto": {
 				"type": "object",
+				"properties": {
+					"conversation": {
+						"type": "boolean"
+					}
+				},
 				"additionalProperties": false
 			},
 			"CreateFileInput": {
@@ -19545,9 +19945,8 @@
 				"additionalProperties": false
 			},
 			"DefaultImageType": {
-				"enum": [0, 1],
-				"type": "integer",
-				"format": "int32"
+				"enum": ["DefaultProfilePicture", "DefaultChannelBackground"],
+				"type": "string"
 			},
 			"EmailSettingsDto": {
 				"type": "object",
@@ -19894,9 +20293,8 @@
 				"additionalProperties": false
 			},
 			"FileContainerType": {
-				"enum": [0, 1],
-				"type": "integer",
-				"format": "int32"
+				"enum": ["Private", "Public"],
+				"type": "string"
 			},
 			"FileDownloadInfoModel": {
 				"type": "object",
@@ -20037,9 +20435,8 @@
 				"additionalProperties": false
 			},
 			"FileType": {
-				"enum": [1, 2],
-				"type": "integer",
-				"format": "int32"
+				"enum": ["Directory", "RegularFile"],
+				"type": "string"
 			},
 			"FindTenantResultDto": {
 				"type": "object",
@@ -20063,9 +20460,8 @@
 				"additionalProperties": false
 			},
 			"FollowType": {
-				"enum": [0, 1],
-				"type": "integer",
-				"format": "int32"
+				"enum": ["Following", "Follower"],
+				"type": "string"
 			},
 			"GetFeatureListResultDto": {
 				"type": "object",
@@ -20692,9 +21088,39 @@
 						"type": "string"
 					},
 					"value": {
-						"type": "string"
+						"type": "object",
+						"nullable": true
 					}
 				}
+			},
+			"OperationType": {
+				"enum": [
+					"Add",
+					"Remove",
+					"Replace",
+					"Move",
+					"Copy",
+					"Test",
+					"Invalid"
+				],
+				"type": "string"
+			},
+			"PagedResultDtoOfChannelChatRoomDto": {
+				"type": "object",
+				"properties": {
+					"items": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/ChannelChatRoomDto"
+						},
+						"nullable": true
+					},
+					"totalCount": {
+						"type": "integer",
+						"format": "int64"
+					}
+				},
+				"additionalProperties": false
 			},
 			"PagedResultDtoOfChannelDto": {
 				"type": "object",
@@ -20899,9 +21325,8 @@
 				"additionalProperties": false
 			},
 			"PlayListStatusEnum": {
-				"enum": [1, 2, 3],
-				"type": "integer",
-				"format": "int32"
+				"enum": ["Finished", "Broadcasting", "Created"],
+				"type": "string"
 			},
 			"ProfileDto": {
 				"type": "object",
@@ -21047,9 +21472,19 @@
 				"additionalProperties": false
 			},
 			"PublishTypeEnum": {
-				"enum": [1, 2, 3],
-				"type": "integer",
-				"format": "int32"
+				"enum": ["WebRTC", "RTMP", "Pull"],
+				"type": "string"
+			},
+			"RateLimitTimeType": {
+				"enum": [
+					"ThreeSeconds",
+					"FiveSeconds",
+					"TenSeconds",
+					"FifteenSeconds",
+					"ThirtySeconds",
+					"SixtySeconds"
+				],
+				"type": "string"
 			},
 			"ReCaptchaDto": {
 				"type": "object",
@@ -21241,23 +21676,6 @@
 				},
 				"additionalProperties": false
 			},
-			"SMSSendingDto": {
-				"required": ["content", "phone"],
-				"type": "object",
-				"properties": {
-					"phone": {
-						"maxLength": 12,
-						"minLength": 10,
-						"type": "string",
-						"format": "tel"
-					},
-					"content": {
-						"maxLength": 2000,
-						"type": "string"
-					}
-				},
-				"additionalProperties": false
-			},
 			"SendEmailConfirmCodeDto": {
 				"required": ["subject", "targetEmailAddress"],
 				"type": "object",
@@ -21392,14 +21810,12 @@
 				"additionalProperties": false
 			},
 			"SocialLinkType": {
-				"enum": [0, 1, 2, 3],
-				"type": "integer",
-				"format": "int32"
+				"enum": ["Youtube", "Facebook", "Instagram", "Twitch"],
+				"type": "string"
 			},
 			"StatusEnum": {
-				"enum": [1, 2, 3],
-				"type": "integer",
-				"format": "int32"
+				"enum": ["Finished", "Broadcasting", "Created"],
+				"type": "string"
 			},
 			"TenantCreateDto": {
 				"required": ["adminEmailAddress", "adminPassword", "name"],
@@ -21535,9 +21951,30 @@
 				"additionalProperties": false
 			},
 			"TypeEnum": {
-				"enum": [1, 2, 3, 4, 5],
-				"type": "integer",
-				"format": "int32"
+				"enum": [
+					"LiveStream",
+					"IpCamera",
+					"StreamSource",
+					"VoD",
+					"Playlist"
+				],
+				"type": "string"
+			},
+			"UpdateChatRoomSettingDto": {
+				"required": [
+					"followerSendMessageOnly",
+					"sendMessageRateLimitRule"
+				],
+				"type": "object",
+				"properties": {
+					"sendMessageRateLimitRule": {
+						"$ref": "#/components/schemas/UpdateSendMessageRateLimitRuleDto"
+					},
+					"followerSendMessageOnly": {
+						"type": "boolean"
+					}
+				},
+				"additionalProperties": false
 			},
 			"UpdateEmailSettingsDto": {
 				"required": ["defaultFromAddress", "defaultFromDisplayName"],
@@ -21728,19 +22165,11 @@
 				"additionalProperties": false
 			},
 			"UpdateSendMessageRateLimitRuleDto": {
-				"required": ["id", "limit", "period"],
+				"required": ["period"],
 				"type": "object",
 				"properties": {
-					"id": {
-						"type": "string",
-						"format": "uuid"
-					},
 					"period": {
-						"type": "string"
-					},
-					"limit": {
-						"type": "number",
-						"format": "double"
+						"$ref": "#/components/schemas/RateLimitTimeType"
 					}
 				},
 				"additionalProperties": false
@@ -21754,6 +22183,21 @@
 						"minLength": 0,
 						"type": "string",
 						"format": "uri"
+					}
+				},
+				"additionalProperties": false
+			},
+			"UploadDefaultImageDto": {
+				"required": ["fileTypeName"],
+				"type": "object",
+				"properties": {
+					"fileTypeName": {
+						"$ref": "#/components/schemas/DefaultImageType"
+					},
+					"content": {
+						"type": "string",
+						"format": "binary",
+						"nullable": true
 					}
 				},
 				"additionalProperties": false
@@ -21802,6 +22246,42 @@
 				},
 				"additionalProperties": false
 			},
+			"UserLookupCountInputDto": {
+				"type": "object",
+				"properties": {
+					"filter": {
+						"type": "string",
+						"nullable": true
+					}
+				},
+				"additionalProperties": false
+			},
+			"UserLookupSearchInputDto": {
+				"type": "object",
+				"properties": {
+					"maxResultCount": {
+						"maximum": 2147483647,
+						"minimum": 1,
+						"type": "integer",
+						"format": "int32"
+					},
+					"skipCount": {
+						"maximum": 2147483647,
+						"minimum": 0,
+						"type": "integer",
+						"format": "int32"
+					},
+					"sorting": {
+						"type": "string",
+						"nullable": true
+					},
+					"filter": {
+						"type": "string",
+						"nullable": true
+					}
+				},
+				"additionalProperties": false
+			},
 			"WindowsTimeZone": {
 				"type": "object",
 				"properties": {
@@ -21821,9 +22301,7 @@
 						"authorizationUrl": "https://localhost:44356/connect/authorize",
 						"tokenUrl": "https://localhost:44356/connect/token",
 						"scopes": {
-							"GameStreaming": "GameStreaming API",
-							"openid": "openid",
-							"profile": "profile"
+							"GameStreaming": "GameStreaming API"
 						}
 					}
 				}

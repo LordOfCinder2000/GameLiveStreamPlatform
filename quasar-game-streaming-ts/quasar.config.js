@@ -32,7 +32,7 @@ module.exports = configure(function (/* ctx */) {
 		boot: [
 			"i18n",
 			"axios",
-			"openapi-client",
+			// "openapi-client",
 			"filters",
 			"quasar-plugins",
 			"plugins",
@@ -40,6 +40,7 @@ module.exports = configure(function (/* ctx */) {
 			"reload",
 			"plugins",
 			"directives",
+			"global-components",
 		],
 
 		// https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css
@@ -94,6 +95,7 @@ module.exports = configure(function (/* ctx */) {
 					modules: path.join(__dirname, "./src/modules"),
 					apis: path.join(__dirname, "./src/apis"),
 					directives: path.join(__dirname, "./src/directives"),
+					types: path.join(__dirname, "./src/types"),
 				});
 			},
 			// viteVuePluginOptions: {},
@@ -125,24 +127,35 @@ module.exports = configure(function (/* ctx */) {
 				ca: fs.readFileSync("ssl/CA.pem"),
 			},
 			port: 8080,
-			open: true, // opens browser window automatically
+			open: false, // opens browser window automatically
 			vueDevtools: true,
+			// proxy: {
+			// 	// string shorthand
+			// 	"/foo": {
+			// 		target: "http://jsonplaceholder.typicode.com2",
+			// 		timeout: 10000,
+			// 	},
+			// 	// with options
+			// 	"/api": {
+			// 		target: "http://jsonplaceholder.typicode.com",
+			// 		changeOrigin: true,
+			// 		configure: (proxy, options) => {
+			// 			// proxy will be an instance of 'http-proxy'
+
+			// 		},
+			// 	},
+			// },
 		},
 
 		// https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#framework
 		framework: {
 			config: {
-				loadingBar: {
-					color: "positive",
-					size: "0.3rem",
-					position: "top",
-					hijackFilter(url) {
-						const parsedUrl = new URL(url);
-						return !parsedUrl.pathname.includes("ts");
-					},
-				},
 				screen: {
 					bodyClasses: true, // <<< add this
+				},
+				loading: {
+					spinner: "QSpinnerHourglass",
+					spinnerColor: "positive",
 				},
 			},
 
@@ -164,6 +177,7 @@ module.exports = configure(function (/* ctx */) {
 				"LocalStorage",
 				"SessionStorage",
 				"Cookies",
+				"Loading",
 			],
 		},
 

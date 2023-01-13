@@ -369,61 +369,52 @@ export class PiniaOidcStore extends OidcStore {
 		},
 		signOutOidcSilent(this: OidcStoreMembers, payload) {
 			return new Promise((resolve, reject) => {
-				try {
-					this.storeOidcClient
-						?.GetUser()
-						.then((user) => {
-							if (user) {
-								const args = OidcUtils.ObjectAssign([
-									payload || {},
-									{
-										id_token_hint: user
-											? user.id_token
-											: null,
-									},
-								]);
-								if (
-									payload &&
-									OidcUtils.PayloadItem(
-										payload,
-										"id_token_hint"
-									)
-								) {
-									args.id_token_hint = OidcUtils.PayloadItem(
-										payload,
-										"id_token_hint"
-									);
-								}
-								this.storeOidcClient
-									?.CreateSignoutRequest(args)
-									.then((signoutRequest) => {
-										OidcBrowserEvents.OpenUrlWithIframe(
-											signoutRequest.url
-										)
-											.then(() => {
-												this.removeUser();
-
-												//@ts-ignore
-												// window.location.reload(true);
-												// const logoutChannel =
-												// 	new BroadcastChannel(
-												// 		"logout"
-												// 	);
-												// logoutChannel.postMessage(
-												// 	"reload"
-												// );
-
-												resolve();
-											})
-											.catch((err) => reject(err));
-									})
-									.catch((err) => reject(err));
+				this.storeOidcClient
+					?.GetUser()
+					.then((user) => {
+						if (user) {
+							const args = OidcUtils.ObjectAssign([
+								payload || {},
+								{
+									id_token_hint: user ? user.id_token : null,
+								},
+							]);
+							if (
+								payload &&
+								OidcUtils.PayloadItem(payload, "id_token_hint")
+							) {
+								args.id_token_hint = OidcUtils.PayloadItem(
+									payload,
+									"id_token_hint"
+								);
 							}
-						})
-						.catch((err) => reject(err));
-				} catch (err) {
-					reject(err);
-				}
+							this.storeOidcClient
+								?.CreateSignoutRequest(args)
+								.then((signoutRequest) => {
+									OidcBrowserEvents.OpenUrlWithIframe(
+										signoutRequest.url
+									)
+										.then(() => {
+											this.removeUser();
+
+											//@ts-ignore
+											// window.location.reload(true);
+											// const logoutChannel =
+											// 	new BroadcastChannel(
+											// 		"logout"
+											// 	);
+											// logoutChannel.postMessage(
+											// 	"reload"
+											// );
+
+											resolve();
+										})
+										.catch((err) => reject(err));
+								})
+								.catch((err) => reject(err));
+						}
+					})
+					.catch((err) => reject(err));
 			});
 		},
 		removeUser(this: OidcStoreMembers) {

@@ -16,3 +16,5 @@ declare namespace NodeJS {
 		RE_CAPTCHA_SITE_KEY: string | undefined;
 	}
 }
+
+declare const __QUASAR_SSR_SERVER__;

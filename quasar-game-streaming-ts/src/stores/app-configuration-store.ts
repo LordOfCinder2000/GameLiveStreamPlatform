@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { authClient, apiClient, testApiClient } from "boot/openapi-client";
+import { authClient, apiClient } from "boot/openapi-client";
 export const useAppConfigurationStore = defineStore("app-configuration-store", {
 	state: () => ({
 		appConfiguration: {},
@@ -7,12 +7,14 @@ export const useAppConfigurationStore = defineStore("app-configuration-store", {
 	getters: {},
 	actions: {
 		async getApplicationConfiguration() {
-			return await testApiClient.abpApplicationConfiguration
+			return await apiClient.abpApplicationConfiguration
 				.get()
 				.then((data) => {
 					this.appConfiguration = data;
 				})
-				.catch(() => {});
+				.catch((error) => {
+					console.log(error);
+				});
 		},
 	},
 });

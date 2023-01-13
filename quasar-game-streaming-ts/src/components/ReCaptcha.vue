@@ -11,7 +11,6 @@
 
 <script setup lang="ts">
 import { VueRecaptcha } from "vue-recaptcha";
-import { authClient } from "boot/openapi-client";
 import { useReCaptchaStore } from "stores/components/recaptcha-store";
 import { axios } from "boot/axios";
 

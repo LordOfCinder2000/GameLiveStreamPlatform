@@ -7,16 +7,21 @@ export const useChannelStore = defineStore("channel-store", {
 	}),
 	getters: {},
 	actions: {
-		async findChannelByUserName(name: string): Promise<ChannelDto> {
-			return await apiClient.channel
-				.getByUserName(name)
-				.then((data) => {
-					this.channel = data;
-					return this.channel;
-				})
-				.catch((error) => {
-					console.log(error);
-				});
+		async getChannelByUserName(name: string): Promise<ChannelDto> {
+			try {
+				this.channel = await apiClient.channel.getByUserName(name);
+				return this.channel;
+			} catch (error) {
+				console.log(error);
+				throw error;
+			}
+		},
+
+		isAdmin(channelId?: string) {
+			if (channelId == null && this.channel.id == null) {
+				return false;
+			}
+			return this.channel.id == channelId;
 		},
 	},
 });

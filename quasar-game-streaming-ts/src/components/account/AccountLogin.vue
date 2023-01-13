@@ -79,7 +79,6 @@
 import { ref } from "vue";
 import { useOidcStore } from "stores/modules/oidc-store";
 import { useQuasar } from "quasar";
-import { reject } from "lodash";
 import { resolve } from "dns";
 const $q = useQuasar();
 const inputRules = [
@@ -104,43 +103,6 @@ const { authenticateOidcPassword } = useOidcStore();
 // const authService = new AuthService();
 
 const loginOidc = async () => {
-	// return emit(
-	// 	"login",
-	// 	() =>
-	// 		new Promise((resolve, reject) => {
-	// 			authenticateOidcPassword({
-	// 				username: username.value,
-	// 				password: password.value,
-	// 			})
-	// 				.then((succ: any) => {
-	// 					$q.notify({
-	// 						color: "positive",
-	// 						message:
-	// 							"Login successful, Hello " +
-	// 							succ.profile.unique_name,
-	// 					});
-	// 					//@ts-ignore
-	// 					// window.location.reload(true);
-	// 					const loginChannel = new BroadcastChannel("login");
-	// 					loginChannel.postMessage("reload");
-	// 					resolve(succ);
-	// 				})
-	// 				.catch((err: Error) => {
-	// 					usernameError.value = err.message;
-	// 					passwordError.value = err.message;
-	// 					isValid.value = false;
-	// 					// nameRef.value.validate();
-	// 					// ageRef.value.validate();
-	// 					$q.notify({
-	// 						color: "negative",
-	// 						message: "Authentication mismatch.",
-	// 					});
-	// 					reject(err);
-	// 					throw err;
-	// 				});
-	// 		})
-	// );
-
 	return await emit("login", async () => {
 		return await authenticateOidcPassword({
 			username: username.value,
@@ -157,24 +119,23 @@ const loginOidc = async () => {
 				const loginChannel = new BroadcastChannel("login");
 				loginChannel.postMessage("reload");
 			})
-			.catch((err: Error) => {
-				usernameError.value = err.message;
-				passwordError.value = err.message;
-				isValid.value = false;
-				// nameRef.value.validate();
-				// ageRef.value.validate();
+			.catch((err) => {
+				if (err.status !== 500) {
+					usernameError.value = err.message;
+					passwordError.value = err.message;
+					isValid.value = false;
+					// nameRef.value.validate();
+					// ageRef.value.validate();
+				}
 				$q.notify({
 					color: "negative",
 					message: "Authentication mismatch.",
 				});
+
 				throw err;
 			});
 	});
 };
 </script>
 
-<style>
-/* .q-notifications__list {
-	z-index: 9999 !important;
-} */
-</style>
+<style></style>

@@ -5,5 +5,5 @@
 export type Operation = {
     op?: string;
     path?: string;
-    value?: string;
+    value?: any;
 };

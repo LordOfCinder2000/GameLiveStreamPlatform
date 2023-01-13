@@ -118,15 +118,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-	ref,
-	watchEffect,
-	defineAsyncComponent,
-	shallowRef,
-	onMounted,
-	onUnmounted,
-	watch,
-} from "vue";
+import { ref, watchEffect, shallowRef } from "vue";
 import { QDialog } from "quasar";
 import { useAccountStore } from "stores/components/account-store";
 import AccountLogin from "components/account/AccountLogin.vue";
@@ -143,7 +135,6 @@ const props = defineProps({
 		default: "login",
 	},
 });
-
 const loginPopup = ref<QDialog | null>(null);
 
 const showReCaptcha = ref(false);
@@ -159,7 +150,6 @@ const receiveRecaptchaToken = () => {
 	showReCaptcha.value = false;
 };
 const verifyRecaptchaSuccess = async () => {
-	debugger;
 	if (dynamicRef.value) {
 		await dynamicRef.value
 			.onSubmit()

@@ -174,7 +174,7 @@
 							<UserCard
 								class="col-6"
 								v-for="follower in followers"
-								:key="follower.id"
+								:key="follower.channelId"
 								:userCard="follower"
 							/>
 						</div>
@@ -231,8 +231,8 @@ onMounted((number = 100) => {
 	let count = 0;
 	for (let index = 0; index < number; index++) {
 		followers.value?.push({
-			id: count++,
-			name: `gatay${count}`,
+			channelId: String(count++),
+			ownerChannelUserName: `gatay${count}`,
 			avatar: `https://i.pravatar.cc/${100 + index * 2}`,
 			followers: Math.floor(Math.random() * 1000000),
 		});

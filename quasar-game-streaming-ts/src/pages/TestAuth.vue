@@ -75,25 +75,12 @@ import { useRouter } from "vue-router";
 import { LoadingBar } from "quasar";
 import { AuthService } from "boot/oidc-oauth2";
 import { useOidcStore } from "stores/modules/oidc-store";
-import { authClient, ApiError } from "boot/openapi-client";
 import { VueRecaptcha } from "vue-recaptcha";
 
 const recaptcha = ref<InstanceType<typeof VueRecaptcha> | null>(null);
 
 const recaptchaExecute = () => {
 	recaptcha.value?.execute();
-};
-
-const verifyMethod = async (res: string) => {
-	console.log(res);
-	authClient.reCaptcha
-		.validateReCaptchaToken(res)
-		.then((succ) => {
-			console.log("Success: ", succ);
-		})
-		.catch((err) => {
-			console.log("Error: ", err?.body?.error?.message);
-		});
 };
 
 // import { useAuthComp } from "composables";

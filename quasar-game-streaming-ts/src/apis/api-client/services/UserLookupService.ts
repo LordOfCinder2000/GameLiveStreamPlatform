@@ -3,6 +3,8 @@
 /* eslint-disable */
 import type { ListResultDtoOfUserData } from '../models/ListResultDtoOfUserData';
 import type { UserData } from '../models/UserData';
+import type { UserLookupCountInputDto } from '../models/UserLookupCountInputDto';
+import type { UserLookupSearchInputDto } from '../models/UserLookupSearchInputDto';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
@@ -137,28 +139,18 @@ userName: string,
     }
 
     /**
-     * @param filter 
-     * @param sorting 
-     * @param skipCount 
-     * @param maxResultCount 
+     * @param requestBody 
      * @returns ListResultDtoOfUserData Success
      * @throws ApiError
      */
     public search(
-filter?: string,
-sorting?: string,
-skipCount?: number,
-maxResultCount?: number,
+requestBody?: UserLookupSearchInputDto,
 ): CancelablePromise<ListResultDtoOfUserData> {
         return this.httpRequest.request({
             method: 'GET',
             url: '/api/identity/users/lookup/search',
-            query: {
-                'Filter': filter,
-                'Sorting': sorting,
-                'SkipCount': skipCount,
-                'MaxResultCount': maxResultCount,
-            },
+            body: requestBody,
+            mediaType: 'application/json-patch+json',
             errors: {
                 400: `Bad Request`,
                 401: `Unauthorized`,
@@ -171,19 +163,18 @@ maxResultCount?: number,
     }
 
     /**
-     * @param filter 
+     * @param requestBody 
      * @returns number Success
      * @throws ApiError
      */
     public getCount(
-filter?: string,
+requestBody?: UserLookupCountInputDto,
 ): CancelablePromise<number> {
         return this.httpRequest.request({
             method: 'GET',
             url: '/api/identity/users/lookup/count',
-            query: {
-                'Filter': filter,
-            },
+            body: requestBody,
+            mediaType: 'application/json-patch+json',
             errors: {
                 400: `Bad Request`,
                 401: `Unauthorized`,

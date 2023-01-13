@@ -144,9 +144,11 @@ watch(
 			await apiClient.userLookup
 				.checkDuplicateUserName(userName)
 				.catch((err) => {
-					Object.assign($externalResults, {
-						userName: err?.body?.error?.message || "",
-					});
+					console.log(err);
+					if (err.status !== 500)
+						Object.assign($externalResults, {
+							userName: err?.body?.error?.message || "",
+						});
 				});
 		}
 	},
@@ -165,9 +167,11 @@ watch(
 			await apiClient.userLookup
 				.checkDuplicateEmail(emailAddress)
 				.catch((err) => {
-					Object.assign($externalResults, {
-						emailAddress: err?.body?.error?.message || "",
-					});
+					console.log(err);
+					if (err.status !== 500)
+						Object.assign($externalResults, {
+							emailAddress: err?.body?.error?.message || "",
+						});
 				});
 		}
 	},
@@ -178,7 +182,6 @@ watch(
 
 onUnmounted(() => {
 	// $vuelidate.value.$validate();
-	// debugger;
 });
 
 const onSubmit = async () => {
@@ -189,13 +192,12 @@ const onSubmit = async () => {
 	}
 
 	// Show ReCaptcha
-	debugger;
+
 	const { recaptchaValid } = useReCaptchaStore();
 	if (!recaptchaValid) {
 		emit("confirmReCaptcha");
 		return;
 	}
-
 	await apiClient.account
 		.validateRegisterData(accountState)
 		.then(async () => {
@@ -210,33 +212,37 @@ const onSubmit = async () => {
 						message: "Code send success to your email",
 					});
 				})
-				.catch(() => {
+				.catch((err) => {
+					console.log(err);
 					$q.notify({
 						color: "negative",
 						message: "Code send fail",
 					});
 				});
+
 			emit("confirmEmail", "AccountConfirm");
 		})
-		.catch((err) => {
-			switch (err?.body?.error?.code) {
-				case "Volo.Abp.Identity:DuplicateEmail":
-					Object.assign($externalResults, {
-						emailAddress: err?.body?.error?.message,
-					});
-					break;
-				case "Volo.Abp.Identity:DuplicateUserName":
-					Object.assign($externalResults, {
-						userName: err?.body?.error?.message,
-					});
-					break;
-				default:
-					$q.notify({
-						color: "negative",
-						message: err?.message,
-					});
-					break;
-			}
+		.catch((err: ApiError) => {
+			console.log(err);
+			if (err.status !== 500)
+				switch (err?.body?.error?.code) {
+					case "Volo.Abp.Identity:DuplicateEmail":
+						Object.assign($externalResults, {
+							emailAddress: err?.body?.error?.message,
+						});
+						break;
+					case "Volo.Abp.Identity:DuplicateUserName":
+						Object.assign($externalResults, {
+							userName: err?.body?.error?.message,
+						});
+						break;
+					default:
+						$q.notify({
+							color: "negative",
+							message: err?.message,
+						});
+						break;
+				}
 		});
 };
 

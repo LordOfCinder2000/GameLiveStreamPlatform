@@ -1,8 +1,7 @@
 import { boot } from "quasar/wrappers";
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 import { useOidcStore } from "stores/modules/oidc-store";
-import { authClient } from "boot/openapi-client";
-
+import { useAccountStore } from "stores/components/account-store";
 declare module "@vue/runtime-core" {
 	interface ComponentCustomProperties {
 		$axios: AxiosInstance;
@@ -11,15 +10,17 @@ declare module "@vue/runtime-core" {
 
 const globalInterceptorsRequest = {
 	onFulfilled: function (config: AxiosRequestConfig) {
-		if (config.headers["Require-Auth"] === "true") {
-			const { oidcAccessToken } = useOidcStore();
-			// OpenAPI.TOKEN = oidcAccessToken;
+		// if (config.headers["Require-Auth"] === "true") {
+		// 	const { oidcAccessToken } = useOidcStore();
+		// 	// OpenAPI.TOKEN = oidcAccessToken;
+		// 	config.headers.Authorization = `Bearer ${oidcAccessToken}`;
+		// }
+		// if (config.headers["Require-Auth"] !== undefined) {
+		// 	delete config.headers["Require-Auth"];
+		// }
+		const { oidcAccessToken } = useOidcStore();
+		if (oidcAccessToken)
 			config.headers.Authorization = `Bearer ${oidcAccessToken}`;
-		}
-		if (config.headers["Require-Auth"] !== undefined) {
-			delete config.headers["Require-Auth"];
-		}
-
 		return config;
 	},
 	onRejected: function (error: any) {
@@ -29,30 +30,38 @@ const globalInterceptorsRequest = {
 
 const globalInterceptorsResponse = {
 	onFulfilled: function (response: AxiosResponse) {
-		// authClient.setRequireAuthHeader("false");
 		return response;
 	},
-	onRejected: function (error: any) {
+	onRejected: async function (error: any) {
+		const { removeOidcUser, oidcIsAuthenticated } = useOidcStore();
+		if (error.response.status === 401 && oidcIsAuthenticated) {
+			useAccountStore().openLoginPopup();
+			await removeOidcUser()
+				.then(() => {})
+				.catch((error) => {
+					console.log(error);
+				});
+		}
 		return Promise.reject(error);
 	},
 };
 
-const apiConfig = {
+const apiConfig = <AxiosRequestConfig>{
 	withCredentials: true,
 	headers: {
 		// "Access-Control-Allow-Origin": "*",
+		// "Require-Auth": "false",
 		"X-Requested-With": "XMLHttpRequest",
-		"Require-Auth": "false",
 	},
 };
 
 // Global Instance
 axios.defaults.xsrfHeaderName = "RequestVerificationToken";
-
 axios.interceptors.request.use(
 	globalInterceptorsRequest.onFulfilled,
 	globalInterceptorsRequest.onRejected
 );
+
 axios.interceptors.response.use(
 	globalInterceptorsResponse.onFulfilled,
 	globalInterceptorsResponse.onRejected

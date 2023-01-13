@@ -2,7 +2,6 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { ChannelDto } from '../models/ChannelDto';
-import type { ChatRoomDto } from '../models/ChatRoomDto';
 import type { FollowType } from '../models/FollowType';
 import type { PagedResultDtoOfChannelDto } from '../models/PagedResultDtoOfChannelDto';
 
@@ -206,39 +205,18 @@ id: string,
     }
 
     /**
-     * @param isLive 
-     * @param channelId 
-     * @param includeDetails 
-     * @param filter 
-     * @param followType 
-     * @param sorting 
-     * @param skipCount 
-     * @param maxResultCount 
-     * @returns PagedResultDtoOfChannelDto Success
+     * @param userName 
+     * @returns ChannelDto Success
      * @throws ApiError
      */
-    public getFollows(
-isLive?: boolean,
-channelId?: string,
-includeDetails?: boolean,
-filter?: string,
-followType?: FollowType,
-sorting?: string,
-skipCount?: number,
-maxResultCount?: number,
-): CancelablePromise<PagedResultDtoOfChannelDto> {
+    public getByUserName(
+userName?: string,
+): CancelablePromise<ChannelDto> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/api/app/channel/follows',
+            url: '/api/app/channel/by-user-name',
             query: {
-                'IsLive': isLive,
-                'ChannelId': channelId,
-                'IncludeDetails': includeDetails,
-                'Filter': filter,
-                'FollowType': followType,
-                'Sorting': sorting,
-                'SkipCount': skipCount,
-                'MaxResultCount': maxResultCount,
+                'userName': userName,
             },
             errors: {
                 400: `Bad Request`,
@@ -253,42 +231,17 @@ maxResultCount?: number,
 
     /**
      * @param id 
-     * @returns ChatRoomDto Success
-     * @throws ApiError
-     */
-    public getChatRoom(
-id: string,
-): CancelablePromise<ChatRoomDto> {
-        return this.httpRequest.request({
-            method: 'GET',
-            url: '/api/app/channel/{id}/chat-room',
-            path: {
-                'id': id,
-            },
-            errors: {
-                400: `Bad Request`,
-                401: `Unauthorized`,
-                403: `Forbidden`,
-                404: `Not Found`,
-                500: `Server Error`,
-                501: `Server Error`,
-            },
-        });
-    }
-
-    /**
-     * @param userName 
      * @returns ChannelDto Success
      * @throws ApiError
      */
-    public getByUserName(
-userName?: string,
+    public get(
+id: string,
 ): CancelablePromise<ChannelDto> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/api/app/channel/by-user-name',
-            query: {
-                'userName': userName,
+            url: '/api/app/channel/{id}',
+            path: {
+                'id': id,
             },
             errors: {
                 400: `Bad Request`,

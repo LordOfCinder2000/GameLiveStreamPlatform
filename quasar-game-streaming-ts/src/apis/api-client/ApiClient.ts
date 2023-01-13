@@ -22,7 +22,6 @@ import { PermissionsService } from './services/PermissionsService';
 import { ProfileService } from './services/ProfileService';
 import { ReCaptchaService } from './services/ReCaptchaService';
 import { RoleService } from './services/RoleService';
-import { SmsSendingService } from './services/SmsSendingService';
 import { SocialLinkService } from './services/SocialLinkService';
 import { StreamService } from './services/StreamService';
 import { TenantService } from './services/TenantService';
@@ -50,7 +49,6 @@ export class ApiClient {
     public readonly profile: ProfileService;
     public readonly reCaptcha: ReCaptchaService;
     public readonly role: RoleService;
-    public readonly smsSending: SmsSendingService;
     public readonly socialLink: SocialLinkService;
     public readonly stream: StreamService;
     public readonly tenant: TenantService;
@@ -89,7 +87,6 @@ export class ApiClient {
         this.profile = new ProfileService(this.request);
         this.reCaptcha = new ReCaptchaService(this.request);
         this.role = new RoleService(this.request);
-        this.smsSending = new SmsSendingService(this.request);
         this.socialLink = new SocialLinkService(this.request);
         this.stream = new StreamService(this.request);
         this.tenant = new TenantService(this.request);

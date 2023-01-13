@@ -2,7 +2,4 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export enum FileType {
-    '_1' = 1,
-    '_2' = 2,
-}
+export type FileType = 'Directory' | 'RegularFile';

@@ -24,7 +24,10 @@
 		<q-card-section class="no-wrap no-padding">
 			<div class="text-hover text-h6 ellipsis">Changing Planet</div>
 
-			<div class="text-subtitle2 text-weight-light ellipsis text-hover">
+			<div
+				class="text-subtitle2 text-weight-light ellipsis text-hover"
+				v-once
+			>
 				{{ $filters.viewCount($i18n.locale, 23630) }} người xem
 			</div>
 			<div>

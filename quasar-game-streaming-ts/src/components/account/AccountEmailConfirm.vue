@@ -64,7 +64,7 @@
 						input-style="aspect-ratio: 1/1"
 						v-for="code in codes"
 						:key="code.id"
-						v-model.number="code.codeValue"
+						v-model="code.codeValue"
 						hide-bottom-space
 						type="text"
 						ref="items"
@@ -177,16 +177,17 @@ watch(
 				emailAddress: "",
 			});
 			if (emailAddress && !$vuelidateForgot.value.emailAddress.$invalid) {
-				// debugger;
 				await apiClient.userLookup
 					.findByEmail(emailAddress)
 					.then((succ) => {
 						console.log(succ);
 					})
 					.catch((err) => {
-						Object.assign($externalResultsForgot, {
-							emailAddress: err?.body?.error?.message || "",
-						});
+						console.log(err);
+						if (err.status !== 500)
+							Object.assign($externalResultsForgot, {
+								emailAddress: err?.body?.error?.message || "",
+							});
 					});
 			}
 		} else {
@@ -197,6 +198,7 @@ watch(
 				await apiClient.userLookup
 					.checkDuplicateEmail(emailAddress)
 					.catch((err) => {
+						if (err.status !== 500) console.log(err);
 						Object.assign($externalResults, {
 							emailAddress: err?.body?.error?.message || "",
 						});
@@ -210,12 +212,12 @@ watch(
 );
 
 const codes = ref([
-	{ id: 1, codeValue: ref("") },
-	{ id: 2, codeValue: ref("") },
-	{ id: 3, codeValue: ref("") },
-	{ id: 4, codeValue: ref("") },
-	{ id: 5, codeValue: ref("") },
-	{ id: 6, codeValue: ref("") },
+	{ id: 1, codeValue: "" },
+	{ id: 2, codeValue: "" },
+	{ id: 3, codeValue: "" },
+	{ id: 4, codeValue: "" },
+	{ id: 5, codeValue: "" },
+	{ id: 6, codeValue: "" },
 ]);
 
 const codeMerge = computed(() => {
@@ -229,6 +231,7 @@ const codeMerge = computed(() => {
 const countDown = ref(60);
 const sendCode = async () => {
 	//send code
+
 	await apiClient.email
 		.sendEmailConfirmCode({
 			targetEmailAddress: emailModel.value[props.mode].state.emailAddress,
@@ -245,6 +248,7 @@ const sendCode = async () => {
 			countDown.value = 60;
 		})
 		.catch((err) => {
+			if (err.status !== 500) console.log(err);
 			$q.notify({
 				color: "negative",
 				message: err?.body?.error?.message || "Send code not success",
@@ -264,10 +268,15 @@ onMounted(() => {
 codes.value.forEach((code, i) => {
 	watch(code, (codeNew, codeOld) => {
 		if (items.value) {
-			if (codeNew.codeValue && items.value[i + 1]) {
+			if (
+				codeNew.codeValue != null &&
+				codeNew.codeValue != "" &&
+				items.value[i + 1]
+			) {
 				items.value[i + 1].$el.click();
 			}
 		}
+		console.log(codeNew.codeValue + ":" + codeOld.codeValue);
 	});
 });
 
@@ -278,8 +287,8 @@ const focusInput = (ref: any) => {
 
 const modelUpdate = (value: string, index: number) => {
 	codeError.value = "";
-	if (!value && items.value) {
-		items.value[index - 2].$el.click();
+	if (value === "" && items.value) {
+		items.value[index - 2]?.$el.click();
 	}
 };
 
@@ -300,6 +309,10 @@ const beforeInput = (event: any, ref: any, index: number) => {
 			ref.$el.click();
 			event.preventDefault();
 		}
+
+		if (!Number.parseInt(event.data)) {
+			event.preventDefault();
+		}
 	}
 };
 
@@ -310,6 +323,7 @@ const goToDirection = (event: any, ref: any) => {
 const onSubmit = async () => {
 	if (props.mode == "AccountForgot") {
 		if (!$vuelidateForgot.value.$validate()) return;
+
 		await apiClient.account
 			.resetPassword({
 				userId: emailModel.value[props.mode].state.userId,
@@ -346,21 +360,24 @@ const onSubmit = async () => {
 					});
 			})
 			.catch((err) => {
-				debugger;
-				if (
-					err?.body?.error?.code?.includes("CodeInvalid") ||
-					err?.body?.error?.code?.includes("InvalidToken")
-				)
-					codeError.value = err?.body?.error?.message;
-				$q.notify({
-					color: "negative",
-					message:
-						err?.body?.error?.message ||
-						"Email address confirm failed",
-				});
+				console.log(err);
+				if (err.status !== 500) {
+					if (
+						err?.body?.error?.code?.includes("CodeInvalid") ||
+						err?.body?.error?.code?.includes("InvalidToken")
+					)
+						codeError.value = err?.body?.error?.message;
+					$q.notify({
+						color: "negative",
+						message:
+							err?.body?.error?.message ||
+							"Email address confirm failed",
+					});
+				}
 			});
 	} else {
 		if (!$vuelidate.value.$validate()) return;
+
 		await apiClient.account
 			.registerWithCode({
 				register: emailModel.value[props.mode].state,
@@ -396,14 +413,17 @@ const onSubmit = async () => {
 					});
 			})
 			.catch((err) => {
-				if (err?.body?.error?.code == "CodeInvalid")
-					codeError.value = err?.body?.error?.message;
-				$q.notify({
-					color: "negative",
-					message:
-						err?.body?.error?.message ||
-						"Email address confirm failed",
-				});
+				if (err.status !== 500) {
+					console.log(err);
+					if (err?.body?.error?.code == "CodeInvalid")
+						codeError.value = err?.body?.error?.message;
+					$q.notify({
+						color: "negative",
+						message:
+							err?.body?.error?.message ||
+							"Email address confirm failed",
+					});
+				}
 			});
 	}
 };

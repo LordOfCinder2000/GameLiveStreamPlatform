@@ -7,6 +7,10 @@ import {
 import {
 	PagedResultDtoOfChannelDto,
 	ChatMessageDto,
+	ChatRoomBlockTimeType,
+	ChatRoomSettingDto,
+	ChannelChatRoomDto,
+	ChannelChatRoomActionDto,
 } from "boot/openapi-client";
 import {
 	SignalRConfig,
@@ -63,7 +67,12 @@ export function useChatHubSignalR() {
 		"GetChannelInChatRoom";
 	const OnNotFound: HubEventToken<string> = "OnNotFound";
 	const OnError: HubEventToken<string> = "OnError";
-
+	const OnBlockedError: HubEventToken<ChatRoomBlockTimeType> =
+		"OnBlockedError";
+	const ChangeChatRoomSettingNotify: HubEventToken<ChatRoomSettingDto> =
+		"ChangeChatRoomSettingNotify";
+	const ChannelChatRoomActionNotify: HubEventToken<ChannelChatRoomActionDto> =
+		"ChannelChatRoomActionNotify";
 	const chatHubSignalR = createSignalRService(configChatHub);
 	return {
 		chatHubSignalR,
@@ -75,7 +84,9 @@ export function useChatHubSignalR() {
 		OnError,
 		SendMessageToChatRoom,
 		JoinChatRoom,
-		LeaveChatRoom,
+		OnBlockedError,
+		ChangeChatRoomSettingNotify,
+		ChannelChatRoomActionNotify,
 	};
 }
 

@@ -8,18 +8,22 @@ export const useUserStore = defineStore("user-store", {
 	getters: {},
 	actions: {
 		async findUserByName(name: string): Promise<UserData> {
-			return await apiClient.userLookup
-				.findByUserName(name)
-				.then((data) => {
-					this.user = data;
-					return this.user;
-				});
+			try {
+				this.user = await apiClient.userLookup.findByUserName(name);
+				return this.user;
+			} catch (error) {
+				console.log(error);
+				throw error;
+			}
 		},
 		async findUserById(id: string): Promise<UserData> {
-			return await apiClient.userLookup.findById(id).then((data) => {
-				this.user = data;
+			try {
+				this.user = await apiClient.userLookup.findById(id);
 				return this.user;
-			});
+			} catch (error) {
+				console.log(error);
+				throw error;
+			}
 		},
 	},
 });

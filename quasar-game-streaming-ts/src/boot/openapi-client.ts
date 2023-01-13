@@ -1,61 +1,55 @@
 import { apiConfig } from "boot/axios";
 import { AuthClient } from "apis/auth-client";
-import { ApiClient } from "apis/api-client";
-import { extend } from "quasar";
-import { boot } from "quasar/wrappers";
-import { useAppConfigurationStore } from "stores/app-configuration-store";
+import {
+	ApiClient,
+	OpenAPI as ApiOpenAPI,
+	OpenAPIConfig,
+	BaseHttpRequest,
+} from "apis/api-client";
+import { AxiosHttpRequest } from "apis/api-client/core/AxiosHttpRequest";
+import { FetchHttpRequest } from "apis/requests";
+import { useOidcStore } from "stores/modules/oidc-store";
 
-export * from "apis/api-client";
+type OpenAPIConfigExtended = OpenAPIConfig & {
+	KEEP_ALIVE?: boolean;
+};
+type HttpRequestConstructor = new (config: OpenAPIConfig) => BaseHttpRequest;
+class ApiClientExtend extends ApiClient {
+	constructor(config: Partial<OpenAPIConfig>) {
+		super(config);
+	}
 
-class AuthClientExtend extends AuthClient {
-	setRequireAuthHeader = (value: string) =>
-		Object.assign(this.request.config.HEADERS || {}, {
-			"Require-Auth": value,
-		});
+	public config(
+		config: Partial<OpenAPIConfigExtended>,
+		HttpRequest: HttpRequestConstructor = AxiosHttpRequest
+	) {
+		if (config.KEEP_ALIVE) {
+			HttpRequest = FetchHttpRequest;
+			config.TOKEN = useOidcStore().access_token ?? "";
+		}
+
+		return new ApiClient(
+			{
+				...this.request.config,
+				HEADERS: { ...this.request.config.HEADERS, ...config.HEADERS },
+				...config,
+			},
+			HttpRequest
+		);
+	}
 }
 
+ApiOpenAPI.WITH_CREDENTIALS = apiConfig.withCredentials ?? true;
+ApiOpenAPI.HEADERS = apiConfig.headers;
+ApiOpenAPI.CREDENTIALS = "same-origin";
+
 export const authClient = new AuthClient({
+	...ApiOpenAPI,
 	BASE: process.env.AUTH_URL,
-	WITH_CREDENTIALS: apiConfig.withCredentials,
-	HEADERS: apiConfig.headers,
 });
 
-export const authClientRequireAuth = new AuthClient({
-	BASE: process.env.AUTH_URL,
-	WITH_CREDENTIALS: apiConfig.withCredentials,
-	HEADERS: Object.assign({}, apiConfig.headers, {
-		"Require-Auth": "true",
-	}),
-});
-
-class ApiClientExtend extends AuthClientExtend {}
-
-export const apiClient = new ApiClient({
+export const apiClient = new ApiClientExtend({
+	...ApiOpenAPI,
 	BASE: process.env.API_URL,
-	WITH_CREDENTIALS: apiConfig.withCredentials,
-	HEADERS: apiConfig.headers,
 });
-
-export const apiClientRequireAuth = new ApiClient({
-	BASE: process.env.API_URL,
-	WITH_CREDENTIALS: apiConfig.withCredentials,
-	HEADERS: Object.assign({}, apiConfig.headers, {
-		"Require-Auth": "true",
-	}),
-});
-
-export const testApiClientRequireAuth = new ApiClient({
-	BASE: process.env.AUTH_URL,
-	WITH_CREDENTIALS: apiConfig.withCredentials,
-	HEADERS: Object.assign({}, apiConfig.headers, {
-		"Require-Auth": "true",
-	}),
-});
-
-export const testApiClient = new ApiClient({
-	BASE: process.env.AUTH_URL,
-	WITH_CREDENTIALS: apiConfig.withCredentials,
-	HEADERS: apiConfig.headers,
-});
-
-export default boot(({}) => {});
+export * from "apis/api-client";

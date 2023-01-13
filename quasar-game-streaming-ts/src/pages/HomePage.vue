@@ -196,7 +196,7 @@
 
 <script setup>
 import { ref, defineAsyncComponent, computed } from "vue";
-import { Carousel3dContent, Carousel3dSlide } from "src/components/carousel-3d";
+import { Carousel3dContent, Carousel3dSlide } from "components/carousel-3d";
 import { useQuasar, extend } from "quasar";
 import { getColumnByScreen } from "boot/mixins";
 const VideoArtPlayer = defineAsyncComponent(() =>

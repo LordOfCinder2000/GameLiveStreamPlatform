@@ -2,7 +2,7 @@
 	<q-page>
 		<div class="fixed-center text-center">
 			<transition-group
-				appear=""
+				appear
 				enter-active-class="animated fadeIn"
 				leave-active-class="animated fadeOut"
 			>
@@ -20,29 +20,25 @@
 	</q-page>
 </template>
 
-<script>
+<script setup lang="ts">
 import { useOidcStore } from "stores/modules/oidc-store";
-export default {
-	mounted() {
-		// var authService = new AuthService();
+// var authService = new AuthService();
 
-		// authService.userManager
-		// 	.signoutCallback()
-		// 	.then(function () {
-		// 		window.location.href = window.parent.location.href;
-		// 	})
-		// 	.catch(function (err) {
-		// 		console.log(err);
-		// 	});
-		///////////////////////////////////////////////////////
-		const { signOutOidcAndPopupCallback } = useOidcStore();
-		signOutOidcAndPopupCallback()
-			.then(function () {
-				// window.location.href = window.parent.location.href;
-			})
-			.catch(function (err) {
-				console.log(err);
-			});
-	},
-};
+// authService.userManager
+// 	.signoutCallback()
+// 	.then(function () {
+// 		window.location.href = window.parent.location.href;
+// 	})
+// 	.catch(function (err) {
+// 		console.log(err);
+// 	});
+///////////////////////////////////////////////////////
+const { signOutOidcCallback } = useOidcStore();
+signOutOidcCallback()
+	.then(function () {
+		// window.location.href = window.parent.location.href;
+	})
+	.catch(function (err) {
+		console.log(err);
+	});
 </script>

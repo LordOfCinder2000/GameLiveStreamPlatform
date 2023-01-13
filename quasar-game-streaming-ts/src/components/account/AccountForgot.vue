@@ -167,6 +167,8 @@ watch(
 					accountForgotState.userId = succ;
 				})
 				.catch((err) => {
+					if(err.status !== 500)
+					console.log(err);
 					Object.assign($externalResultsForgot, {
 						emailAddress: err?.body?.error?.message || "",
 					});
@@ -178,7 +180,6 @@ watch(
 	}
 );
 const onSubmit = async () => {
-	debugger;
 	if (!(await $vuelidateForgot.value.$validate())) {
 		return;
 	}
@@ -200,12 +201,15 @@ const onSubmit = async () => {
 				message: "Code send success to your email",
 			});
 		})
-		.catch(() => {
+		.catch((error) => {
+			console.log(error);
+			if(error.status !== 500)
 			$q.notify({
 				color: "negative",
 				message: "Code send fail",
 			});
 		});
+
 	emit("confirmEmail", "AccountForgot");
 };
 

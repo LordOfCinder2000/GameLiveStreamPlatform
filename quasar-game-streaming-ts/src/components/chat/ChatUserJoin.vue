@@ -7,9 +7,18 @@
 				</q-btn>
 
 				<q-toolbar-title
-					class="text-center text-subtitle2 text-uppercase text-weight-bold"
+					class="text-center text-subtitle2 text-uppercase"
 				>
-					Online Sub
+					<!-- <q-btn
+						color="primary"
+						icon="check"
+						label="OK"
+						@click="addFollower"
+					/> -->
+					Online Sub:
+					<span class="text-positive text-weight-bold">
+						{{ followers?.length }}</span
+					>
 				</q-toolbar-title>
 				<q-btn class="invisible" dense flat>
 					<q-icon />
@@ -21,24 +30,99 @@
 			<q-scroll-area
 				ref="scrollArea"
 				:thumb-style="{ width: '5px' }"
-				class="q-px-xs fit"
-				@scroll="fnToCall"
+				class="q-px-xs q-pb-sm fit"
+				id="scroll-area-with-virtual-scroll"
 			>
-				<q-infinite-scroll @load="onLoadId" :offset="0">
+				<q-infinite-scroll
+					:style="{ 'min-height': scrollAreaHeight }"
+					@load="onLoadData"
+					:offset="10"
+					class="q-pt-sm"
+					:debounce="500"
+				>
+					<!-- <q-virtual-scroll
+						scroll-target="#scroll-area-with-virtual-scroll > .scroll"
+						:items-size="followers?.length"
+						:virtual-scroll-item-size="32"
+						:items-fn="getItems"
+						v-slot="{ index, item }"
+					> -->
+					<!-- <q-intersection
+
+						class="example-item"
+					> -->
 					<UserCard
-						class="q-mt-sm"
 						v-for="follower in followers"
-						:key="follower.id"
-						:userCard="follower"
+						:key="follower.channelId"
+						class="q-mb-sm"
+						:userCard="(follower as UserCard)"
 						dense
 					>
-						<q-popup-proxy>
+						<template v-slot:middle>
+							<div></div>
+						</template>
+						<template v-slot:side>
+							<div class="row q-gutter-x-sm">
+								<q-avatar
+									square
+									size="1rem"
+									v-if="
+										channelStore.isAdmin(follower.channelId)
+									"
+								>
+									<img
+										src="~assets/images/broadcaster-badge.png"
+										alt=""
+									/>
+								</q-avatar>
+								<q-avatar
+									square
+									size="1rem"
+									v-if="follower.role == 'Moderator'"
+								>
+									<img
+										src="~assets/images/mod-badge.png"
+										alt=""
+									/>
+								</q-avatar>
+								<q-avatar
+									square
+									size="1rem"
+									v-if="follower.blockTime !== 'NoBlock'"
+								>
+									<q-icon
+										size="1rem"
+										name="speaker_notes_off"
+									/>
+								</q-avatar>
+							</div>
+						</template>
+						<template v-slot:default>
 							<ChatUserInfo
-								:name="follower.name"
-								:avatar="follower.avatar"
+								v-bind="{
+									channelId: follower.channelId ?? '',
+									avatar: follower.avatar ?? '',
+								}"
+								@toggleMod="
+									(value) => {
+										if (value) {
+											follower.role = 'Moderator';
+										} else {
+											follower.role = 'Member';
+										}
+									}
+								"
+								@toggleBan="
+									(value) => {
+										follower.blockTime = value;
+									}
+								"
 							/>
-						</q-popup-proxy>
+						</template>
 					</UserCard>
+					<!-- </q-intersection> -->
+
+					<!-- </q-virtual-scroll> -->
 					<template v-slot:loading>
 						<div class="row justify-center">
 							<q-spinner-dots color="positive" size="40px" />
@@ -51,10 +135,24 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, defineAsyncComponent, onMounted } from "vue";
+import {
+	ref,
+	defineAsyncComponent,
+	onBeforeMount,
+	computed,
+	onMounted,
+	reactive,
+} from "vue";
 import { type UserCard } from "components/live-info/UserCard.vue";
-import { QScrollArea } from "quasar";
-import { apiClient } from "src/boot/openapi-client";
+import UserCardSkeleton from "components/live-info/UserCardSkeleton.vue";
+import { QScrollArea, uid } from "quasar";
+import { apiClient, ChannelChatRoomDto } from "boot/openapi-client";
+import {
+	useChatRoomStore,
+	ChannelChatRoomInfoDtoExtend,
+} from "stores/components/chat-room-store";
+import { useChannelStore } from "stores/components/channel-store";
+
 const UserCard = defineAsyncComponent(
 	() => import("components/live-info/UserCard.vue")
 );
@@ -62,62 +160,87 @@ const ChatUserInfo = defineAsyncComponent(
 	() => import("components/chat/ChatUserInfo.vue")
 );
 
-const followers = ref<UserCard[] | null>([]);
-
-// onMounted((number = 100) => {
-// 	let count = 0;
-// 	for (let index = 0; index < number; index++) {
-// 		followers.value?.push({
-// 			id: count++,
-// 			name: `gatay${count}`,
-// 			avatar: `https://i.pravatar.cc/${100 + index * 2}`,
-// 		});
-// 	}
-// });
-
+const chatRoomStore = useChatRoomStore();
+const channelStore = useChannelStore();
+const followers = ref<ChannelChatRoomInfoDtoExtend[]>([]);
 const scrollArea = ref<QScrollArea | null>(null);
+const scrollAreaHeight = ref();
 
-const infiniteScroll = scrollArea.value?.getScrollTarget();
+onMounted(async () => {
+	if (scrollArea.value)
+		scrollAreaHeight.value =
+			scrollArea.value.$el.firstChild.getBoundingClientRect().height +
+			"px";
+});
 
-let count = 0;
-const onLoadId = async (index: number, done: () => void) => {
-	console.log(index);
-	await apiClient.chatRoom
-		.getListChannelJoined(
-			"b278cac9-4990-a284-6e5f-3a0763c7e12a",
-			false,
-			"",
-			10 * index,
-			10
-		)
+onBeforeMount(async () => {
+	await getChannelInChatRoom(0, 20);
+});
+
+const getChannelInChatRoom = async (skip: number, take: number) => {
+	return await apiClient.chatRoom
+		.getListChannelJoined(chatRoomStore.chatRoom.id ?? "", "", skip, take)
 		.then((data) => {
 			data.items?.forEach((channel) => {
 				followers.value?.push({
-					id: count++,
-					name: channel.id ?? "null",
-					avatar: `https://i.pravatar.cc/${100 + index * 2}`,
+					channelId: channel.channelId,
+					ownerChannelUserName: channel.ownerChannelUserName,
+					avatar: `${process.env.API_URL}/api/account/${channel.channelId}/profile-picture`,
+					blockTime: channel.blockTime,
+					connectedTime: channel.connectedTime,
+					role: channel.role,
 				});
 			});
+
+			return data;
+		})
+		.catch((error) => {
+			console.log(error);
+			throw error;
+		});
+};
+
+const onLoadData = async (index: number, done: (stop: boolean) => void) => {
+	console.log(index);
+
+	await getChannelInChatRoom(5 * index + 15, 5)
+		.then((data) => {
+			if (data.items?.length == 0) {
+				done(true);
+			}
+		})
+		.catch(() => {
+			done(true);
 		})
 		.finally(() => {
-			done();
+			done(false);
 		});
+	//// ================== Test
+	//let count = 0;
+	// if (temp == 1) return;
+	// temp++;
+	// let record = 5;
 	// setTimeout(() => {
-	// 	let count = 0;
-	// 	for (let index = 0; index < 5; index++) {
+	// 	for (let i = 0; i < record; i++) {
 	// 		followers.value?.push({
-	// 			id: count++,
+	// 			id: uid(),
 	// 			name: `gatay${count}`,
-	// 			avatar: `https://i.pravatar.cc/${100 + index * 2}`,
+	// 			avatar: `https://i.pravatar.cc/${100 + i * 2}`,
 	// 		});
 	// 	}
 	// 	done();
-	// }, 2000);
+	// }, 500);
 };
 
-const fnToCall = () => {
-	console.log("go");
+const addFollower = () => {
+	followers.value?.push({
+		channelId: uid(),
+		ownerChannelUserName: "null",
+		avatar: `https://i.pravatar.cc/${1}`,
+	});
 };
+
+defineExpose({ followers });
 </script>
 
 <style lang="scss" scoped></style>

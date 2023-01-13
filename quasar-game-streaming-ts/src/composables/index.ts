@@ -1,3 +1,3 @@
-import useAuthComp from "./useAuthComp";
+import useAuthComp from "./useAuth";
 
 export { useAuthComp };

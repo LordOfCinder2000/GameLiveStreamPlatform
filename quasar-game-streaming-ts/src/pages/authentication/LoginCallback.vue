@@ -34,7 +34,9 @@ const router = useRouter();
 onBeforeMount(async () => {
 	try {
 		await authClient.authCookie.removeIdentityCookie();
-	} catch (error) {}
+	} catch (error) {
+		console.log(error);
+	}
 	// authService.userManager
 	// 	.signinPopupCallback()
 	// 	.then(function (user) {

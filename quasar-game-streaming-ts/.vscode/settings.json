@@ -9,5 +9,5 @@
 	},
 	"eslint.validate": ["javascript", "javascriptreact", "typescript", "vue"],
 	"typescript.tsdk": "node_modules/typescript/lib",
-	"cSpell.words": ["qclosedrawer", "signalr", "vnode"]
+	"cSpell.words": ["composables", "qclosedrawer", "signalr", "vnode"]
 }

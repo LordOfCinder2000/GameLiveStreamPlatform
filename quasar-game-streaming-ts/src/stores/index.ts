@@ -3,7 +3,7 @@ import { createPinia, PiniaPluginContext } from "pinia";
 import { Router } from "vue-router";
 import cloneDeep from "lodash.clonedeep";
 
-import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
+import piniaPluginPersistedState from "pinia-plugin-persistedstate";
 
 /*
  * When adding new properties to stores, you should also
@@ -34,7 +34,7 @@ export default store((/* { ssrContext } */) => {
 	const pinia = createPinia();
 
 	// You can add Pinia plugins here
-	pinia.use(piniaPluginPersistedstate);
+	pinia.use(piniaPluginPersistedState);
 	pinia.use(resetStore);
 	return pinia;
 });

@@ -2,19 +2,25 @@
 	<div v-if="show" :class="[{ 'q-list--dense': dense }, 'user-card']">
 		<q-item :dense="dense" clickable class="rounded-borders">
 			<q-item-section avatar>
-				<q-avatar :size="dense ? '2rem' : ''">
-					<img :src="userCard.avatar" alt="" />
-				</q-avatar>
+				<ProfileAvatar
+					:size="dense ? '2rem' : ''"
+					:src="userCard.avatar"
+				/>
 			</q-item-section>
 
 			<q-item-section>
 				<q-item-label :lines="1">
-					{{ userCard.name }}
-					<q-badge v-if="!dense" align="middle" color="red">
-						LIVE
-					</q-badge>
+					{{ userCard.ownerChannelUserName }}
+					<slot name="middle">
+						<q-badge align="middle" color="red"> LIVE </q-badge>
+					</slot>
 				</q-item-label>
-				<q-item-label v-if="userCard.followers" caption :lines="1">
+				<q-item-label
+					v-if="userCard.followers"
+					caption
+					:lines="1"
+					v-once
+				>
 					{{
 						// $formatNumber(userCard.followers, {
 						//   notation: "compact",
@@ -26,21 +32,24 @@
 				</q-item-label>
 			</q-item-section>
 
-			<q-item-section v-if="!dense" side>
-				<q-btn
-					dense
-					unelevated
-					color="positive"
-					no-caps
-					no-wrap
-					class="q-px-sm text-weight-regular"
-				>
-					<q-icon size="xs" name="favorite_border" />
-					<div class="row q-ml-sm flex-center">
-						<span>Follow</span>
-					</div>
-				</q-btn>
+			<q-item-section side>
+				<slot name="side">
+					<q-btn
+						dense
+						unelevated
+						color="positive"
+						no-caps
+						no-wrap
+						class="q-px-sm text-weight-regular"
+					>
+						<q-icon size="xs" name="favorite_border" />
+						<div class="row q-ml-sm flex-center">
+							<span>Follow</span>
+						</div>
+					</q-btn>
+				</slot>
 			</q-item-section>
+
 			<slot name="default" />
 		</q-item>
 	</div>
@@ -67,22 +76,23 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, defineAsyncComponent, onBeforeMount } from "vue";
 export interface UserCard {
-	id: string | number;
-	name: string;
-	avatar: string;
+	avatar?: string;
 	followers?: number;
+	ownerChannelUserName?: string;
 }
 
 export interface Props {
 	userCard: UserCard;
 	dense?: boolean;
 }
-
+const ProfileAvatar = defineAsyncComponent(
+	() => import("components/ProfileAvatar.vue")
+);
 const props = withDefaults(defineProps<Props>(), {
-	msg: "hello",
 	dense: false,
+	userCard: () => <UserCard>{},
 });
 
 const show = ref(false);
@@ -90,12 +100,12 @@ const show = ref(false);
 const waitFor = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 const onClick = async () => {
-	await waitFor(1000);
+	await waitFor(0);
 	show.value = true;
 };
 
-onMounted(() => {
-	onClick();
+onBeforeMount(async () => {
+	await onClick();
 });
 </script>
 

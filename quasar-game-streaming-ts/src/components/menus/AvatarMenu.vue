@@ -29,7 +29,7 @@
 
 					<q-item-section class="justify-around">
 						<q-item-label class="text-h6">
-							{{ myProfile.userName }}
+							{{ userProfileStore.myProfile.userName }}
 						</q-item-label>
 
 						<q-item-label> 1 Follower </q-item-label>
@@ -66,52 +66,69 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, h, computed } from "vue";
+import { ref, h, computed, cloneVNode } from "vue";
 import { QToggle } from "quasar";
-import { authClient } from "boot/openapi-client";
 import { useOidcStore } from "stores/modules/oidc-store";
 import { useQuasar } from "quasar";
 import { useUserProfileStore } from "stores/user-profile-store";
+import { useChatRoomStore } from "stores/components/chat-room-store";
+import { apiClient } from "boot/openapi-client";
 const $q = useQuasar();
 const darkMode = ref(false);
 
-const { myProfile } = useUserProfileStore();
+const userProfileStore = useUserProfileStore();
 
 const logout = async () => {
 	const { signOutOidcSilent } = useOidcStore();
-
-	await authClient.login
-		.logout()
-		.then(async () => {
-			debugger;
-			await signOutOidcSilent()
-				.then((succ: any) => {
-					$q.notify({
-						color: "positive",
-						message: "Logout successful",
+	const chatRoomStore = useChatRoomStore();
+	try {
+		$q.loading.show();
+		await apiClient.chat
+			.leaveChatRoom(
+				chatRoomStore.chatHubSignalR.connection.connectionId ?? "",
+				chatRoomStore.chatRoom.id
+			)
+			.then(async () => {
+				await signOutOidcSilent()
+					.then(() => {
+						$q.notify({
+							color: "positive",
+							message: "Logout successful",
+						});
+						const logoutChannel = new BroadcastChannel("logout");
+						logoutChannel.postMessage("reload");
+					})
+					.catch(() => {
+						$q.notify({
+							color: "negative",
+							message: "Logout fail",
+						});
 					});
-					const logoutChannel = new BroadcastChannel("logout");
-					logoutChannel.postMessage("reload");
-				})
-				.catch(() => {
-					$q.notify({
-						color: "negative",
-						message: "Logout fail",
-					});
-				});
-		})
-		.catch((error) => {
-			console.log(error);
-		});
+			})
+			.catch((error) => {
+				console.log(error);
+			})
+			.finally(() => {
+				$q.loading.hide();
+			});
+	} catch (error) {
+		console.log(error);
+	}
 };
 
-const vnode = () =>
-	h(
-		QToggle, // type
-		{
-			"model-value": darkMode,
-		}
-	);
+const qToggle = h(QToggle, {
+	color: "positive",
+});
+
+const onDarkmod = ref(false);
+const qToggleDarkmod = () =>
+	cloneVNode(qToggle, {
+		modelValue: onDarkmod.value,
+		"onUpdate:model-value": (value: boolean) => {
+			onDarkmod.value = value;
+			$q.dark.toggle();
+		},
+	});
 
 const menuItems = ref([
 	{
@@ -133,7 +150,7 @@ const menuItems = ref([
 		id: 4,
 		icon: "dark_mode",
 		label: "Dark mode",
-		sideComponent: vnode,
+		sideComponent: qToggleDarkmod,
 	},
 	{
 		id: 5,

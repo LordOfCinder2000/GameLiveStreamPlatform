@@ -53,7 +53,7 @@
 						indicator-color="transparent"
 						active-color="positive"
 						stretch
-						shrink
+						outside-arrows
 						mobile-arrows
 						no-caps
 					>
@@ -63,9 +63,7 @@
 							name="Home"
 							icon="home"
 						>
-							<label class="gt-md q-pl-sm cursor-inherit"
-								>Trang chủ</label
-							>
+							<div class="q-tab__label gt-md">HOME</div>
 						</q-tab>
 
 						<q-tab
@@ -74,9 +72,7 @@
 							name="Live"
 							icon="live_tv"
 						>
-							<label class="gt-md q-pl-sm cursor-inherit"
-								>Trực tiếp</label
-							>
+							<div class="q-tab__label gt-md">LIVE</div>
 						</q-tab>
 						<q-tab
 							:ripple="false"
@@ -120,15 +116,15 @@
 									</p>
 								</div>
 							</CustomTooltipSimple>
-							<label class="gt-md q-pl-sm cursor-inherit"
-								>Phân loại
+							<div class="q-tab__label gt-md">
+								CATEGORIES
 								<q-icon
 									class="q-btn-dropdown__arrow"
 									:class="{ 'rotate-180': rotateArrow }"
 									name="arrow_drop_down"
 									size="sm"
 								/>
-							</label>
+							</div>
 						</q-tab>
 					</q-tabs>
 
@@ -340,7 +336,6 @@
 			</div>
 		</q-footer>
 		<AccountPopup
-			v-if="accountPopupOpen"
 			v-model="accountPopupOpen"
 			:tab="accountMode"
 			class="z-max"
@@ -365,6 +360,7 @@ const AccountPopup = defineAsyncComponent(
 const AvatarMenu = defineAsyncComponent(
 	() => import("components/menus/AvatarMenu.vue")
 );
+
 const linksList = [
 	{
 		title: "Docs",
@@ -519,6 +515,9 @@ const footerButtons = ref([
 <style lang="scss" scoped>
 .q-toolbar {
 	min-height: 60px;
+	.q-toolbar__title {
+		flex: 0;
+	}
 }
 .q-drawer-container {
 	:deep(.q-drawer) {

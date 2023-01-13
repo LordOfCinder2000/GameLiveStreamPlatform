@@ -17,7 +17,15 @@
 					:mini-width="width"
 					:width="width"
 				>
-					<ChatUserJoin />
+					<Suspense>
+						<ChatUserJoin
+							ref="chatUserJoin"
+							v-if="rightDrawerOpen"
+						/>
+						<template #fallback>
+							<q-inner-loading color="positive" :showing="true" />
+						</template>
+					</Suspense>
 				</q-drawer>
 
 				<div class="chat-header col-auto">
@@ -31,7 +39,10 @@
 							<q-icon name="mdi-arrow-expand-right" />
 						</q-btn>
 
-						<Teleport to="#chat-room-wrapper">
+						<Teleport
+							v-if="!isPopoutChatRoom"
+							to="#chat-room-wrapper"
+						>
 							<div
 								v-if="!isPopoutChatRoom && collapseChat"
 								class="transparent chat-btn-collapse absolute-top-left"
@@ -57,7 +68,6 @@
 							@click.prevent="
 								() => {
 									rightDrawerOpen = true;
-									showNotification = !showNotification;
 								}
 							"
 							dense
@@ -67,16 +77,19 @@
 						</q-btn>
 					</q-toolbar>
 				</div>
-				<q-separator />
+				<q-separator color="positive" />
 
 				<div class="chat-body col relative-position">
 					<div class="fit column flex-center">
 						<ChatNotification
 							class="absolute-top"
-							:showNotification="showNotification"
-							@close="showNotification = false"
-						/>
-						<div v-show="hideChatBox">
+							v-model="showNotification"
+							:disable="disableNotification"
+							@hide="showNotification = false"
+						>
+							{{ notifyMessage }}
+						</ChatNotification>
+						<div v-if="hideChatBox">
 							<div class="text-center q-mb-sm">
 								<span>Chat box is hidden</span>
 							</div>
@@ -99,17 +112,25 @@
 							<div
 								class="chat-wrapper q-pt-md q-pb-sm column relative-position"
 							>
-								<span class="q-mb-sm text-center">
+								<span class="q-mb-sm">
 									Chào mừng đến kênh chat
 								</span>
-
-								<ChatMessage
-									ref="chatMessage"
-									v-for="usersMessage in usersMessages"
-									:key="usersMessage.id"
-									:chatMessage="usersMessage"
-									:showTimestamp="showTimestamp"
-								/>
+								<div style="width: 100%" class="chat-messages">
+									<ChatMessage
+										v-for="usersMessage in userMessages"
+										:key="usersMessage.chatMessage.id"
+										:chatMessage="usersMessage.chatMessage"
+										:showTimestamp="showTimestamp"
+										:blurMessage="usersMessage.blurMessage"
+										@mention="
+											(value) => {
+												chatRoomStore.setMentionUser(
+													value
+												);
+											}
+										"
+									/>
+								</div>
 
 								<q-btn
 									v-if="newMessageBtn"
@@ -128,59 +149,31 @@
 						</q-scroll-area>
 					</div>
 				</div>
-				<q-separator />
+				<q-separator color="positive" />
 
-				<div class="chat-footer col-auto">
-					<q-toolbar>
-						<q-toolbar-title>
-							<!-- Chat INPUT -->
-							<Mentionable
-								:keys="['@']"
-								:items="items"
-								offset="6"
-							>
-								<q-input
-									ref="chatInput"
-									placeholder="Gửi tin nhắn"
-									v-model="chatText"
-									dense
-									maxlength="301"
-									standout
-									input-style="max-height: 3rem"
-									autogrow
-									:rules="[
-										(val) =>
-											val.length <= 300 ||
-											'Please use maximum 300 characters',
-									]"
-									hide-bottom-space
-									class="relative-position"
-									@blur="getCurrentTextSelect"
-								>
-									<template v-slot:append>
-										<q-btn
-											dense
-											flat
-											@click="showEmojiHandel"
-										>
-											<q-icon name="add_reaction" />
-										</q-btn>
-										<ChatEmoji
-											@onSelectEmoji="onSelectEmoji"
-										/>
-										<!-- class="absolute-right"
-							style="top: -20rem"
-							v-if="showEmojiPicker"
-							:native="true" -->
-									</template>
-								</q-input>
-							</Mentionable>
-						</q-toolbar-title>
-					</q-toolbar>
-					<q-toolbar>
-						<q-toolbar-title>
-							<div class="row overflow-hidden">
-								<div class="col q-gutter-sm">
+				<div class="chat-footer col-auto q-py-xs">
+					<div class="column">
+						<!-- Chat INPUT -->
+						<Suspense>
+							<ChatInput
+								@update:model-value="
+									(value) => {
+										sendMessageError = '';
+									}
+								"
+								@sendMessage="sendMessageToChatRoom"
+								:errorMessage="sendMessageError"
+								class="q-toolbar"
+							/>
+
+							<template #fallback>
+								<ChatInputSkeleton class="q-toolbar" />
+							</template>
+						</Suspense>
+
+						<div class="q-toolbar flex items-center">
+							<div class="row full-width">
+								<div class="flex items-center q-gutter-x-sm">
 									<q-btn dense flat>
 										<q-icon name="settings" />
 										<ChatSetting
@@ -196,18 +189,18 @@
 										<q-icon name="outbound" />
 									</q-btn>
 								</div>
-
-								<div class="col-auto">
+								<q-space />
+								<div>
 									<q-btn
-										@click="sendMessageToChatRoom"
 										class="float-right"
 										color="positive"
-										label="Gửi"
+										label="Send"
+										@click="sendMessageToChatRoom"
 									/>
 								</div>
 							</div>
-						</q-toolbar-title>
-					</q-toolbar>
+						</div>
+					</div>
 				</div>
 			</div>
 		</q-layout>
@@ -219,40 +212,28 @@ import {
 	watch,
 	nextTick,
 	onBeforeMount,
-	computed,
 	onBeforeUnmount,
 	defineAsyncComponent,
-	onMounted,
+	computed,
+	onUnmounted,
 } from "vue";
-import { QScrollArea, QInput, openURL, useQuasar } from "quasar";
-
-import { Mentionable } from "vue-mention";
-import { useRouter, useRoute } from "vue-router";
-// import ChatMessage from "components/chat/ChatMessage.vue";
-// import ChatEmoji from "components/chat/ChatEmoji.vue";
-// import ChatSetting from "components/chat/ChatSetting.vue";
+import { QScrollArea, openURL, useQuasar, date, uid } from "quasar";
+import { useRoute } from "vue-router";
 import { useChatHubSignalR } from "boot/signalr";
-import { apiClient, apiClientRequireAuth } from "boot/openapi-client";
-import { useChatRoomStore } from "stores/components/chat-room-store";
-import { useUserStore } from "stores/components/user-store";
+import { apiClient } from "boot/openapi-client";
+import { Props as ChatMessageProps } from "components/chat/ChatMessage.vue";
 import { useOidcStore } from "stores/modules/oidc-store";
+import {
+	useChatRoomStore,
+	ChannelChatRoomInfoDtoExtend,
+} from "stores/components/chat-room-store";
 import { useAccountStore } from "stores/components/account-store";
-import { ChatMessage } from "components/chat/ChatMessage.vue";
-import { number } from "@intlify/core-base";
-//#region
-// export interface ChatMessage {
-// 	id: string | number;
-// 	timestamp: string;
-// 	name: string;
-// 	avatar: string;
-// 	message: string;
-// }
+import { useChannelStore } from "stores/components/channel-store";
+import { useUserProfileStore } from "stores/user-profile-store";
+//#region Async import
 
 const ChatMessage = defineAsyncComponent(
 	() => import("components/chat/ChatMessage.vue")
-);
-const ChatEmoji = defineAsyncComponent(
-	() => import("components/chat/ChatEmoji.vue")
 );
 const ChatSetting = defineAsyncComponent(
 	() => import("components/chat/ChatSetting.vue")
@@ -263,6 +244,10 @@ const ChatUserJoin = defineAsyncComponent(
 const ChatNotification = defineAsyncComponent(
 	() => import("components/chat/ChatNotification.vue")
 );
+const ChatInput = defineAsyncComponent(
+	() => import("components/chat/ChatInput.vue")
+);
+//#endregion
 
 const props = defineProps({
 	width: {
@@ -278,6 +263,7 @@ const props = defineProps({
 const $q = useQuasar();
 
 const chat = ref(null);
+const chatUserJoin = ref<InstanceType<typeof ChatUserJoin> | null>(null);
 const hideChatBox = ref(false);
 const isPopoutChatRoom = ref(false);
 const collapseChat = ref(false);
@@ -285,11 +271,11 @@ const rightDrawerOpen = ref(false);
 const collapseChatTrigger = () => {
 	collapseChat.value = !collapseChat.value;
 };
-//Router control
+// Router control
 const route = useRoute();
+const chatRoomStore = useChatRoomStore();
+const userProfileStore = useUserProfileStore();
 
-const channelId = ref<string | null>(null);
-const { chatRoom } = useChatRoomStore();
 onBeforeMount(() => {
 	if (route.name == "popout-chat") {
 		isPopoutChatRoom.value = true;
@@ -297,26 +283,8 @@ onBeforeMount(() => {
 		isPopoutChatRoom.value = false;
 	}
 });
-// onBeforeMount(async () => {
-// 	if (route.params["channel"]) {
-// 		await apiClient.userLookup
-// 			.findByUserName(route.params["channel"] as string)
-// 			.then((succ) => {
-// 				if (succ.id) {
-// 					channelId.value = succ.id;
-// 				}
-// 			})
-// 			.catch((err) => {});
-// 	} else if (props.channelId) {
-// 		channelId.value = props.channelId;
-// 	}
 
-// 	if (!channelId.value) {
-// 		await router.push({ name: "error-404" });
-// 	}
-// });
-
-// Chat scroll
+//#region  Chat Scroll
 const chatScroll = ref<QScrollArea | null>(null);
 const scrollToBottom = (duration: number) => {
 	const scrollHeight = chatScroll.value?.getScrollTarget().scrollHeight;
@@ -356,42 +324,21 @@ const chatScrollHandler = (info: any) => {
 	}
 };
 
-// Mention
-const items = ref([
-	{
-		value: "cat",
-		label: "Mr Cat",
-	},
-	{
-		value: "dog",
-		label: "Mr Dog",
-	},
-]);
+//#endregion
 
-const chatText = ref("");
-const chatInput = ref<QInput | null>(null);
-let currentTextSelect = -1;
-const getCurrentTextSelect = () => {
-	currentTextSelect = (chatInput.value?.nativeEl as HTMLTextAreaElement)
-		.selectionStart;
-};
-
-// Chat Messages
-const usersMessages = ref<ChatMessage[] | null>([]);
+//#region Chat Message
+const userMessages = ref<ChatMessageProps[]>([]);
 
 let maxChatMessages = 150;
 let flagScroll = true;
 
 watch(
-	usersMessages,
+	userMessages,
 	() => {
-		if (
-			usersMessages.value &&
-			usersMessages.value.length > maxChatMessages
-		) {
-			usersMessages.value.splice(
+		if (userMessages.value && userMessages.value.length > maxChatMessages) {
+			userMessages.value.splice(
 				0,
-				usersMessages.value.length - maxChatMessages
+				userMessages.value.length - maxChatMessages
 			);
 		}
 		nextTick(() => {
@@ -414,68 +361,63 @@ watch(
 		deep: true,
 	}
 );
+//#endregion
 
-// Dữ liệu để test
-let count = 0;
-const sendMessage = (number: number) => {
-	for (let index = 0; index < number; index++) {
-		usersMessages.value?.push({
-			id: count++,
-			timestamp: "00:00",
-			name: `gatay${count}`,
-			avatar: `https://i.pravatar.cc/${100 + index * 2}`,
-			message:
-				"Lorem, ipsum dolor sit amet consectetur adipisicing elit.Lorem, ipsum dolor sit amet consectetur adipisicing elit.Lorem, ipsum dolor sit amet consectetur adipisicing elit.",
-		});
-	}
-};
+/* Dữ liệu để test
+// let count = 0;
+// const sendMessage = (number: number) => {
+// 	for (let index = 0; index < number; index++) {
+// 		userMessages.value?.push({
+// 			id: ++count,
+// 			senderId: count.toString(),
+// 			timestamp: "00:00",
+// 			name: `gatay${count}`,
+// 			avatar: `https://i.pravatar.cc/${100 + index * 2}`,
+// 			message:
+// 				"Lorem, ipsum dolor sit amet consectetur adipisicing elit.Lorem, ipsum dolor sit amet consectetur adipisicing elit.Lorem, ipsum dolor sit amet consectetur adipisicing elit.",
+// 		});
+// 	}
+// };
 
-// Chat emoji
-const showEmojiPicker = ref(false);
-const onSelectEmoji = (emoji: any) => {
-	if (currentTextSelect != -1) {
-		chatText.value = [
-			chatText.value.slice(0, currentTextSelect),
-			emoji.native,
-			chatText.value.slice(currentTextSelect),
-		].join("");
-	} else {
-		chatText.value += emoji.native;
-	}
-};
-const showEmojiHandel = () => {
-	showEmojiPicker.value = !showEmojiPicker.value;
-};
 
-onMounted(() => {
-	nextTick(() => {
-		nextTick(() => {
-			var timesRun = 0;
-			var interval = setInterval(function () {
-				sendMessage(1);
-				timesRun += 1;
-				if (timesRun === 15) {
-					clearInterval(interval);
-				}
-				//do whatever here..
-			}, 100);
-		});
-	});
-});
+// onMounted(() => {
+// 	nextTick(() => {
+// 		nextTick(() => {
+// 			var timesRun = 0;
+// 			var interval = setInterval(function () {
+// 				sendMessage(1);
+// 				timesRun += 1;
+// 				if (timesRun === 15) {
+// 					clearInterval(interval);
+// 				}
+// 				//do whatever here..
+// 			}, 100);
+// 		});
+// 	});
+// });
+*/
 
-const chatMessage = ref<InstanceType<typeof ChatMessage> | null>();
+//#region Chat Timestamp
 const showTimestamp = ref(false);
 const toggleTimestamp = (value: boolean) => {
 	showTimestamp.value = value;
 };
+//#endregion
 
-const showNotification = ref(true);
+//#region Chat Notify
+const notifyMessage = ref("Welcome");
+const showNotification = ref(false);
+const disableNotification = ref(false);
 const toggleNotification = (value: boolean) => {
-	showNotification.value = value;
+	disableNotification.value = value;
+};
+const setTextAndShowNotification = (message: string) => {
+	notifyMessage.value = message;
+	showNotification.value = true;
 };
 //#endregion
 
-// Signalr
+//#region Chat Signalr
 const {
 	chatHubSignalR,
 	ReceiveChatMessage,
@@ -484,71 +426,149 @@ const {
 	OnNotFound,
 	JoinChatRoom,
 	GetChannelInChatRoom,
-	LeaveChatRoom,
+	OnBlockedError,
+	ChangeChatRoomSettingNotify,
+	ChannelChatRoomActionNotify,
 } = useChatHubSignalR();
+chatRoomStore.chatHubSignalR = chatHubSignalR;
 
-const { findUserById } = useUserStore();
-
-onBeforeMount(async () => {
-	//Api
-	chatHubSignalR.connectionSuccess(async () => {
+const leaveChatRoom = new BroadcastChannel("leaveChatRoom");
+leaveChatRoom.onmessage = async (message) => {
+	debugger;
+	if (message.data === userProfileStore.myProfile.id) {
 		await apiClient.chat
 			.joinChatRoom(
 				chatHubSignalR.connection.connectionId ?? "",
-				chatRoom.id
+				chatRoomStore.chatRoom.id
 			)
 			.catch((error) => {
 				console.log(error);
 			});
+	}
+
+	leaveChatRoom.close();
+};
+
+onBeforeMount(async () => {
+	//Api
+	chatHubSignalR.connectionSuccess(async () => {
+		if (chatHubSignalR.connection.connectionId) {
+			await apiClient.chat
+				.joinChatRoom(
+					chatHubSignalR.connection.connectionId,
+					chatRoomStore.chatRoom.id
+				)
+				.then(() => {
+					// document.addEventListener("visibilitychange", () => {
+					// 	if (document.visibilityState === "hidden") {
+					// 	}
+					// });
+					window.addEventListener("beforeunload", function (event) {
+						apiClient
+							.config({ KEEP_ALIVE: true })
+							.chat.leaveChatRoom(
+								chatHubSignalR.connection.connectionId ?? "",
+								chatRoomStore.chatRoom.id
+							);
+						const leaveChatRoom = new BroadcastChannel(
+							"leaveChatRoom"
+						);
+						leaveChatRoom.postMessage(
+							userProfileStore.myProfile.id
+						);
+						event.preventDefault();
+					});
+				});
+		}
 	});
 
 	//SignalR
 	// await chatHubSignalR.invoke(JoinChatRoom, chatRoom.id).catch(() => {});
 });
 
+chatHubSignalR.connection.onclose(async () => {
+	debugger;
+	await apiClient.chat
+		.leaveChatRoom(
+			chatHubSignalR.connection.connectionId ?? "",
+			chatRoomStore.chatRoom.id
+		)
+		.catch((error) => {
+			console.log(error);
+		});
+});
+
 onBeforeUnmount(async () => {
 	//Api
-	chatHubSignalR.connectionSuccess(async () => {
-		await apiClient.chat
-			.leaveChatRoom(
-				chatHubSignalR.connection.connectionId ?? "",
-				chatRoom.id
-			)
-			.catch((error) => {
+
+	await apiClient.chat
+		.leaveChatRoom(
+			chatHubSignalR.connection.connectionId ?? "",
+			chatRoomStore.chatRoom.id
+		)
+		.then(async () => {
+			await chatHubSignalR.connection.stop().catch((error) => {
 				console.log(error);
 			});
-	});
-
+		})
+		.catch((error) => {
+			console.log(error);
+		});
 	//SignalR
 	// await chatHubSignalR.invoke(LeaveChatRoom, chatRoom.id).catch(() => {});
 });
 
+const sendMessageError = ref("");
 const sendMessageToChatRoom = async () => {
+	await chatRoomStore
+		.getChatRoomSetting()
+		.then((data) => {})
+		.catch((error) => {
+			console.log(error);
+		});
 	const { oidcIsAuthenticated } = useOidcStore();
 	if (oidcIsAuthenticated) {
 		//Api
-		await apiClientRequireAuth.chat
-			.sendMessageToChatRoom({
-				content: chatText.value,
-				receivedChatRoomId: chatRoom.id,
-			})
-			.catch((error) => {
-				console.log(error);
-			});
-
+		if (chatHubSignalR.connection.connectionId) {
+			await apiClient
+				.config({
+					HEADERS: {
+						"X-ClientId": `ChatRoomId_${chatRoomStore.chatRoom.id}`,
+					},
+				})
+				.chat.sendMessageToChatRoom(
+					chatHubSignalR.connection.connectionId,
+					{
+						content: chatRoomStore.chatText,
+						receivedChatRoomId: chatRoomStore.chatRoom.id ?? "",
+					}
+				)
+				.then(() => {
+					scrollToBottom(0);
+					sendMessageError.value = "";
+				})
+				.catch((error: ApiError) => {
+					console.log(error);
+					if (error.status == 429) {
+						sendMessageError.value = "Slow down cowboy!";
+					}
+					if (error.status == 403 && error.body.error) {
+						sendMessageError.value =
+							error.body.error.message ?? "Error send message!";
+						// error.body.;
+					}
+				});
+		}
 		//SignalR
 		// await chatHubSignalR
 		// 	.invoke(SendMessageToChatRoom, {
-		// 		content: chatText.value,
+		// 		content: chatRoomStore.chatText.value,
 		// 		receivedChatRoomId: chatRoom.id,
 		// 	})
 		// 	.catch((error) => {
 		// 		console.log(error);
 		// 	});
 	} else {
-		// const bus = inject("bus") as EventBus;
-		// bus.emit("some-event", "arg1 value", "arg2 value", "arg3 value");
-
 		const { openLoginPopup } = useAccountStore();
 		openLoginPopup();
 	}
@@ -557,16 +577,49 @@ const sendMessageToChatRoom = async () => {
 chatHubSignalR.on(ReceiveChatMessage, async (data) => {
 	console.log(data);
 	const content = data.content?.trim();
-
 	if (content) {
-		const userSendMessage = await findUserById(data.senderChannelId ?? "");
-		usersMessages.value?.push({
-			id: count++,
-			timestamp: "00:00",
-			name: userSendMessage.userName ?? "",
-			avatar: `${process.env.API_URL}/api/account/${data.senderChannelId}/profile-picture`,
-			message: content,
+		userMessages.value?.push({
+			showTimestamp: false,
+			blurMessage: false,
+			chatMessage: {
+				id: uid(),
+				senderChannelId: data.senderChannelId ?? "",
+				creationTime:
+					date.formatDate(data.creationTime, "HH:mm") ?? "00:00",
+				senderUserName: data.senderUserName ?? "no-name",
+				avatar: `${process.env.API_URL}/api/account/${data.senderChannelId}/profile-picture`,
+				content: content,
+			},
 		});
+
+		const index = chatRoomStore.userChatted.findIndex(
+			(x) => x.channelId === data.senderChannelId
+		);
+
+		if (index === -1 && data.senderChannelId) {
+			chatRoomStore.userChatted.push({
+				channelId: data.senderChannelId,
+				ownerChannelUserName: data.senderUserName,
+			});
+		}
+
+		const mentionUsers = [
+			...new Set(
+				content
+					.match(/@\w+/g)
+					?.map((mentionUser) => mentionUser.substring(1))
+			),
+		];
+		if (
+			data.senderUserName !== userProfileStore.myProfile.userName &&
+			mentionUsers?.findIndex(
+				(x) => x === userProfileStore.myProfile.userName
+			) !== -1
+		) {
+			setTextAndShowNotification(
+				`${data.senderUserName} has mentioned you in a message!`
+			);
+		}
 	}
 });
 
@@ -588,7 +641,100 @@ chatHubSignalR.on(GetChannelInChatRoom, (data) => {
 	console.log(data);
 });
 
-///////////////
+chatHubSignalR.on(OnBlockedError, (data) => {
+	$q.notify({
+		color: "negative",
+		message: `Your channel has been blocked for ${data} minus`,
+	});
+});
+
+chatHubSignalR.on(ChangeChatRoomSettingNotify, (data) => {
+	console.log("signalR: " + data);
+	chatRoomStore.settings = data;
+});
+
+const toggleBlurMessage = (senderChannelId: string, blurMessage: boolean) => {
+	userMessages.value.forEach((usersMessage, index) => {
+		if (usersMessage.chatMessage.senderChannelId === senderChannelId) {
+			userMessages.value[index].blurMessage = blurMessage;
+		}
+	});
+};
+
+chatHubSignalR.on(ChannelChatRoomActionNotify, async (data) => {
+	console.log("signalR: " + data.ownerChannelUserName);
+	debugger;
+	switch (data.action) {
+		case "Block":
+			if (data.blockTime !== null && data.blockTime !== "NoBlock") {
+				const banTime = chatRoomStore.banTimes.find(
+					(banTime) => banTime.time === data.blockTime
+				);
+				setTextAndShowNotification(
+					`${data.ownerChannelUserName} has been banned from messaging in the chat room for ${banTime?.label}!`
+				);
+
+				toggleBlurMessage(data.channelId ?? "", true);
+			} else if (data.blockTime === "NoBlock") {
+				setTextAndShowNotification(
+					`${data.ownerChannelUserName} has been unbanned from messaging in the chat room!`
+				);
+				toggleBlurMessage(data.channelId ?? "", false);
+			}
+			break;
+		case "SetRole":
+			if (data.role !== null && data.role === "Moderator") {
+				setTextAndShowNotification(
+					`${data.ownerChannelUserName} has been set is moderator of chat room!`
+				);
+			} else {
+				setTextAndShowNotification(
+					`${data.ownerChannelUserName} has been unset as moderator from chat room!`
+				);
+			}
+			break;
+		case "Join":
+			if (data.ownerChannelUserName) {
+				setTextAndShowNotification(
+					`${data.ownerChannelUserName} has join the chat room`
+				);
+			}
+			break;
+		case "Leave":
+			if (data.channelId === userProfileStore.myProfile.id) {
+				return;
+			}
+			break;
+		default:
+			break;
+	}
+
+	if (chatUserJoin.value) {
+		const index = chatUserJoin.value.followers.findIndex(
+			(follower) => follower.channelId === data.channelId
+		);
+
+		// not in array
+		if (index === -1) {
+			if (data.action === "Join") {
+				chatUserJoin.value.followers.push(data);
+			}
+		} else {
+			if (data.action === "Leave") {
+				chatUserJoin.value.followers =
+					chatUserJoin.value.followers.filter(
+						(follower) => follower.channelId !== data.channelId
+					);
+			}
+			if (data.action === "SetRole" || data.action === "Block")
+				chatUserJoin.value.followers[index] = {
+					...chatUserJoin.value.followers[index],
+					...data,
+				};
+		}
+	}
+});
+// #endregion
 
 const openPopout = async () => {
 	openURL(
@@ -606,6 +752,11 @@ const openPopout = async () => {
 		}
 	);
 };
+
+onUnmounted(() => {
+	chatRoomStore.$reset();
+	useChannelStore().$reset();
+});
 
 defineExpose({
 	collapseChat,
@@ -635,6 +786,11 @@ defineExpose({
 			.q-layout {
 				overflow: hidden;
 				height: 100%;
+			}
+			.q-scrollarea {
+				&__content {
+					max-width: 100%;
+				}
 			}
 		}
 	}
