@@ -79,9 +79,9 @@
 					<q-item-section>
 						<q-item-label lines="1">
 							<UserForm
-								v-if="edited.includes(profile.name)"
+								v-if="editeds.includes(profile.name)"
 								@close="
-									edited = edited.filter(
+									editeds = editeds.filter(
 										(item) => item !== profile.name
 									)
 								"
@@ -99,13 +99,13 @@
 
 					<q-item-section class="text-hover" side>
 						<q-btn
-							v-if="!edited.includes(profile.name)"
+							v-if="!editeds.includes(profile.name)"
 							color="positive"
 							dense
 							flat
 							no-caps
 							label="Edit"
-							@click="edited.push(profile.name)"
+							@click="editeds.push(profile.name)"
 						/>
 					</q-item-section>
 				</q-item>
@@ -159,9 +159,9 @@
 					<q-item-section>
 						<q-item-label lines="1">
 							<UserForm
-								v-if="edited.includes('link')"
+								v-if="editeds.includes('link')"
 								@close="
-									edited = edited.filter(
+									editeds = editeds.filter(
 										(item) => item !== 'link'
 									)
 								"
@@ -204,7 +204,7 @@
 									unelevated
 									color="positive"
 									label="Add"
-									@click="edited.push('link')"
+									@click="editeds.push('link')"
 									no-caps
 								/>
 							</div>
@@ -217,7 +217,7 @@
 								<q-item-section>
 									<q-btn
 										v-if="
-											!edited.includes('link') &&
+											!editeds.includes('link') &&
 											validLinks.length > 0
 										"
 										color="positive"
@@ -225,7 +225,7 @@
 										flat
 										no-caps
 										label="Edit"
-										@click="edited.push('link')"
+										@click="editeds.push('link')"
 									/>
 								</q-item-section>
 							</q-item>
@@ -237,29 +237,23 @@
 	</q-card>
 </template>
 
-<script setup>
-import {
-	ref,
-	shallowRef,
-	defineAsyncComponent,
-	onMounted,
-	watchEffect,
-} from "vue";
+<script lang="ts" setup>
+import { ref, shallowRef, defineAsyncComponent } from "vue";
 
 import UserName from "components/user/profile/UserName.vue";
 import UserGender from "components/user/profile/UserGender.vue";
 import UserSocialLink from "components/user/profile/UserSocialLink.vue";
-const AvatarEditor = defineAsyncComponent(() =>
-	import("components/user/profile/AvatarEditor.vue")
+const AvatarEditor = defineAsyncComponent(
+	() => import("components/user/profile/AvatarEditor.vue")
 );
-const UserBirthDate = defineAsyncComponent(() =>
-	import("components/user/profile/UserBirthDate.vue")
+const UserBirthDate = defineAsyncComponent(
+	() => import("components/user/profile/UserBirthDate.vue")
 );
-const UserAbout = defineAsyncComponent(() =>
-	import("components/user/profile/UserAbout.vue")
+const UserAbout = defineAsyncComponent(
+	() => import("components/user/profile/UserAbout.vue")
 );
-const UserForm = defineAsyncComponent(() =>
-	import("components/user/profile/UserForm.vue")
+const UserForm = defineAsyncComponent(
+	() => import("components/user/profile/UserForm.vue")
 );
 
 const hadAvatar = ref(false);
@@ -311,7 +305,7 @@ const profiles = shallowRef([
 	},
 ]);
 
-const edited = ref([]);
+const editeds = ref<string[]>([]);
 
 const validLinks = ref([
 	{
@@ -323,10 +317,6 @@ const validLinks = ref([
 		value: "https://www.youtube.com/c/",
 	},
 ]);
-
-const show = (e) => {
-	console.log(e);
-};
 </script>
 
 <style lang="scss" scoped>

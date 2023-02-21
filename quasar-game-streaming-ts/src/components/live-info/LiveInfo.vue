@@ -18,6 +18,7 @@
 			<div class="col-auto gifts row flex-center">
 				<q-btn class="bg-positive" dense flat>
 					<q-icon color="white" size="lg" name="card_giftcard" />
+					<DonateCard />
 				</q-btn>
 			</div>
 		</q-item>
@@ -173,8 +174,8 @@
 						>
 							<UserCard
 								class="col-6"
-								v-for="follower in followers"
-								:key="follower.channelId"
+								v-for="(follower, index) in followers"
+								:key="'key' + index"
 								:userCard="follower"
 							/>
 						</div>
@@ -186,13 +187,7 @@
 </template>
 
 <script lang="ts" setup>
-import {
-	defineAsyncComponent,
-	defineComponent,
-	ref,
-	watchEffect,
-	onMounted,
-} from "vue";
+import { defineAsyncComponent, ref, onMounted } from "vue";
 import { type UserCard } from "components/live-info/UserCard.vue";
 const CTooltip = defineAsyncComponent(
 	() => import("components/CustomTooltip.vue")
@@ -215,7 +210,9 @@ const InfoCardLink = defineAsyncComponent(
 const InfoCardAbout = defineAsyncComponent(
 	() => import("components/live-info/InfoCardAbout.vue")
 );
-
+const DonateCard = defineAsyncComponent(
+	() => import("components/payments/DonatePopup.vue")
+);
 const tab = ref("about");
 
 const collapseChat = ref(false);

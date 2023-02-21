@@ -46,14 +46,61 @@
 					v-ripple
 					@click.prevent="menuItem.click"
 				>
-					<q-item-section avatar top>
+					<q-item-section avatar>
 						<q-avatar :icon="menuItem.icon" />
 					</q-item-section>
 
-					<q-item-section>
+					<q-item-section
+						:class="[
+							{ 'q-py-sm': menuItem.type == MenuItemType.Wallet },
+						]"
+					>
 						<q-item-label lines="1">{{
 							menuItem.label
 						}}</q-item-label>
+						<q-item-label
+							lines="1"
+							class="row"
+							v-if="menuItem.type == MenuItemType.Wallet"
+						>
+							<div class="col flex flex-center">
+								<q-btn
+									class="no-pointer-events"
+									color="positive"
+									icon="img:https://cdn3.xsolla.com/img/misc/images/247bd125c7cdc91ff8206a8a0697896e.png"
+									:label="
+										$filters.virtualCurrencyBalance(
+											$i18n.locale,
+											20000
+										)
+									"
+									dense
+									flat
+									no-wrap
+								/>
+							</div>
+							<q-separator
+								vertical
+								class="col-shrink"
+								size="0.5px"
+							/>
+							<div class="col flex flex-center">
+								<q-btn
+									class="no-pointer-events"
+									color="positive"
+									icon="img:https://cdn3.xsolla.com/img/misc/images/8522341cba4fa6f3fe686411b0590b65.png"
+									:label="
+										$filters.virtualCurrencyBalance(
+											$i18n.locale,
+											2000000000
+										)
+									"
+									dense
+									flat
+									no-wrap
+								/>
+							</div>
+						</q-item-label>
 					</q-item-section>
 
 					<q-item-section side>
@@ -67,7 +114,7 @@
 
 <script lang="ts" setup>
 import { ref, h, computed, cloneVNode } from "vue";
-import { QToggle } from "quasar";
+import { QToggle, QItemLabel } from "quasar";
 import { useOidcStore } from "stores/modules/oidc-store";
 import { useQuasar } from "quasar";
 import { useUserProfileStore } from "stores/user-profile-store";
@@ -130,9 +177,14 @@ const qToggleDarkmod = () =>
 		},
 	});
 
+enum MenuItemType {
+	Wallet,
+}
+
 const menuItems = ref([
 	{
 		id: 1,
+		type: MenuItemType.Wallet,
 		icon: "account_balance_wallet",
 		label: "My wallet",
 	},

@@ -13,16 +13,26 @@ export interface FilterInstance {
 		locales?: string | string[] | undefined,
 		number?: number | bigint
 	): string;
-	mentionHighlight(text: string): string;
-}
-
-export interface SanitizeInstance {
-	viewCount(
+	fiatFormat(
 		locales?: string | string[] | undefined,
+		currency?: string,
 		number?: number | bigint
+	): string;
+	virtualCurrencyBalance(
+		locales?: string | string[] | undefined,
+		number?: number | bigint,
+		maxDisplay?: number
 	): string;
 	mentionHighlight(text: string): string;
 }
+
+// export interface SanitizeInstance {
+// 	viewCount(
+// 		locales?: string | string[] | undefined,
+// 		number?: number | bigint
+// 	): string;
+// 	mentionHighlight(text: string): string;
+// }
 
 const sanitizeOptions: sanitizeHtml.IOptions = {
 	disallowedTagsMode: "discard",
@@ -43,6 +53,22 @@ export default boot(({ app }) => {
 			return new Intl.NumberFormat(locale, {
 				notation: "compact",
 				compactDisplay: "short",
+			}).format(value);
+		},
+		virtualCurrencyBalance(locale, value = 0, maxDisplay = 1e9) {
+			if (value >= maxDisplay) {
+				return new Intl.NumberFormat(locale, {
+					notation: "compact",
+					compactDisplay: "short",
+				}).format(value);
+			}
+			return new Intl.NumberFormat(locale).format(value);
+		},
+		fiatFormat(locale, currency, value = 0) {
+			return new Intl.NumberFormat(locale, {
+				style: "currency",
+				currency: currency,
+				minimumFractionDigits: 0,
 			}).format(value);
 		},
 		mentionHighlight(text) {

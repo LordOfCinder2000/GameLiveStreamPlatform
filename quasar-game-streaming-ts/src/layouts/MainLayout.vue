@@ -472,23 +472,11 @@ const toolbarButtons = ref([
 	},
 	{
 		id: 2,
-		icon: "monetization_on",
+		icon: "notifications",
 	},
 	{
 		id: 3,
-		icon: "favorite",
-	},
-	{
-		id: 4,
-		icon: "history",
-	},
-	{
-		id: 4,
-		icon: "get_app",
-	},
-	{
-		id: 4,
-		icon: "history",
+		icon: "monetization_on",
 	},
 ]);
 

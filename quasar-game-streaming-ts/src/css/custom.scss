@@ -5,6 +5,11 @@
 	.bg-list-active {
 		background: rgba(0, 0, 0, 0.04) !important;
 	}
+	.sticky-virtscroll-table {
+		th {
+			background: $white;
+		}
+	}
 }
 .body--dark {
 	.text-list-active {
@@ -12,5 +17,10 @@
 	}
 	.bg-list-active {
 		background: hsla(0, 0%, 100%, 0.06) !important;
+	}
+	.sticky-virtscroll-table {
+		th {
+			background: $dark;
+		}
 	}
 }

@@ -48,7 +48,7 @@ const routes: RouteRecordRaw[] = [
 				meta: {
 					isPublic: true,
 				},
-				beforeEnter: [channelNavigationGuard],
+				// beforeEnter: [channelNavigationGuard],
 			},
 			{
 				path: "ttg",

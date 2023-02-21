@@ -78,6 +78,7 @@
 <script lang="ts" setup>
 import { ref, defineAsyncComponent, onBeforeMount } from "vue";
 export interface UserCard {
+	channelId?: string;
 	avatar?: string;
 	followers?: number;
 	ownerChannelUserName?: string;
