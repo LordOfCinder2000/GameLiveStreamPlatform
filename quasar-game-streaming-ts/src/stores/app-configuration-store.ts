@@ -10,10 +10,11 @@ export const useAppConfigurationStore = defineStore("app-configuration-store", {
 			return await apiClient.abpApplicationConfiguration
 				.get()
 				.then((data) => {
-					this.appConfiguration = data;
+					return (this.appConfiguration = data);
 				})
 				.catch((error) => {
 					console.log(error);
+					throw error;
 				});
 		},
 	},

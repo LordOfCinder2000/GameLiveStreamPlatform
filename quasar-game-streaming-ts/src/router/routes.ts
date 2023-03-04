@@ -48,7 +48,7 @@ const routes: RouteRecordRaw[] = [
 				meta: {
 					isPublic: true,
 				},
-				// beforeEnter: [channelNavigationGuard],
+				beforeEnter: [channelNavigationGuard],
 			},
 			{
 				path: "ttg",
@@ -203,9 +203,9 @@ const routes: RouteRecordRaw[] = [
 	},
 
 	{
-		path: "/test",
-		name: "test",
-		component: () => import("components/chat/ChatRoom.vue"),
+		path: "/payment",
+		name: "payment",
+		component: () => import("pages/TestPage.vue"),
 		meta: {
 			isPublic: true,
 		},
@@ -227,7 +227,7 @@ const routes: RouteRecordRaw[] = [
 		meta: {
 			isPublic: true,
 		},
-		// beforeEnter: [channelNavigationGuard],
+		beforeEnter: [channelNavigationGuard],
 	},
 ];
 

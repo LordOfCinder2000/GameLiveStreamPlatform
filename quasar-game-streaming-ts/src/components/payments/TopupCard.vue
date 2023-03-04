@@ -1,25 +1,38 @@
 <template>
 	<q-responsive :ratio="1">
 		<q-card
-			class="topup-card cursor-pointer column justify-center q-gutter-y-sm q-hoverable"
-			@mouseenter="hover = true"
-			@mouseleave="hover = false"
+			class="topup-card cursor-pointer column items-center q-hoverable q-pa-sm no-wrap"
 		>
 			<span class="q-focus-helper no-margin"></span>
 			<q-img
 				fit="scale-down"
 				class="col"
 				:ratio="1"
-				src="https://cdn3.xsolla.com/img/misc/images/247bd125c7cdc91ff8206a8a0697896e.png"
+				:src="package.imageUrl as string"
 			/>
 			<span class="text-bold">
-				{{ $filters.virtualCurrencyBalance($i18n.locale, 9999) }}
-				Catoken
+				{{
+					`${$filters.virtualCurrencyBalance(
+						$i18n.locale,
+						package.content?.quantity ?? 0
+					)} ${package.content?.name}`
+				}}
 			</span>
 
-			<q-card-actions vertical align="center">
-				<q-btn dense color="positive" no-caps>
-					{{ $filters.fiatFormat($i18n.locale, "USD", 0.99) }}
+			<q-card-actions vertical align="center" class="full-width">
+				<q-btn
+					class="full-width"
+					color="positive"
+					no-caps
+					@click="emit('buy', package)"
+				>
+					{{
+						$filters.fiatFormat(
+							$i18n.locale,
+							package.price?.currency ?? "USD",
+							Number(package.price?.amount)
+						)
+					}}
 				</q-btn>
 			</q-card-actions>
 		</q-card>
@@ -27,12 +40,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-const hover = ref(false);
+import { ItemSellableDto } from "boot/openapi-client";
+
+export interface Props {
+	package: ItemSellableDto;
+}
+const props = defineProps<Props>();
+
+const emit = defineEmits<{
+	(e: "buy", data: ItemSellableDto): void;
+}>();
 </script>
 
-<style lang="scss" scoped>
-.topup-card {
-	// background-color: $over-dark;
-}
-</style>
+<style lang="scss" scoped></style>

@@ -101,15 +101,15 @@ const copyText = async (text: string) => {
 	await copyToClipboard(text)
 		.then(() => {
 			$q.notify({
+				type: "positive",
 				position: "top",
-				color: "positive",
 				message: "Đã sao chép thành công",
 				icon: "done",
 			});
 		})
 		.catch(() => {
 			$q.notify({
-				color: "negative",
+				type: "negative",
 				message: "Đã sao chép thất bại",
 				icon: "error",
 			});

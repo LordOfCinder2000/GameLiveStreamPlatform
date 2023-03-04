@@ -88,9 +88,6 @@ export interface Props {
 	userCard: UserCard;
 	dense?: boolean;
 }
-const ProfileAvatar = defineAsyncComponent(
-	() => import("components/ProfileAvatar.vue")
-);
 const props = withDefaults(defineProps<Props>(), {
 	dense: false,
 	userCard: () => <UserCard>{},

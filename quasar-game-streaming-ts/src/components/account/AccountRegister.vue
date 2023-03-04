@@ -208,14 +208,14 @@ const onSubmit = async () => {
 				})
 				.then(() => {
 					$q.notify({
-						color: "positive",
+						type: "positive",
 						message: "Code send success to your email",
 					});
 				})
 				.catch((err) => {
 					console.log(err);
 					$q.notify({
-						color: "negative",
+						type: "negative",
 						message: "Code send fail",
 					});
 				});
@@ -238,7 +238,7 @@ const onSubmit = async () => {
 						break;
 					default:
 						$q.notify({
-							color: "negative",
+							type: "negative",
 							message: err?.message,
 						});
 						break;

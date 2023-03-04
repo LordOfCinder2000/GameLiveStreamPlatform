@@ -11,6 +11,7 @@ import {
 	ChatRoomSettingDto,
 	ChannelChatRoomDto,
 	ChannelChatRoomActionDto,
+	DonateDto,
 } from "boot/openapi-client";
 import {
 	SignalRConfig,
@@ -73,6 +74,8 @@ export function useChatHubSignalR() {
 		"ChangeChatRoomSettingNotify";
 	const ChannelChatRoomActionNotify: HubEventToken<ChannelChatRoomActionDto> =
 		"ChannelChatRoomActionNotify";
+	const ReceiveDonateNotify: HubEventToken<DonateDto> = "ReceiveDonateNotify";
+
 	const chatHubSignalR = createSignalRService(configChatHub);
 	return {
 		chatHubSignalR,
@@ -87,6 +90,7 @@ export function useChatHubSignalR() {
 		OnBlockedError,
 		ChangeChatRoomSettingNotify,
 		ChannelChatRoomActionNotify,
+		ReceiveDonateNotify,
 	};
 }
 

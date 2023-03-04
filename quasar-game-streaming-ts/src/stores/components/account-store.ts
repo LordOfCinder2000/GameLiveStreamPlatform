@@ -1,7 +1,10 @@
 import { defineStore } from "pinia";
-import { RegisterDto } from "boot/openapi-client";
 import { objectPicker } from "boot/utils";
 import { ref, reactive, computed, toRefs } from "vue";
+import { useQuasar } from "quasar";
+import AccountDialog, {
+	Props as AccountDialogProp,
+} from "components/account/AccountDialog.vue";
 import {
 	nonWhitespaces,
 	atLeastOneDigit,
@@ -21,10 +24,16 @@ import {
 export const useAccountStore = defineStore(
 	"account-store",
 	() => {
-		const loginPopupOpen = ref(false);
-		function openLoginPopup() {
-			loginPopupOpen.value = true;
+		const $q = useQuasar();
+
+		//#region Component
+		function openLoginDialog(props?: AccountDialogProp) {
+			return $q.dialog({
+				component: AccountDialog,
+				componentProps: props,
+			});
 		}
+		//#region
 
 		const multipleErrors = ref(true);
 		const accountState = reactive({
@@ -123,8 +132,7 @@ export const useAccountStore = defineStore(
 			multipleErrors,
 			$vuelidateForgot,
 			$externalResultsForgot,
-			loginPopupOpen,
-			openLoginPopup,
+			openLoginDialog,
 		};
 	}
 	// { persist: true }

@@ -56,7 +56,7 @@ const loginExternal = async (name) => {
 	})
 		.then(async (succ) => {
 			$q.notify({
-				color: "positive",
+				type: "positive",
 				message: "Login successful, Hello " + succ.profile.unique_name,
 			});
 			// window.location.reload(true);
@@ -71,7 +71,7 @@ const loginExternal = async (name) => {
 				message += ": " + errorEmail;
 			}
 			$q.notify({
-				color: "negative",
+				type: "negative",
 				message: message,
 			});
 		});

@@ -81,6 +81,29 @@
 
 				<div class="chat-body col relative-position">
 					<div class="fit column flex-center">
+						<!-- Donate notification -->
+
+						<div class="absolute-full flex flex-center">
+							<transition
+								appear
+								enter-active-class="animated lightSpeedInLeft"
+								leave-active-class="animated lightSpeedOutRight"
+							>
+								<q-img
+									class="z-max"
+									v-if="donateShow"
+									:ratio="16 / 9"
+									fit="scale-down"
+									:src="
+										donate.gift?.mediaList?.find(
+											(x) => (x.type = 'Image')
+										)?.url ?? ''
+									"
+									no-spinner
+								/>
+							</transition>
+						</div>
+
 						<ChatNotification
 							class="absolute-top"
 							v-model="showNotification"
@@ -112,16 +135,15 @@
 							<div
 								class="chat-wrapper q-pt-md q-pb-sm column relative-position"
 							>
-								<span class="q-mb-sm">
+								<p class="q-mb-sm text-center">
 									Chào mừng đến kênh chat
-								</span>
-								<div style="width: 100%" class="chat-messages">
+								</p>
+
+								<div class="chat-messages">
 									<ChatMessage
 										v-for="usersMessage in userMessages"
 										:key="usersMessage.chatMessage.id"
-										:chatMessage="usersMessage.chatMessage"
-										:showTimestamp="showTimestamp"
-										:blurMessage="usersMessage.blurMessage"
+										v-bind="usersMessage"
 										@mention="
 											(value) => {
 												chatRoomStore.setMentionUser(
@@ -220,7 +242,7 @@ import {
 import { QScrollArea, openURL, useQuasar, date, uid } from "quasar";
 import { useRoute } from "vue-router";
 import { useChatHubSignalR } from "boot/signalr";
-import { apiClient } from "boot/openapi-client";
+import { apiClient, DonateDto } from "boot/openapi-client";
 import { Props as ChatMessageProps } from "components/chat/ChatMessage.vue";
 import { useOidcStore } from "stores/modules/oidc-store";
 import {
@@ -231,9 +253,11 @@ import { useAccountStore } from "stores/components/account-store";
 import { useChannelStore } from "stores/components/channel-store";
 import { useUserProfileStore } from "stores/user-profile-store";
 //#region Async import
-
 const ChatMessage = defineAsyncComponent(
 	() => import("components/chat/ChatMessage.vue")
+);
+const DonateMessage = defineAsyncComponent(
+	() => import("components/chat/DonateMessage.vue")
 );
 const ChatSetting = defineAsyncComponent(
 	() => import("components/chat/ChatSetting.vue")
@@ -262,6 +286,7 @@ const props = defineProps({
 
 const $q = useQuasar();
 
+const channelStore = useChannelStore();
 const chat = ref(null);
 const chatUserJoin = ref<InstanceType<typeof ChatUserJoin> | null>(null);
 const hideChatBox = ref(false);
@@ -429,12 +454,12 @@ const {
 	OnBlockedError,
 	ChangeChatRoomSettingNotify,
 	ChannelChatRoomActionNotify,
+	ReceiveDonateNotify,
 } = useChatHubSignalR();
 chatRoomStore.chatHubSignalR = chatHubSignalR;
 
 const leaveChatRoom = new BroadcastChannel("leaveChatRoom");
 leaveChatRoom.onmessage = async (message) => {
-	debugger;
 	if (message.data === userProfileStore.myProfile.id) {
 		await apiClient.chat
 			.joinChatRoom(
@@ -487,7 +512,6 @@ onBeforeMount(async () => {
 });
 
 chatHubSignalR.connection.onclose(async () => {
-	debugger;
 	await apiClient.chat
 		.leaveChatRoom(
 			chatHubSignalR.connection.connectionId ?? "",
@@ -569,8 +593,8 @@ const sendMessageToChatRoom = async () => {
 		// 		console.log(error);
 		// 	});
 	} else {
-		const { openLoginPopup } = useAccountStore();
-		openLoginPopup();
+		const { openLoginDialog } = useAccountStore();
+		openLoginDialog();
 	}
 };
 
@@ -587,7 +611,7 @@ chatHubSignalR.on(ReceiveChatMessage, async (data) => {
 				creationTime:
 					date.formatDate(data.creationTime, "HH:mm") ?? "00:00",
 				senderUserName: data.senderUserName ?? "no-name",
-				avatar: `${process.env.API_URL}/api/account/${data.senderChannelId}/profile-picture`,
+				avatar: channelStore.getAvatarUrlById(data.senderChannelId),
 				content: content,
 			},
 		});
@@ -625,14 +649,14 @@ chatHubSignalR.on(ReceiveChatMessage, async (data) => {
 
 chatHubSignalR.on(OnError, (data) => {
 	$q.notify({
-		color: "negative",
+		type: "negative",
 		message: data ?? "SignalR error",
 	});
 });
 
 chatHubSignalR.on(OnNotFound, (data) => {
 	$q.notify({
-		color: "negative",
+		type: "negative",
 		message: data ?? "SignalR not found",
 	});
 });
@@ -643,7 +667,7 @@ chatHubSignalR.on(GetChannelInChatRoom, (data) => {
 
 chatHubSignalR.on(OnBlockedError, (data) => {
 	$q.notify({
-		color: "negative",
+		type: "negative",
 		message: `Your channel has been blocked for ${data} minus`,
 	});
 });
@@ -663,7 +687,6 @@ const toggleBlurMessage = (senderChannelId: string, blurMessage: boolean) => {
 
 chatHubSignalR.on(ChannelChatRoomActionNotify, async (data) => {
 	console.log("signalR: " + data.ownerChannelUserName);
-	debugger;
 	switch (data.action) {
 		case "Block":
 			if (data.blockTime !== null && data.blockTime !== "NoBlock") {
@@ -755,7 +778,86 @@ const openPopout = async () => {
 
 onUnmounted(() => {
 	chatRoomStore.$reset();
-	useChannelStore().$reset();
+	channelStore.$reset();
+});
+
+const donateShow = ref(false);
+const donate = ref<DonateDto>({});
+let count = 0;
+for (let index = 0; index < 9; index++) {
+	// if (index % 2 === 0)
+	// 	userMessages.value?.push({
+	// 		isSystem: true,
+	// 		showTimestamp: false,
+	// 		chatMessage: {
+	// 			id: uid(),
+	// 			senderUserName: "System",
+	// 			creationTime: "00:00",
+	// 			content: `	<span>&nbsp;Item meme x10&nbsp;</span>
+	// 						<img
+	// 							style="font-size: 3rem"
+	// 							class="q-icon"
+	// 							src="https://cdn.quasar.dev/img/avatar.png"
+	// 						/>
+	// 					`,
+	// 		},
+	// 	});
+	// const donate = {
+	// 	giverChannelId: uid(),
+	// 	creationTime: Date.now(),
+	// 	giverChannel: {
+	// 		ownerUserName: "Test",
+	// 	},
+	// };
+	// userMessages.value?.push({
+	// 	showTimestamp: false,
+	// 	blurMessage: false,
+	// 	chatMessage: {
+	// 		id: uid(),
+	// 		senderChannelId: donate.giverChannelId,
+	// 		creationTime:
+	// 			date.formatDate(donate.creationTime, "HH:mm") ?? "00:00",
+	// 		senderUserName: donate.giverChannel?.ownerUserName ?? "no-name",
+	// 		avatar: channelStore.getAvatarUrlById(donate.giverChannelId),
+	// 		content: "",
+	// 	},
+	// });
+}
+chatHubSignalR.on(ReceiveDonateNotify, (data) => {
+	donate.value = data;
+	donateShow.value = true;
+	switch (data.gift?.groups?.at(0)?.name) {
+		case "Vip":
+			setTimeout(() => {
+				donateShow.value = false;
+			}, 5000);
+			break;
+
+		default:
+			setTimeout(() => {
+				donateShow.value = false;
+			}, 3000);
+			break;
+	}
+
+	userMessages.value?.push({
+		isSystem: true,
+		showTimestamp: false,
+		chatMessage: {
+			id: uid(),
+			senderChannelId: data.giverChannelId,
+			creationTime:
+				date.formatDate(data.creationTime, "HH:mm") ?? "00:00",
+			senderUserName: data.giverChannel?.ownerUserName ?? "no-name",
+			avatar: channelStore.getAvatarUrlById(data.giverChannelId),
+			content: `<strong class="text-positive">&nbsp;x${data.gift?.quantity} ${data.gift?.name}&nbsp;</strong>
+						<img
+							style="font-size: 3rem"
+							class="q-icon"
+							src="${data.gift?.imageUrl}"
+						/>`,
+		},
+	});
 });
 
 defineExpose({

@@ -239,8 +239,8 @@ const sendCode = async () => {
 		})
 		.then(() => {
 			$q.notify({
-				color: "positive",
-				message: `Send code success to email address: <strong class="text-black">${
+				type: "positive",
+				message: `Send code success to email address: <strong class="text-positive">${
 					emailModel.value[props.mode].state.emailAddress
 				}</strong>`,
 				html: true,
@@ -250,7 +250,7 @@ const sendCode = async () => {
 		.catch((err) => {
 			if (err.status !== 500) console.log(err);
 			$q.notify({
-				color: "negative",
+				type: "negative",
 				message: err?.body?.error?.message || "Send code not success",
 			});
 		});
@@ -332,7 +332,7 @@ const onSubmit = async () => {
 			})
 			.then(async () => {
 				$q.notify({
-					color: "positive",
+					type: "positive",
 					message: "Reset password successful",
 				});
 
@@ -344,7 +344,7 @@ const onSubmit = async () => {
 				})
 					.then((succ: any) => {
 						$q.notify({
-							color: "positive",
+							type: "positive",
 							message:
 								"Login successful, Hello " +
 								succ.profile.unique_name,
@@ -354,7 +354,7 @@ const onSubmit = async () => {
 					})
 					.catch(() => {
 						$q.notify({
-							color: "negative",
+							type: "negative",
 							message: "Authentication mismatch.",
 						});
 					});
@@ -368,7 +368,7 @@ const onSubmit = async () => {
 					)
 						codeError.value = err?.body?.error?.message;
 					$q.notify({
-						color: "negative",
+						type: "negative",
 						message:
 							err?.body?.error?.message ||
 							"Email address confirm failed",
@@ -385,7 +385,7 @@ const onSubmit = async () => {
 			})
 			.then(async () => {
 				$q.notify({
-					color: "positive",
+					type: "positive",
 					message: "Email address confirm successful",
 				});
 
@@ -397,7 +397,7 @@ const onSubmit = async () => {
 				})
 					.then((succ: any) => {
 						$q.notify({
-							color: "positive",
+							type: "positive",
 							message:
 								"Login successful, Hello " +
 								succ.profile.unique_name,
@@ -407,7 +407,7 @@ const onSubmit = async () => {
 					})
 					.catch(() => {
 						$q.notify({
-							color: "negative",
+							type: "negative",
 							message: "Authentication mismatch.",
 						});
 					});
@@ -418,7 +418,7 @@ const onSubmit = async () => {
 					if (err?.body?.error?.code == "CodeInvalid")
 						codeError.value = err?.body?.error?.message;
 					$q.notify({
-						color: "negative",
+						type: "negative",
 						message:
 							err?.body?.error?.message ||
 							"Email address confirm failed",

@@ -9,11 +9,6 @@
 	border-top: 1px solid $positive;
 }
 
-span {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-}
 @media (max-width: $breakpoint-xs-max) {
 	:root,
 	body {
@@ -223,4 +218,30 @@ $scroll-size: 5px;
 .mention-selected {
 	background: $positive;
 	color: white;
+}
+
+a {
+	text-decoration: none;
+}
+
+.sticky-virtualscroll-table {
+	// height or max-height is important
+	// height: 410px;
+	// :deep(.q-table__top) {
+	// 	padding: 0;
+	// }
+
+	thead tr th {
+		position: sticky;
+		z-index: 1;
+	}
+
+	/* this will be the loading indicator */
+	thead tr:last-child th
+    /* height of all previous header originalrows */ {
+		top: 48px;
+	}
+	thead tr:first-child th {
+		top: 0;
+	}
 }

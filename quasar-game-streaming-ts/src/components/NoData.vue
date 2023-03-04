@@ -1,5 +1,5 @@
 <template>
-	<div class="fit flex flex-center">
+	<div class="fit column flex-center no-wrap">
 		<svg
 			class="ant-empty-img-simple"
 			width="64"
@@ -8,7 +8,7 @@
 		>
 			<g transform="translate(0 1)" fill="none" fill-rule="evenodd">
 				<ellipse
-					class="ant-empty-img-simple-ellipse"
+					class="empty-img-simple-ellipse"
 					fill="#F5F5F5"
 					cx="32"
 					cy="33"
@@ -16,7 +16,7 @@
 					ry="7"
 				></ellipse>
 				<g
-					class="ant-empty-img-simple-g"
+					class="empty-img-simple-g"
 					fill-rule="nonzero"
 					stroke="#D9D9D9"
 				>
@@ -26,10 +26,27 @@
 					<path
 						d="M41.613 15.931c0-1.605.994-2.93 2.227-2.931H55v18.137C55 33.26 53.68 35 52.05 35h-40.1C10.32 35 9 33.259 9 31.137V13h11.16c1.233 0 2.227 1.323 2.227 2.928v.022c0 1.605 1.005 2.901 2.237 2.901h14.752c1.232 0 2.237-1.308 2.237-2.913v-.007z"
 						fill="#FAFAFA"
-						class="ant-empty-img-simple-path"
+						class="empty-img-simple-path"
 					></path>
 				</g>
 			</g>
 		</svg>
+		<slot name="message"> <span>No data</span> </slot>
 	</div>
 </template>
+
+<style lang="scss" scoped>
+.body--dark {
+	.empty-img-simple-ellipse {
+		fill: #fff;
+		fill-opacity: 0.08;
+	}
+	.empty-img-simple-g {
+		stroke: #434343;
+	}
+	.empty-img-simple-path {
+		fill: #262626;
+		stroke: #434343;
+	}
+}
+</style>

@@ -9,6 +9,7 @@ import {
 	JsonPatchDocument,
 	UpdateChatRoomSettingDto,
 } from "boot/openapi-client";
+import { useChannelStore } from "./channel-store";
 import { SignalRService } from "@quangdao/vue-signalr";
 
 export interface ChannelChatRoomInfoDtoExtend extends ChannelChatRoomInfoDto {
@@ -167,9 +168,10 @@ export const useChatRoomStore = defineStore("chat-room-store", {
 					channelId
 				);
 
+				const { getAvatarUrlById } = useChannelStore();
 				return {
 					...data,
-					avatar: `${process.env.API_URL}/api/account/${data.channelId}/profile-picture`,
+					avatar: getAvatarUrlById(data.channelId),
 				};
 			} catch (error) {
 				console.log(error);

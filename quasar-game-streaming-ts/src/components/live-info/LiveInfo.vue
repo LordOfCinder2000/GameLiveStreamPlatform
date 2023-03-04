@@ -16,9 +16,9 @@
 			</div>
 			<q-space />
 			<div class="col-auto gifts row flex-center">
-				<q-btn class="bg-positive" dense flat>
+				<q-btn class="bg-positive" dense flat @click="showDonatePopup">
 					<q-icon color="white" size="lg" name="card_giftcard" />
-					<DonateCard />
+					<DonatePopup :no-parent-event="donatePopupOpen" />
 				</q-btn>
 			</div>
 		</q-item>
@@ -188,6 +188,8 @@
 
 <script lang="ts" setup>
 import { defineAsyncComponent, ref, onMounted } from "vue";
+import { useOidcStore } from "stores/modules/oidc-store";
+import { useAccountStore } from "stores/components/account-store";
 import { type UserCard } from "components/live-info/UserCard.vue";
 const CTooltip = defineAsyncComponent(
 	() => import("components/CustomTooltip.vue")
@@ -210,9 +212,22 @@ const InfoCardLink = defineAsyncComponent(
 const InfoCardAbout = defineAsyncComponent(
 	() => import("components/live-info/InfoCardAbout.vue")
 );
-const DonateCard = defineAsyncComponent(
+const DonatePopup = defineAsyncComponent(
 	() => import("components/payments/DonatePopup.vue")
 );
+
+const donatePopupOpen = ref(false);
+const showDonatePopup = () => {
+	const { oidcIsAuthenticated } = useOidcStore();
+	if (!oidcIsAuthenticated) {
+		const { openLoginDialog } = useAccountStore();
+		openLoginDialog();
+		donatePopupOpen.value = true;
+		return;
+	}
+	donatePopupOpen.value = false;
+};
+
 const tab = ref("about");
 
 const collapseChat = ref(false);

@@ -23,5 +23,10 @@ export const useChannelStore = defineStore("channel-store", {
 			}
 			return this.channel.id == channelId;
 		},
+
+		getAvatarUrlById(id: string | null | undefined) {
+			if (id === null && id === undefined) return "";
+			return `${process.env.API_URL}/api/account/${id}/profile-picture`;
+		},
 	},
 });

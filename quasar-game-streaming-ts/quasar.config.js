@@ -171,13 +171,14 @@ module.exports = configure(function (/* ctx */) {
 
 			// Quasar plugins
 			plugins: [
-				"LoadingBar",
+				// "LoadingBar",
 				"Notify",
 				"AddressbarColor",
 				"LocalStorage",
 				"SessionStorage",
 				"Cookies",
 				"Loading",
+				"Dialog",
 			],
 		},
 
@@ -192,6 +193,8 @@ module.exports = configure(function (/* ctx */) {
 			"fadeInUp",
 			"fadeOutRight",
 			"fadeInLeft",
+			"lightSpeedInLeft",
+			"lightSpeedOutRight",
 		],
 
 		// https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#sourcefiles

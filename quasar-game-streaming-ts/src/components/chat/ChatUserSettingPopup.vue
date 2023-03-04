@@ -1,5 +1,5 @@
 <template>
-	<q-menu>
+	<q-menu @before-show="beforeShow">
 		<q-list class="text-subtitle2" dense style="min-width: 150px">
 			<q-item
 				v-if="authorize"
@@ -163,7 +163,7 @@ const banChannel = async () => {
 		.catch((error: ApiError) => {
 			if (error.status === 403 && error.body.error)
 				$q.notify({
-					color: "negative",
+					type: "negative",
 					message: error.body.error.message ?? "Error ban action!",
 				});
 		});
@@ -184,7 +184,7 @@ const unbanChannel = async () => {
 				console.log(error);
 				if (error.status === 403 && error.body.error)
 					$q.notify({
-						color: "negative",
+						type: "negative",
 						message:
 							error.body.error.message ?? "Error unban action!",
 					});
@@ -225,7 +225,7 @@ const toggleMod = async (value: boolean) => {
 				console.log(error);
 				if (error.status === 403 && error.body.error)
 					$q.notify({
-						color: "negative",
+						type: "negative",
 						message:
 							error.body.error.message ??
 							"Error unset mod action!",
@@ -242,11 +242,11 @@ const toolbarStyle = {
 	"padding-right": "8px",
 };
 
-onBeforeMount(async () => {
+const beforeShow = async () => {
 	await chatRoomStore.getListModerator().catch((error) => {
 		console.log(error);
 	});
-});
+};
 
 const userProfileStore = useUserProfileStore();
 const authorize = computed(() => {

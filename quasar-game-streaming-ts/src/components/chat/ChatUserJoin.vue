@@ -185,7 +185,7 @@ const getChannelInChatRoom = async (skip: number, take: number) => {
 				followers.value?.push({
 					channelId: channel.channelId,
 					ownerChannelUserName: channel.ownerChannelUserName,
-					avatar: `${process.env.API_URL}/api/account/${channel.channelId}/profile-picture`,
+					avatar: channelStore.getAvatarUrlById(channel.channelId),
 					blockTime: channel.blockTime,
 					connectedTime: channel.connectedTime,
 					role: channel.role,

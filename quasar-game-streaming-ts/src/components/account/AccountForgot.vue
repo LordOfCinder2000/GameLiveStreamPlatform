@@ -167,8 +167,7 @@ watch(
 					accountForgotState.userId = succ;
 				})
 				.catch((err) => {
-					if(err.status !== 500)
-					console.log(err);
+					if (err.status !== 500) console.log(err);
 					Object.assign($externalResultsForgot, {
 						emailAddress: err?.body?.error?.message || "",
 					});
@@ -197,17 +196,17 @@ const onSubmit = async () => {
 		})
 		.then(() => {
 			$q.notify({
-				color: "positive",
+				type: "positive",
 				message: "Code send success to your email",
 			});
 		})
 		.catch((error) => {
 			console.log(error);
-			if(error.status !== 500)
-			$q.notify({
-				color: "negative",
-				message: "Code send fail",
-			});
+			if (error.status !== 500)
+				$q.notify({
+					type: "negative",
+					message: "Code send fail",
+				});
 		});
 
 	emit("confirmEmail", "AccountForgot");

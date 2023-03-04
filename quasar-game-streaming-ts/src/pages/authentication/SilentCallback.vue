@@ -1,19 +1,15 @@
 <template><q-page></q-page></template>
 
-<script setup>
-import { onMounted } from "vue";
+<script lang="ts" setup>
+import { onBeforeMount } from "vue";
 import { useOidcStore } from "stores/modules/oidc-store";
 
-onMounted(() => {
+onBeforeMount(async () => {
 	const { oidcSignInSilentCallback } = useOidcStore();
 
-	oidcSignInSilentCallback()
-		.then((suc) => {
-			console.log("silent login:", suc);
-		})
-		.catch((err) => {
-			console.log("failed", err);
-		});
+	await oidcSignInSilentCallback().catch((err) => {
+		console.log("silent login error: ", err);
+	});
 });
 </script>
 

@@ -3,6 +3,7 @@ import { defineStore } from "pinia";
 import { ProfileDto, apiClient } from "boot/openapi-client";
 import { useOidcStore } from "./modules/oidc-store";
 import { useChatRoomStore } from "./components/chat-room-store";
+import { useWalletStore } from "stores/wallet-store";
 
 type ProfileDtoExtend = ProfileDto & {
 	id: string;
@@ -37,6 +38,9 @@ export const useUserProfileStore = defineStore("user-profile-store", {
 						...data,
 					};
 				});
+
+				const { getWallet } = useWalletStore();
+				await getWallet();
 			} catch (error) {
 				console.log(error);
 			}

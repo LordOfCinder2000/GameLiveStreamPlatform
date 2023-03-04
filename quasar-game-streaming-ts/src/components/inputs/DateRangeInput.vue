@@ -7,10 +7,11 @@
 		v-model="dateInput"
 		mask="##/##/#### — ##/##/####"
 		unmasked-value
-		fill-mask="0"
+		fill-mask="#"
 		no-error-icon
 		:rules="inputRules"
 		hide-bottom-space
+		hint="from: DD/MM/YYYY —> to: DD/MM/YYYY"
 	>
 		<template v-slot:prepend>
 			<q-icon name="event" color="positive" class="cursor-pointer">
@@ -43,27 +44,48 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, onMounted } from "vue";
+import { ref, watch, watchEffect } from "vue";
 import { date as quasarDate, ValidationRule, QInput } from "quasar";
+export interface Props {
+	dateRange: {
+		fromDate: Date;
+		toDate: Date;
+	};
+}
+const props = defineProps<Props>();
+const emit = defineEmits<{
+	(e: "update:model-value", value: { from: Date; to: Date }): void;
+}>();
 
 const dateMask = "DDMMYYYY";
 const initFromDate = () =>
-	quasarDate.formatDate(
-		quasarDate.subtractFromDate(Date.now(), { year: 1 }),
-		dateMask
-	);
-const initToDate = () => quasarDate.formatDate(Date.now(), dateMask);
+	quasarDate.formatDate(props.dateRange.fromDate, dateMask);
+const initToDate = () =>
+	quasarDate.formatDate(props.dateRange.toDate, dateMask);
 const date = ref({
 	from: initFromDate(),
 	to: initToDate(),
 });
+
+watchEffect(() => {
+	date.value = {
+		from: quasarDate.formatDate(props.dateRange.fromDate, dateMask),
+		to: quasarDate.formatDate(props.dateRange.toDate, dateMask),
+	};
+});
+
 watch(date, (value) => {
-	console.log(value);
-	dateInput.value = date.value.from + date.value.to;
+	if (value) {
+		dateInput.value = date.value.from + date.value.to;
+		emit("update:model-value", {
+			from: quasarDate.extractDate(date.value.from, dateMask),
+			to: quasarDate.extractDate(date.value.to, dateMask),
+		});
+	}
 });
 
 const dateInput = ref(date.value.from + date.value.to);
-const covertData = (value: string) => {
+const convertData = (value: string) => {
 	const halfLength = Math.ceil(value.length / 2);
 	const fromDate = value.substring(0, halfLength);
 	const toDate = value.substring(halfLength);
@@ -71,21 +93,41 @@ const covertData = (value: string) => {
 	return { fromDate, toDate };
 };
 watch(dateInput, (value) => {
-	console.log(value);
-	const { fromDate, toDate } = covertData(value);
-	date.value = { from: fromDate, to: toDate };
+	if (value) {
+		const { fromDate, toDate } = convertData(value);
+		date.value = { from: fromDate, to: toDate };
+	}
 });
 
 const inputRef = ref<QInput | null>(null);
 const inputRules = ref<ValidationRule[]>([
 	(val) => {
-		const { fromDate, toDate } = covertData(val);
-		if (fromDate >= toDate) return "From date greater than to date";
-		if (fromDate > initToDate() || toDate > initToDate())
-			return "Date greater than today";
+		if (val) {
+			const { fromDate, toDate } = convertData(val);
+			const fromDateTime = quasarDate
+				.extractDate(fromDate, dateMask)
+				.getTime();
+			const toDateTime = quasarDate
+				.extractDate(toDate, dateMask)
+				.getTime();
+			if (fromDateTime >= toDateTime)
+				return "From date greater than to date";
+
+			if (fromDateTime > Date.now() || toDateTime > Date.now())
+				return "Date greater than today";
+		}
+
 		return true;
 	},
 ]);
+
+// const refresh = () => {
+// 	const toDate = new Date();
+// 	date.value = {
+// 		from: quasarDate.subtractFromDate(toDate, { year: 1 }).getTime(),
+// 		to: toDate,
+// 	};
+// };
 </script>
 
 <style lang="scss" scoped></style>

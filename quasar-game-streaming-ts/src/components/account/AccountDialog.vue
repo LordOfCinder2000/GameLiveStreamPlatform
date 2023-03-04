@@ -1,5 +1,5 @@
 <template>
-	<q-dialog ref="loginPopup" @hide="accountPopupHide" persistent>
+	<q-dialog class="z-max" ref="dialogRef" @hide="onDialogHide" persistent>
 		<q-card style="min-width: 600px">
 			<q-linear-progress
 				v-if="progress"
@@ -118,8 +118,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watchEffect, shallowRef } from "vue";
-import { QDialog } from "quasar";
+import { ref, watchEffect, shallowRef, onUnmounted } from "vue";
+import { QDialog, useDialogPluginComponent } from "quasar";
 import { useAccountStore } from "stores/components/account-store";
 import AccountLogin from "components/account/AccountLogin.vue";
 import AccountRegister from "components/account/AccountRegister.vue";
@@ -129,13 +129,15 @@ import AccountEmailConfirm from "components/account/AccountEmailConfirm.vue";
 import ReCaptcha from "components/ReCaptcha.vue";
 import { useReCaptchaStore } from "stores/components/recaptcha-store";
 
-const props = defineProps({
-	tab: {
-		type: String,
-		default: "login",
-	},
+export interface Props {
+	tab: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	tab: "login",
 });
-const loginPopup = ref<QDialog | null>(null);
+
+const emit = defineEmits([...useDialogPluginComponent.emits]);
 
 const showReCaptcha = ref(false);
 const showReCaptchaBG = ref(false);
@@ -219,7 +221,7 @@ const login = async (login: () => Promise<any>) => {
 	showReCaptchaBG.value = true;
 	await login()
 		.then(() => {
-			loginPopup.value?.hide();
+			dialogRef.value?.hide();
 		})
 		.finally(() => {
 			showReCaptchaBG.value = false;
@@ -231,10 +233,9 @@ const forgotPassword = () => {
 	accountMode.value = accountModes.value.AccountForgot;
 };
 
-const accountPopupHide = () => {
-	accountModeActive.value = false;
+onUnmounted(() => {
 	useAccountStore().$reset();
-};
+});
 
 const confirmEmailMode = ref("AccountConfirm");
 
@@ -248,6 +249,8 @@ const backToPrev = () => {
 };
 
 const progress = ref(false);
+
+const { dialogRef, onDialogHide } = useDialogPluginComponent();
 </script>
 
 <style></style>

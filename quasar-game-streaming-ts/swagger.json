@@ -5881,6 +5881,657 @@
 				}
 			}
 		},
+		"/api/app/donate": {
+			"post": {
+				"tags": ["Donate"],
+				"operationId": "Create",
+				"requestBody": {
+					"content": {
+						"application/json-patch+json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateDonateDto"
+							}
+						},
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateDonateDto"
+							}
+						},
+						"text/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateDonateDto"
+							}
+						},
+						"application/*+json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateDonateDto"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/DonateDto"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/DonateDto"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/DonateDto"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"tags": ["Donate"],
+				"operationId": "GetList",
+				"parameters": [
+					{
+						"name": "DonateAction",
+						"in": "query",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/DonateActionType"
+						}
+					},
+					{
+						"name": "IncludeDetails",
+						"in": "query",
+						"schema": {
+							"type": "boolean"
+						}
+					},
+					{
+						"name": "MaxCreationTime",
+						"in": "query",
+						"schema": {
+							"type": "string",
+							"format": "date-time"
+						}
+					},
+					{
+						"name": "MinCreationTime",
+						"in": "query",
+						"schema": {
+							"type": "string",
+							"format": "date-time"
+						}
+					},
+					{
+						"name": "Sorting",
+						"in": "query",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "SkipCount",
+						"in": "query",
+						"schema": {
+							"maximum": 2147483647,
+							"minimum": 0,
+							"type": "integer",
+							"format": "int32"
+						}
+					},
+					{
+						"name": "MaxResultCount",
+						"in": "query",
+						"schema": {
+							"maximum": 2147483647,
+							"minimum": 1,
+							"type": "integer",
+							"format": "int32"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/PagedResultDtoOfDonateDto"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PagedResultDtoOfDonateDto"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PagedResultDtoOfDonateDto"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/app/donate/{id}/give-back": {
+			"post": {
+				"tags": ["Donate"],
+				"operationId": "GiveBack",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success"
+					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/app/donate/test": {
+			"post": {
+				"tags": ["Donate"],
+				"operationId": "Test",
+				"responses": {
+					"200": {
+						"description": "Success"
+					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
 		"/api/app/email/send-email": {
 			"post": {
 				"tags": ["Email"],
@@ -10746,6 +11397,2196 @@
 							}
 						}
 					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/app/item/virtual-currency-package-by-sku": {
+			"get": {
+				"tags": ["Item"],
+				"operationId": "GetVirtualCurrencyPackageBySku",
+				"parameters": [
+					{
+						"name": "sku",
+						"in": "query",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/ItemSellableDto"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ItemSellableDto"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ItemSellableDto"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/app/item/virtual-currency-package": {
+			"get": {
+				"tags": ["Item"],
+				"operationId": "GetListVirtualCurrencyPackage",
+				"parameters": [
+					{
+						"name": "Locale",
+						"in": "query",
+						"schema": {
+							"maxLength": 2,
+							"minLength": 0,
+							"type": "string"
+						}
+					},
+					{
+						"name": "Country",
+						"in": "query",
+						"schema": {
+							"maxLength": 2,
+							"minLength": 0,
+							"type": "string"
+						}
+					},
+					{
+						"name": "Sorting",
+						"in": "query",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "SkipCount",
+						"in": "query",
+						"schema": {
+							"maximum": 2147483647,
+							"minimum": 0,
+							"type": "integer",
+							"format": "int32"
+						}
+					},
+					{
+						"name": "MaxResultCount",
+						"in": "query",
+						"schema": {
+							"maximum": 2147483647,
+							"minimum": 1,
+							"type": "integer",
+							"format": "int32"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/PagedResultDtoOfItemSellableDto"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PagedResultDtoOfItemSellableDto"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PagedResultDtoOfItemSellableDto"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/app/item/by-sku": {
+			"get": {
+				"tags": ["Item"],
+				"operationId": "GetBySku",
+				"parameters": [
+					{
+						"name": "sku",
+						"in": "query",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/ItemSellableDto"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ItemSellableDto"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ItemSellableDto"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/app/item/{id}/by-id": {
+			"get": {
+				"tags": ["Item"],
+				"operationId": "GetById",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "integer",
+							"format": "int32"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/ItemSellableDto"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ItemSellableDto"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ItemSellableDto"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/app/item/gift-by-group-id/{giftGroupId}": {
+			"get": {
+				"tags": ["Item"],
+				"operationId": "GetListGiftByGroupId",
+				"parameters": [
+					{
+						"name": "giftGroupId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					},
+					{
+						"name": "Locale",
+						"in": "query",
+						"schema": {
+							"maxLength": 2,
+							"minLength": 0,
+							"type": "string"
+						}
+					},
+					{
+						"name": "Country",
+						"in": "query",
+						"schema": {
+							"maxLength": 2,
+							"minLength": 0,
+							"type": "string"
+						}
+					},
+					{
+						"name": "Sorting",
+						"in": "query",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "SkipCount",
+						"in": "query",
+						"schema": {
+							"maximum": 2147483647,
+							"minimum": 0,
+							"type": "integer",
+							"format": "int32"
+						}
+					},
+					{
+						"name": "MaxResultCount",
+						"in": "query",
+						"schema": {
+							"maximum": 2147483647,
+							"minimum": 1,
+							"type": "integer",
+							"format": "int32"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/PagedResultDtoOfItemSellableDto"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PagedResultDtoOfItemSellableDto"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PagedResultDtoOfItemSellableDto"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/app/item/gift-groups": {
+			"get": {
+				"tags": ["Item"],
+				"operationId": "GetListGiftGroups",
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/PagedResultDtoOfGiftGroupDto"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PagedResultDtoOfGiftGroupDto"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PagedResultDtoOfGiftGroupDto"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/ngan-luong/notify": {
+			"get": {
+				"tags": ["NganLuongWebhook"],
+				"operationId": "NganLuongHandler",
+				"responses": {
+					"200": {
+						"description": "Success"
+					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/app/payment/{id}/ngan-luong-pay-station-token": {
+			"post": {
+				"tags": ["Payment"],
+				"operationId": "CreateNganLuongPayStationToken",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json-patch+json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateNganLuongPayStationTokenDto"
+							}
+						},
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateNganLuongPayStationTokenDto"
+							}
+						},
+						"text/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateNganLuongPayStationTokenDto"
+							}
+						},
+						"application/*+json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateNganLuongPayStationTokenDto"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/PaymentProviderTokenDto"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PaymentProviderTokenDto"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PaymentProviderTokenDto"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/app/payment/{id}/xsolla-pay-station-token": {
+			"post": {
+				"tags": ["Payment"],
+				"operationId": "CreateXsollaPayStationToken",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json-patch+json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateXsollaPayStationTokenDto"
+							}
+						},
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateXsollaPayStationTokenDto"
+							}
+						},
+						"text/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateXsollaPayStationTokenDto"
+							}
+						},
+						"application/*+json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateXsollaPayStationTokenDto"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/PaymentProviderTokenDto"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PaymentProviderTokenDto"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PaymentProviderTokenDto"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/app/payment": {
+			"post": {
+				"tags": ["Payment"],
+				"operationId": "Create",
+				"requestBody": {
+					"content": {
+						"application/json-patch+json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreatePaymentDto"
+							}
+						},
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreatePaymentDto"
+							}
+						},
+						"text/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreatePaymentDto"
+							}
+						},
+						"application/*+json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreatePaymentDto"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/PaymentDto"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PaymentDto"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PaymentDto"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"tags": ["Payment"],
+				"operationId": "GetList",
+				"parameters": [
+					{
+						"name": "IncludeDetails",
+						"in": "query",
+						"schema": {
+							"type": "boolean"
+						}
+					},
+					{
+						"name": "MaxCreationTime",
+						"in": "query",
+						"schema": {
+							"type": "string",
+							"format": "date-time"
+						}
+					},
+					{
+						"name": "MinCreationTime",
+						"in": "query",
+						"schema": {
+							"type": "string",
+							"format": "date-time"
+						}
+					},
+					{
+						"name": "Sorting",
+						"in": "query",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "SkipCount",
+						"in": "query",
+						"schema": {
+							"maximum": 2147483647,
+							"minimum": 0,
+							"type": "integer",
+							"format": "int32"
+						}
+					},
+					{
+						"name": "MaxResultCount",
+						"in": "query",
+						"schema": {
+							"maximum": 2147483647,
+							"minimum": 1,
+							"type": "integer",
+							"format": "int32"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/PagedResultDtoOfPaymentDto"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PagedResultDtoOfPaymentDto"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PagedResultDtoOfPaymentDto"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/app/payment/payment-method": {
+			"get": {
+				"tags": ["Payment"],
+				"operationId": "GetListPaymentMethod",
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/PaymentMethodDto"
+									}
+								}
+							},
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/PaymentMethodDto"
+									}
+								}
+							},
+							"text/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/PaymentMethodDto"
+									}
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/app/payment/test": {
+			"post": {
+				"tags": ["Payment"],
+				"operationId": "Test",
+				"parameters": [
+					{
+						"name": "package",
+						"in": "query",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "currency",
+						"in": "query",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
 					"403": {
 						"description": "Forbidden",
 						"content": {
@@ -18849,6 +21690,438 @@
 					}
 				}
 			}
+		},
+		"/api/app/wallet/{id}/block": {
+			"post": {
+				"tags": ["Wallet"],
+				"operationId": "Block",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success"
+					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/app/wallet/{id}/un-block": {
+			"post": {
+				"tags": ["Wallet"],
+				"operationId": "UnBlock",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success"
+					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/app/wallet": {
+			"get": {
+				"tags": ["Wallet"],
+				"operationId": "Get",
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/WalletDto"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/WalletDto"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/WalletDto"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Server Error",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							},
+							"text/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteServiceErrorResponse"
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 	},
 	"components": {
@@ -19087,6 +22360,36 @@
 					}
 				},
 				"additionalProperties": false
+			},
+			"BankCodeType": {
+				"enum": [
+					"VCB",
+					"DAB",
+					"TCB",
+					"MB",
+					"VIB",
+					"VTB",
+					"EXB",
+					"ACB",
+					"HDB",
+					"MSB",
+					"NVB",
+					"VAB",
+					"VPB",
+					"SCB",
+					"GPB",
+					"AGB",
+					"BIDV",
+					"OJB",
+					"PGB",
+					"SHB",
+					"SB",
+					"TPB",
+					"VISA",
+					"MASTER",
+					"JCB"
+				],
+				"type": "string"
 			},
 			"BroadcastAMSDto": {
 				"type": "object",
@@ -19675,6 +22978,43 @@
 				},
 				"additionalProperties": false
 			},
+			"CreateDonateDto": {
+				"required": [
+					"giftId",
+					"giftSku",
+					"quantity",
+					"recipientChannelId"
+				],
+				"type": "object",
+				"properties": {
+					"recipientChannelId": {
+						"type": "string",
+						"format": "uuid"
+					},
+					"giftId": {
+						"maximum": 2147483647,
+						"minimum": 1,
+						"type": "integer",
+						"format": "int32"
+					},
+					"giftSku": {
+						"maxLength": 255,
+						"type": "string"
+					},
+					"quantity": {
+						"maximum": 99,
+						"minimum": 1,
+						"type": "integer",
+						"format": "int32"
+					},
+					"detail": {
+						"maxLength": 255,
+						"type": "string",
+						"nullable": true
+					}
+				},
+				"additionalProperties": false
+			},
 			"CreateFileInput": {
 				"required": ["fileContainerName", "fileName"],
 				"type": "object",
@@ -19766,6 +23106,77 @@
 				},
 				"additionalProperties": false
 			},
+			"CreateNganLuongPayStationTokenDto": {
+				"required": ["bankCode", "paymentMethod"],
+				"type": "object",
+				"properties": {
+					"paymentMethod": {
+						"$ref": "#/components/schemas/PaymentMethodType"
+					},
+					"bankCode": {
+						"$ref": "#/components/schemas/BankCodeType"
+					},
+					"returnUrl": {
+						"maxLength": 500,
+						"type": "string",
+						"format": "uri",
+						"nullable": true
+					},
+					"notifyUrl": {
+						"maxLength": 500,
+						"type": "string",
+						"format": "uri",
+						"nullable": true
+					},
+					"cancelUrl": {
+						"maxLength": 500,
+						"type": "string",
+						"format": "uri",
+						"nullable": true
+					},
+					"langCode": {
+						"maxLength": 11,
+						"type": "string",
+						"nullable": true
+					}
+				},
+				"additionalProperties": false
+			},
+			"CreatePaymentDto": {
+				"required": ["paymentItems", "paymentMethod"],
+				"type": "object",
+				"properties": {
+					"paymentMethod": {
+						"maxLength": 255,
+						"type": "string"
+					},
+					"paymentItems": {
+						"minItems": 1,
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/CreatePaymentItemDto"
+						}
+					}
+				},
+				"additionalProperties": false
+			},
+			"CreatePaymentItemDto": {
+				"required": ["itemSku", "quantity"],
+				"type": "object",
+				"properties": {
+					"itemSku": {
+						"maxLength": 255,
+						"type": "string"
+					},
+					"quantity": {
+						"maximum": 99,
+						"minimum": 1,
+						"type": "integer",
+						"format": "int32"
+					}
+				},
+				"additionalProperties": false
+			},
 			"CreateSocialLinkDto": {
 				"required": ["socialName", "url"],
 				"type": "object",
@@ -19778,6 +23189,21 @@
 					},
 					"socialName": {
 						"$ref": "#/components/schemas/SocialLinkType"
+					}
+				},
+				"additionalProperties": false
+			},
+			"CreateXsollaPayStationTokenDto": {
+				"type": "object",
+				"properties": {
+					"returnUrl": {
+						"maxLength": 1000,
+						"type": "string",
+						"format": "uri",
+						"nullable": true
+					},
+					"ui": {
+						"$ref": "#/components/schemas/Ui"
 					}
 				},
 				"additionalProperties": false
@@ -19947,6 +23373,94 @@
 			"DefaultImageType": {
 				"enum": ["DefaultProfilePicture", "DefaultChannelBackground"],
 				"type": "string"
+			},
+			"Desktop": {
+				"type": "object",
+				"properties": {
+					"header": {
+						"$ref": "#/components/schemas/Header"
+					}
+				},
+				"additionalProperties": false
+			},
+			"DonateActionType": {
+				"enum": ["Donated", "Donating"],
+				"type": "string"
+			},
+			"DonateDto": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"format": "uuid"
+					},
+					"creationTime": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"creatorId": {
+						"type": "string",
+						"format": "uuid",
+						"nullable": true
+					},
+					"lastModificationTime": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"lastModifierId": {
+						"type": "string",
+						"format": "uuid",
+						"nullable": true
+					},
+					"isDeleted": {
+						"type": "boolean"
+					},
+					"deleterId": {
+						"type": "string",
+						"format": "uuid",
+						"nullable": true
+					},
+					"deletionTime": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"giverChannelId": {
+						"type": "string",
+						"format": "uuid"
+					},
+					"recipientChannelId": {
+						"type": "string",
+						"format": "uuid"
+					},
+					"giftSku": {
+						"type": "string",
+						"nullable": true
+					},
+					"giftId": {
+						"type": "integer",
+						"format": "int32"
+					},
+					"quantity": {
+						"type": "integer",
+						"format": "int32"
+					},
+					"detail": {
+						"type": "string",
+						"nullable": true
+					},
+					"gift": {
+						"$ref": "#/components/schemas/ItemSellableDto"
+					},
+					"giverChannel": {
+						"$ref": "#/components/schemas/ChannelDto"
+					},
+					"recipientChannel": {
+						"$ref": "#/components/schemas/ChannelDto"
+					}
+				},
+				"additionalProperties": false
 			},
 			"EmailSettingsDto": {
 				"type": "object",
@@ -20493,6 +24007,43 @@
 				},
 				"additionalProperties": false
 			},
+			"GiftGroupDto": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"format": "uuid"
+					},
+					"name": {
+						"type": "string",
+						"nullable": true
+					}
+				},
+				"additionalProperties": false
+			},
+			"Group": {
+				"type": "object",
+				"properties": {
+					"externalId": {
+						"type": "string",
+						"nullable": true
+					},
+					"name": {
+						"type": "string",
+						"nullable": true
+					}
+				},
+				"additionalProperties": false
+			},
+			"Header": {
+				"type": "object",
+				"properties": {
+					"isVisible": {
+						"type": "boolean"
+					}
+				},
+				"additionalProperties": false
+			},
 			"IContractResolver": {
 				"type": "object",
 				"additionalProperties": false
@@ -20863,6 +24414,66 @@
 				},
 				"additionalProperties": false
 			},
+			"ItemSellableDto": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "integer",
+						"format": "int32"
+					},
+					"sku": {
+						"type": "string",
+						"nullable": true
+					},
+					"name": {
+						"type": "string",
+						"nullable": true
+					},
+					"description": {
+						"type": "string",
+						"nullable": true
+					},
+					"imageUrl": {
+						"type": "string",
+						"nullable": true
+					},
+					"type": {
+						"type": "string",
+						"nullable": true
+					},
+					"isFree": {
+						"type": "boolean"
+					},
+					"price": {
+						"$ref": "#/components/schemas/Price"
+					},
+					"virtualPrice": {
+						"$ref": "#/components/schemas/VirtualPrice"
+					},
+					"quantity": {
+						"type": "integer",
+						"format": "int32"
+					},
+					"content": {
+						"$ref": "#/components/schemas/VirtualCurrency"
+					},
+					"mediaList": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/Media"
+						},
+						"nullable": true
+					},
+					"groups": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/Group"
+						},
+						"nullable": true
+					}
+				},
+				"additionalProperties": false
+			},
 			"JsonPatchDocument": {
 				"type": "array",
 				"items": {
@@ -20944,6 +24555,23 @@
 					}
 				},
 				"additionalProperties": false
+			},
+			"Media": {
+				"type": "object",
+				"properties": {
+					"type": {
+						"$ref": "#/components/schemas/MediaType"
+					},
+					"url": {
+						"type": "string",
+						"nullable": true
+					}
+				},
+				"additionalProperties": false
+			},
+			"MediaType": {
+				"enum": ["Image", "Video"],
+				"type": "string"
 			},
 			"MethodParameterApiDescriptionModel": {
 				"type": "object",
@@ -21139,6 +24767,23 @@
 				},
 				"additionalProperties": false
 			},
+			"PagedResultDtoOfDonateDto": {
+				"type": "object",
+				"properties": {
+					"items": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/DonateDto"
+						},
+						"nullable": true
+					},
+					"totalCount": {
+						"type": "integer",
+						"format": "int64"
+					}
+				},
+				"additionalProperties": false
+			},
 			"PagedResultDtoOfFileInfoDto": {
 				"type": "object",
 				"properties": {
@@ -21146,6 +24791,23 @@
 						"type": "array",
 						"items": {
 							"$ref": "#/components/schemas/FileInfoDto"
+						},
+						"nullable": true
+					},
+					"totalCount": {
+						"type": "integer",
+						"format": "int64"
+					}
+				},
+				"additionalProperties": false
+			},
+			"PagedResultDtoOfGiftGroupDto": {
+				"type": "object",
+				"properties": {
+					"items": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/GiftGroupDto"
 						},
 						"nullable": true
 					},
@@ -21180,6 +24842,40 @@
 						"type": "array",
 						"items": {
 							"$ref": "#/components/schemas/IdentityUserDto"
+						},
+						"nullable": true
+					},
+					"totalCount": {
+						"type": "integer",
+						"format": "int64"
+					}
+				},
+				"additionalProperties": false
+			},
+			"PagedResultDtoOfItemSellableDto": {
+				"type": "object",
+				"properties": {
+					"items": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/ItemSellableDto"
+						},
+						"nullable": true
+					},
+					"totalCount": {
+						"type": "integer",
+						"format": "int64"
+					}
+				},
+				"additionalProperties": false
+			},
+			"PagedResultDtoOfPaymentDto": {
+				"type": "object",
+				"properties": {
+					"items": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/PaymentDto"
 						},
 						"nullable": true
 					},
@@ -21250,6 +24946,151 @@
 					"descriptorName": {
 						"type": "string",
 						"nullable": true
+					}
+				},
+				"additionalProperties": false
+			},
+			"PaymentDto": {
+				"type": "object",
+				"properties": {
+					"extraProperties": {
+						"type": "object",
+						"additionalProperties": {},
+						"nullable": true,
+						"readOnly": true
+					},
+					"id": {
+						"type": "string",
+						"format": "uuid"
+					},
+					"creationTime": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"creatorId": {
+						"type": "string",
+						"format": "uuid",
+						"nullable": true
+					},
+					"lastModificationTime": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"lastModifierId": {
+						"type": "string",
+						"format": "uuid",
+						"nullable": true
+					},
+					"isDeleted": {
+						"type": "boolean"
+					},
+					"deleterId": {
+						"type": "string",
+						"format": "uuid",
+						"nullable": true
+					},
+					"deletionTime": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"userId": {
+						"type": "string",
+						"format": "uuid"
+					},
+					"paymentMethod": {
+						"type": "string",
+						"nullable": true
+					},
+					"externalTradingCode": {
+						"type": "string",
+						"nullable": true
+					},
+					"currency": {
+						"type": "string",
+						"nullable": true
+					},
+					"originalPaymentAmount": {
+						"type": "number",
+						"format": "double"
+					},
+					"paymentDiscount": {
+						"type": "number",
+						"format": "double"
+					},
+					"actualPaymentAmount": {
+						"type": "number",
+						"format": "double"
+					},
+					"completionTime": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"canceledTime": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"paymentItems": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/ItemSellableDto"
+						},
+						"nullable": true
+					}
+				},
+				"additionalProperties": false
+			},
+			"PaymentMethodDto": {
+				"type": "object",
+				"properties": {
+					"paymentMethod": {
+						"type": "string",
+						"nullable": true
+					},
+					"name": {
+						"type": "string",
+						"nullable": true
+					}
+				},
+				"additionalProperties": false
+			},
+			"PaymentMethodType": {
+				"enum": [
+					"NL",
+					"VISA",
+					"IB_ONLINE",
+					"QRCODE",
+					"ATM_ONLINE",
+					"ATM_OFFLINE",
+					"BANK_TRANSFER_ONLINE",
+					"CASH_IN_SHOP",
+					"NH_OFFLINE",
+					"CREDIT_CARD_PREPAID",
+					"QRCODE247"
+				],
+				"type": "string"
+			},
+			"PaymentProviderTokenDto": {
+				"type": "object",
+				"properties": {
+					"orderCode": {
+						"type": "string",
+						"nullable": true
+					},
+					"checkoutUrl": {
+						"type": "string",
+						"nullable": true
+					},
+					"token": {
+						"type": "string",
+						"nullable": true
+					},
+					"timeLimit": {
+						"type": "integer",
+						"format": "int32"
 					}
 				},
 				"additionalProperties": false
@@ -21327,6 +25168,24 @@
 			"PlayListStatusEnum": {
 				"enum": ["Finished", "Broadcasting", "Created"],
 				"type": "string"
+			},
+			"Price": {
+				"type": "object",
+				"properties": {
+					"amount": {
+						"type": "string",
+						"nullable": true
+					},
+					"amountWithoutDiscount": {
+						"type": "string",
+						"nullable": true
+					},
+					"currency": {
+						"type": "string",
+						"nullable": true
+					}
+				},
+				"additionalProperties": false
 			},
 			"ProfileDto": {
 				"type": "object",
@@ -21792,6 +25651,10 @@
 				},
 				"additionalProperties": false
 			},
+			"SizeType": {
+				"enum": ["Small", "Medium", "Large"],
+				"type": "string"
+			},
 			"SocialLinkDto": {
 				"type": "object",
 				"properties": {
@@ -21890,6 +25753,10 @@
 				},
 				"additionalProperties": false
 			},
+			"ThemeType": {
+				"enum": ["Default", "DefaultDark", "Dark"],
+				"type": "string"
+			},
 			"TimeZone": {
 				"type": "object",
 				"properties": {
@@ -21959,6 +25826,24 @@
 					"Playlist"
 				],
 				"type": "string"
+			},
+			"Ui": {
+				"type": "object",
+				"properties": {
+					"size": {
+						"$ref": "#/components/schemas/SizeType"
+					},
+					"theme": {
+						"$ref": "#/components/schemas/ThemeType"
+					},
+					"version": {
+						"$ref": "#/components/schemas/VersionType"
+					},
+					"desktop": {
+						"$ref": "#/components/schemas/Desktop"
+					}
+				},
+				"additionalProperties": false
 			},
 			"UpdateChatRoomSettingDto": {
 				"required": [
@@ -22277,6 +26162,129 @@
 					},
 					"filter": {
 						"type": "string",
+						"nullable": true
+					}
+				},
+				"additionalProperties": false
+			},
+			"VersionType": {
+				"enum": ["Desktop", "Mobile"],
+				"type": "string"
+			},
+			"VirtualCurrency": {
+				"type": "object",
+				"properties": {
+					"item_id": {
+						"type": "integer",
+						"format": "int32"
+					},
+					"sku": {
+						"type": "string",
+						"nullable": true
+					},
+					"name": {
+						"type": "string",
+						"nullable": true
+					},
+					"type": {
+						"type": "string",
+						"nullable": true
+					},
+					"description": {
+						"type": "string",
+						"nullable": true
+					},
+					"imageUrl": {
+						"type": "string",
+						"nullable": true
+					},
+					"quantity": {
+						"type": "integer",
+						"format": "int32"
+					}
+				},
+				"additionalProperties": false
+			},
+			"VirtualCurrencyDto": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "integer",
+						"format": "int32"
+					},
+					"sku": {
+						"type": "string",
+						"nullable": true
+					},
+					"name": {
+						"type": "string",
+						"nullable": true
+					},
+					"type": {
+						"type": "string",
+						"nullable": true
+					},
+					"description": {
+						"type": "string",
+						"nullable": true
+					},
+					"imageUrl": {
+						"type": "string",
+						"nullable": true
+					},
+					"quantity": {
+						"type": "integer",
+						"format": "int32"
+					}
+				},
+				"additionalProperties": false
+			},
+			"VirtualPrice": {
+				"type": "object",
+				"properties": {
+					"sku": {
+						"type": "string",
+						"nullable": true
+					},
+					"name": {
+						"type": "string",
+						"nullable": true
+					},
+					"description": {
+						"type": "string",
+						"nullable": true
+					},
+					"imageUrl": {
+						"type": "string",
+						"nullable": true
+					},
+					"amount": {
+						"type": "integer",
+						"format": "int32"
+					},
+					"amountWithoutDiscount": {
+						"type": "integer",
+						"format": "int32"
+					}
+				},
+				"additionalProperties": false
+			},
+			"WalletDto": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"format": "uuid"
+					},
+					"userId": {
+						"type": "string",
+						"format": "uuid"
+					},
+					"currencies": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/VirtualCurrencyDto"
+						},
 						"nullable": true
 					}
 				},

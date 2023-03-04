@@ -24,6 +24,7 @@ export interface FilterInstance {
 		maxDisplay?: number
 	): string;
 	mentionHighlight(text: string): string;
+	systemMessage(text: string): string;
 }
 
 // export interface SanitizeInstance {
@@ -69,6 +70,8 @@ export default boot(({ app }) => {
 				style: "currency",
 				currency: currency,
 				minimumFractionDigits: 0,
+				currencyDisplay: "symbol",
+				currencySign: "accounting",
 			}).format(value);
 		},
 		mentionHighlight(text) {
@@ -82,13 +85,26 @@ export default boot(({ app }) => {
 				textFilter: (text, tagName) => {
 					console.log(text);
 
-					return text
-						.replace(
-							/@\w+/g,
-							(match) =>
-								`<strong class="text-positive">&nbsp;${match}&nbsp;</strong>`
-						)
-						.trim();
+					return textMentionFilter(text);
+				},
+			});
+		},
+		systemMessage(text) {
+			return sanitizeHtml(text, {
+				...sanitizeOptions,
+				nestingLimit: 2,
+				allowedTags: ["img", "strong", "div"],
+				allowedAttributes: { img: ["src", "style"] },
+				allowedSchemes: ["data", "http", "https"],
+				allowedClasses: {
+					strong: ["text-positive"],
+					img: ["q-icon"],
+					div: ["flex", "flex-center"],
+				},
+				textFilter: (text, tagName) => {
+					console.log(text);
+
+					return text;
 				},
 			});
 		},
@@ -98,3 +114,9 @@ export default boot(({ app }) => {
 		return sanitizeHtml(dirty, sanitizeOptions);
 	};
 });
+
+const textMentionFilter = (text: string) =>
+	text.replace(
+		/@\w+/g,
+		(match) => `<strong class="text-positive">&nbsp;${match}&nbsp;</strong>`
+	);

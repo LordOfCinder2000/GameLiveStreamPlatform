@@ -33,14 +33,16 @@ const globalInterceptorsResponse = {
 		return response;
 	},
 	onRejected: async function (error: any) {
-		const { removeOidcUser, oidcIsAuthenticated } = useOidcStore();
-		if (error.response.status === 401 && oidcIsAuthenticated) {
-			useAccountStore().openLoginPopup();
-			await removeOidcUser()
-				.then(() => {})
-				.catch((error) => {
-					console.log(error);
-				});
+		if (error.response.status === 401) {
+			useAccountStore().openLoginDialog();
+
+			const { removeOidcUser, oidcIsAuthenticated } = useOidcStore();
+			if (oidcIsAuthenticated)
+				await removeOidcUser()
+					.then(() => {})
+					.catch((error) => {
+						console.log(error);
+					});
 		}
 		return Promise.reject(error);
 	},

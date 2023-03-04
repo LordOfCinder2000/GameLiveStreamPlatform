@@ -1,9 +1,9 @@
 <template>
 	<q-table
 		ref="tableRef"
-		title="Test"
+		title="Payments"
 		:style="rows.length !== 0 ? { height: '400px' } : {}"
-		class="sticky-virtscroll-table"
+		class="sticky-virtualscroll-table"
 		:dense="$q.screen.lt.sm"
 		virtual-scroll
 		:rows-per-page-options="[0]"
@@ -12,36 +12,87 @@
 		:columns="columns"
 		row-key="id"
 		:loading="loading"
-		:filter="filter"
 		binary-state-sort
-		@update:pagination="newPagination"
+		color="positive"
 	>
-		<template v-slot:top-right>
-			<slot name="option">
-				<q-select
-					v-model="option"
-					multiple
-					outlined
-					dense
-					options-dense
-					:display-value="$q.lang.table.columns"
-					emit-value
-					map-options
-					:options="columns"
-					option-value="name"
-					options-cover
-					style="min-width: 150px"
+		<template v-slot:header-cell-paymentMethod="props">
+			<q-th auto-width :props="props">
+				{{ props.col.label }}
+			</q-th>
+		</template>
+
+		<template v-slot:body-cell-time="props">
+			<q-td auto-width :props="props">
+				<q-list>
+					<q-item-section>
+						<q-item-label>{{
+							date.formatDate(props.value, "DD/MM/YYYY")
+						}}</q-item-label>
+						<q-item-label caption>{{
+							date.formatDate(props.value, "HH:mm")
+						}}</q-item-label>
+					</q-item-section>
+				</q-list>
+			</q-td>
+		</template>
+		<template v-slot:body-cell-package="props">
+			<q-td :props="props">
+				<q-img
+					no-spinner
+					:src="props.value[0].imageUrl"
+					:ratio="1"
+					width="2rem"
 				/>
-			</slot>
+				<span class="text-positive q-ml-xs">{{
+					props.value[0].name + " x " + props.value[0].quantity
+				}}</span>
+			</q-td>
+		</template>
+		<template v-slot:body-cell-totalAmount="props">
+			<q-td :props="props">
+				<span class="text-bold">{{
+					$filters.fiatFormat(
+						$i18n.locale,
+						props.row.currency,
+						props.value
+					)
+				}}</span>
+			</q-td>
+		</template>
+		<template v-slot:body-cell-value="props">
+			<q-td :props="props">
+				<span class="text-positive">{{
+					`+ ${$filters.virtualCurrencyBalance(
+						$i18n.locale,
+						props.value
+					)}`
+				}}</span>
+				<q-icon
+					class="q-ml-xs"
+					size="sm"
+					:name="`img:${props.row.paymentItems[0].content.imageUrl}`"
+				/>
+			</q-td>
+		</template>
+		<template v-slot:body-cell-status="props">
+			<q-td :props="props">
+				<q-chip
+					size="sm"
+					:color="props.value.color"
+					:text-color="props.value.textColor"
+					:label="props.value.status"
+				/>
+			</q-td>
 		</template>
 
 		<template v-slot:no-data>
 			<div class="fit flex flex-center">
-				<NoData /><span>No data</span>
+				<NoData />
 			</div>
 		</template>
+
 		<template v-slot:bottom>
-			<div class="flex flex-center fit">
+			<div class="fit flex flex-center">
 				<q-pagination
 					v-model="pagination.page"
 					color="positive"
@@ -55,603 +106,146 @@
 	</q-table>
 </template>
 
-<script setup>
-import { ref, computed, onMounted, defineAsyncComponent } from "vue";
-import NoData from "components/NoData.vue";
-// import { QTableColumn } from "quasar";
+<script lang="ts" setup>
+import { ref, computed, onMounted, watch } from "vue";
+import { ItemSellableDto, PaymentDto } from "boot/openapi-client";
+import { usePaymentStore } from "stores/payment-store";
+import { useQuasar } from "quasar";
+import { QTableColumn, date } from "quasar";
+export interface Props {
+	filter: {
+		fromDate?: Date;
+		toDate?: Date;
+	};
+}
+const props = defineProps<Props>();
+const $q = useQuasar();
+const { getListPayment } = usePaymentStore();
 
-const columns = [
+const tableRef = ref(null);
+const loading = ref(false);
+const columns = <QTableColumn[]>[
 	{
-		name: "desc",
+		name: "time",
 		required: true,
-		label: "Dessert (100g serving)",
+		label: "Time",
 		align: "left",
-		field: (row) => row.name,
-		format: (val) => `${val}`,
+		field: (row) =>
+			row.completionTime ?? row.canceledTime ?? row.creationTime,
 		sortable: true,
 	},
 	{
-		name: "calories",
+		name: "paymentMethod",
 		align: "center",
-		label: "Calories",
-		field: "calories",
-		sortable: true,
-	},
-	{ name: "fat", label: "Fat (g)", field: "fat", sortable: true },
-	{ name: "carbs", label: "Carbs (g)", field: "carbs", sortable: true },
-	{ name: "protein", label: "Protein (g)", field: "protein", sortable: true },
-	{ name: "sodium", label: "Sodium (mg)", field: "sodium", sortable: true },
-	{
-		name: "calcium",
-		label: "Calcium (%)",
-		field: "calcium",
-		sortable: true,
-		sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
+		label: "Payment method",
+		field: (row) => row.paymentMethod,
+		classes: "text-bold",
 	},
 	{
-		name: "iron",
-		label: "Iron (%)",
-		field: "iron",
+		name: "package",
+		align: "left",
+		label: "Package",
+		field: (row) => row.paymentItems,
+	},
+	{
+		name: "totalAmount",
+		label: "Amount",
+		align: "center",
+		field: (row) => row.actualPaymentAmount,
+	},
+	{
+		name: "value",
+		label: "Value",
+		align: "center",
+		field: (row) =>
+			row.paymentItems.reduce(
+				(accumulator: number, currentValue: any) =>
+					accumulator +
+					currentValue.content.quantity * currentValue.quantity,
+				0
+			),
 		sortable: true,
-		sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
+	},
+	{
+		name: "status",
+		required: true,
+		label: "Status",
+		field: (row) => {
+			if (row.completionTime)
+				return {
+					status: "Completed",
+					color: "green",
+					textColor: "white",
+				};
+
+			if (row.canceledTime)
+				return {
+					status: "Canceled",
+					color: "red",
+					textColor: "white",
+				};
+
+			return {
+				status: "In-process",
+				textColor: "black",
+			};
+		},
 	},
 ];
-const tableRef = ref();
-const rows = ref([]);
+const rows = ref<PaymentDto[]>([]);
+
+const pagesNumber = computed(() =>
+	Math.ceil(pagination.value.rowsNumber / pagination.value.rowsPerPage)
+);
 
 const pagination = ref({
-	sortBy: "desc",
+	sortBy: "time",
 	descending: false,
 	page: 1,
-	rowsPerPage: 40,
-	// rowsNumber: 40,
+	rowsPerPage: 5,
+	rowsNumber: 0,
 });
 
-const filter = ref("");
-const loading = ref(false);
-// we generate lots of originalrows here
-const originalRows = [
-	{
-		id: 1,
-		name: "Frozen Yogurt",
-		calories: 159,
-		fat: 6.0,
-		carbs: 24,
-		protein: 4.0,
-		sodium: 87,
-		calcium: "14%",
-		iron: "1%",
-	},
-	{
-		id: 2,
-		name: "Ice cream sandwich",
-		calories: 237,
-		fat: 9.0,
-		carbs: 37,
-		protein: 4.3,
-		sodium: 129,
-		calcium: "8%",
-		iron: "1%",
-	},
-	{
-		id: 3,
-		name: "Eclair",
-		calories: 262,
-		fat: 16.0,
-		carbs: 23,
-		protein: 6.0,
-		sodium: 337,
-		calcium: "6%",
-		iron: "7%",
-	},
-	{
-		id: 4,
-		name: "Cupcake",
-		calories: 305,
-		fat: 3.7,
-		carbs: 67,
-		protein: 4.3,
-		sodium: 413,
-		calcium: "3%",
-		iron: "8%",
-	},
-	{
-		id: 5,
-		name: "Gingerbread",
-		calories: 356,
-		fat: 16.0,
-		carbs: 49,
-		protein: 3.9,
-		sodium: 327,
-		calcium: "7%",
-		iron: "16%",
-	},
-	{
-		id: 6,
-		name: "Jelly bean",
-		calories: 375,
-		fat: 0.0,
-		carbs: 94,
-		protein: 0.0,
-		sodium: 50,
-		calcium: "0%",
-		iron: "0%",
-	},
-	{
-		id: 7,
-		name: "Lollipop",
-		calories: 392,
-		fat: 0.2,
-		carbs: 98,
-		protein: 0,
-		sodium: 38,
-		calcium: "0%",
-		iron: "2%",
-	},
-	{
-		id: 8,
-		name: "Honeycomb",
-		calories: 408,
-		fat: 3.2,
-		carbs: 87,
-		protein: 6.5,
-		sodium: 562,
-		calcium: "0%",
-		iron: "45%",
-	},
-	{
-		id: 9,
-		name: "Donut",
-		calories: 452,
-		fat: 25.0,
-		carbs: 51,
-		protein: 4.9,
-		sodium: 326,
-		calcium: "2%",
-		iron: "22%",
-	},
-	{
-		id: 10,
-		name: "KitKat",
-		calories: 518,
-		fat: 26.0,
-		carbs: 65,
-		protein: 7,
-		sodium: 54,
-		calcium: "12%",
-		iron: "6%",
-	},
-	{
-		id: 11,
-		name: "Frozen Yogurt-1",
-		calories: 159,
-		fat: 6.0,
-		carbs: 24,
-		protein: 4.0,
-		sodium: 87,
-		calcium: "14%",
-		iron: "1%",
-	},
-	{
-		id: 12,
-		name: "Ice cream sandwich-1",
-		calories: 237,
-		fat: 9.0,
-		carbs: 37,
-		protein: 4.3,
-		sodium: 129,
-		calcium: "8%",
-		iron: "1%",
-	},
-	{
-		id: 13,
-		name: "Eclair-1",
-		calories: 262,
-		fat: 16.0,
-		carbs: 23,
-		protein: 6.0,
-		sodium: 337,
-		calcium: "6%",
-		iron: "7%",
-	},
-	{
-		id: 14,
-		name: "Cupcake-1",
-		calories: 305,
-		fat: 3.7,
-		carbs: 67,
-		protein: 4.3,
-		sodium: 413,
-		calcium: "3%",
-		iron: "8%",
-	},
-	{
-		id: 15,
-		name: "Gingerbread-1",
-		calories: 356,
-		fat: 16.0,
-		carbs: 49,
-		protein: 3.9,
-		sodium: 327,
-		calcium: "7%",
-		iron: "16%",
-	},
-	{
-		id: 16,
-		name: "Jelly bean-1",
-		calories: 375,
-		fat: 0.0,
-		carbs: 94,
-		protein: 0.0,
-		sodium: 50,
-		calcium: "0%",
-		iron: "0%",
-	},
-	{
-		id: 17,
-		name: "Lollipop-1",
-		calories: 392,
-		fat: 0.2,
-		carbs: 98,
-		protein: 0,
-		sodium: 38,
-		calcium: "0%",
-		iron: "2%",
-	},
-	{
-		id: 18,
-		name: "Honeycomb-1",
-		calories: 408,
-		fat: 3.2,
-		carbs: 87,
-		protein: 6.5,
-		sodium: 562,
-		calcium: "0%",
-		iron: "45%",
-	},
-	{
-		id: 19,
-		name: "Donut-1",
-		calories: 452,
-		fat: 25.0,
-		carbs: 51,
-		protein: 4.9,
-		sodium: 326,
-		calcium: "2%",
-		iron: "22%",
-	},
-	{
-		id: 20,
-		name: "KitKat-1",
-		calories: 518,
-		fat: 26.0,
-		carbs: 65,
-		protein: 7,
-		sodium: 54,
-		calcium: "12%",
-		iron: "6%",
-	},
-	{
-		id: 21,
-		name: "Frozen Yogurt-2",
-		calories: 159,
-		fat: 6.0,
-		carbs: 24,
-		protein: 4.0,
-		sodium: 87,
-		calcium: "14%",
-		iron: "1%",
-	},
-	{
-		id: 22,
-		name: "Ice cream sandwich-2",
-		calories: 237,
-		fat: 9.0,
-		carbs: 37,
-		protein: 4.3,
-		sodium: 129,
-		calcium: "8%",
-		iron: "1%",
-	},
-	{
-		id: 23,
-		name: "Eclair-2",
-		calories: 262,
-		fat: 16.0,
-		carbs: 23,
-		protein: 6.0,
-		sodium: 337,
-		calcium: "6%",
-		iron: "7%",
-	},
-	{
-		id: 24,
-		name: "Cupcake-2",
-		calories: 305,
-		fat: 3.7,
-		carbs: 67,
-		protein: 4.3,
-		sodium: 413,
-		calcium: "3%",
-		iron: "8%",
-	},
-	{
-		id: 25,
-		name: "Gingerbread-2",
-		calories: 356,
-		fat: 16.0,
-		carbs: 49,
-		protein: 3.9,
-		sodium: 327,
-		calcium: "7%",
-		iron: "16%",
-	},
-	{
-		id: 26,
-		name: "Jelly bean-2",
-		calories: 375,
-		fat: 0.0,
-		carbs: 94,
-		protein: 0.0,
-		sodium: 50,
-		calcium: "0%",
-		iron: "0%",
-	},
-	{
-		id: 27,
-		name: "Lollipop-2",
-		calories: 392,
-		fat: 0.2,
-		carbs: 98,
-		protein: 0,
-		sodium: 38,
-		calcium: "0%",
-		iron: "2%",
-	},
-	{
-		id: 28,
-		name: "Honeycomb-2",
-		calories: 408,
-		fat: 3.2,
-		carbs: 87,
-		protein: 6.5,
-		sodium: 562,
-		calcium: "0%",
-		iron: "45%",
-	},
-	{
-		id: 29,
-		name: "Donut-2",
-		calories: 452,
-		fat: 25.0,
-		carbs: 51,
-		protein: 4.9,
-		sodium: 326,
-		calcium: "2%",
-		iron: "22%",
-	},
-	{
-		id: 30,
-		name: "KitKat-2",
-		calories: 518,
-		fat: 26.0,
-		carbs: 65,
-		protein: 7,
-		sodium: 54,
-		calcium: "12%",
-		iron: "6%",
-	},
-	{
-		id: 31,
-		name: "Frozen Yogurt-3",
-		calories: 159,
-		fat: 6.0,
-		carbs: 24,
-		protein: 4.0,
-		sodium: 87,
-		calcium: "14%",
-		iron: "1%",
-	},
-	{
-		id: 32,
-		name: "Ice cream sandwich-3",
-		calories: 237,
-		fat: 9.0,
-		carbs: 37,
-		protein: 4.3,
-		sodium: 129,
-		calcium: "8%",
-		iron: "1%",
-	},
-	{
-		id: 33,
-		name: "Eclair-3",
-		calories: 262,
-		fat: 16.0,
-		carbs: 23,
-		protein: 6.0,
-		sodium: 337,
-		calcium: "6%",
-		iron: "7%",
-	},
-	{
-		id: 34,
-		name: "Cupcake-3",
-		calories: 305,
-		fat: 3.7,
-		carbs: 67,
-		protein: 4.3,
-		sodium: 413,
-		calcium: "3%",
-		iron: "8%",
-	},
-	{
-		id: 35,
-		name: "Gingerbread-3",
-		calories: 356,
-		fat: 16.0,
-		carbs: 49,
-		protein: 3.9,
-		sodium: 327,
-		calcium: "7%",
-		iron: "16%",
-	},
-	{
-		id: 36,
-		name: "Jelly bean-3",
-		calories: 375,
-		fat: 0.0,
-		carbs: 94,
-		protein: 0.0,
-		sodium: 50,
-		calcium: "0%",
-		iron: "0%",
-	},
-	{
-		id: 37,
-		name: "Lollipop-3",
-		calories: 392,
-		fat: 0.2,
-		carbs: 98,
-		protein: 0,
-		sodium: 38,
-		calcium: "0%",
-		iron: "2%",
-	},
-	{
-		id: 38,
-		name: "Honeycomb-3",
-		calories: 408,
-		fat: 3.2,
-		carbs: 87,
-		protein: 6.5,
-		sodium: 562,
-		calcium: "0%",
-		iron: "45%",
-	},
-	{
-		id: 39,
-		name: "Donut-3",
-		calories: 452,
-		fat: 25.0,
-		carbs: 51,
-		protein: 4.9,
-		sodium: 326,
-		calcium: "2%",
-		iron: "22%",
-	},
-	{
-		id: 40,
-		name: "KitKat-3",
-		calories: 518,
-		fat: 26.0,
-		carbs: 65,
-		protein: 7,
-		sodium: 54,
-		calcium: "12%",
-		iron: "6%",
-	},
-];
-const pagesNumber = computed(() =>
-	Math.ceil(originalRows.length / pagination.value.rowsPerPage)
-);
-function fetchFromServer(skipCount, maxResultCount, filter) {
-	const data = filter
-		? originalRows.filter((row) => row.name.includes(filter))
-		: originalRows.slice();
-
-	return data.slice(skipCount, skipCount + maxResultCount);
-}
-
-// emulate 'SELECT count(*) FROM ...WHERE...'
-function getRowsNumberCount(filter) {
-	if (!filter) {
-		return originalRows.length;
-	}
-	let count = 0;
-	originalRows.forEach((treat) => {
-		if (treat.name.includes(filter)) {
-			++count;
-		}
-	});
-	return count;
-}
-
-function onRequest(props) {
-	const { page, rowsPerPage, sortBy, descending } = props.pagination;
-	const filter = props.filter;
-
-	loading.value = true;
-	// emulate server
-	setTimeout(() => {
-		// update rowsCount with appropriate value
-		pagination.value.rowsNumber = getRowsNumberCount(filter);
-
-		// get all rows if "All" (0) is selected
-		const fetchCount =
-			rowsPerPage === 0 ? pagination.value.rowsNumber : rowsPerPage;
-
-		// calculate starting row of data
-		const startRow = (page - 1) * rowsPerPage;
-
-		// fetch data from "server"
-
-		const returnedData = fetchFromServer(startRow, fetchCount, filter);
-
-		// clear out existing data and add new
-		rows.value.splice(0, rows.value.length, ...returnedData);
-
-		// don't forget to update local pagination object
-		pagination.value.page = page;
-		pagination.value.rowsPerPage = rowsPerPage;
-		pagination.value.sortBy = sortBy;
-		pagination.value.descending = descending;
-
-		// ...and turn of loading indicator
-		loading.value = false;
-	}, 1500);
-}
-
-function clickPage(value) {
-	rows.value = fetchFromServer(
+const clickPage = async (value: number) => {
+	await fetchFromServer(
 		(value - 1) * pagination.value.rowsPerPage,
 		pagination.value.rowsPerPage
 	);
-}
-const newPagination = (newPagination) => {
-	const { page, rowsPerPage, sortBy, descending, rowsNumber } = newPagination;
-	const startRow = (page - 1) * rowsPerPage;
-	rows.value = fetchFromServer(startRow, rowsPerPage);
 };
 
-const option = ref();
+const fetchFromServer = async (skipCount: number, maxResultCount: number) => {
+	loading.value = true;
+	await getListPayment(
+		props.filter?.toDate?.toISOString(),
+		props.filter?.fromDate?.toISOString(),
+		"",
+		skipCount,
+		maxResultCount
+	)
+		.then((data) => {
+			rows.value = data.items ?? [];
+			pagination.value.rowsNumber = data.totalCount ?? 0;
+		})
+		.finally(() => {
+			loading.value = false;
+		});
+};
 
-onMounted(() => {
-	// get initial data from server (1st page)
-	// tableRef.value.requestServerInteraction();
-	rows.value = fetchFromServer(0, pagination.value.rowsPerPage);
+watch(
+	() => props.filter,
+	async (val) => {
+		if (val.fromDate && val.toDate) {
+			await fetchFromServer(
+				(pagination.value.page - 1) * pagination.value.rowsPerPage,
+				pagination.value.rowsPerPage
+			);
+		}
+	}
+);
+
+onMounted(async () => {
+	await fetchFromServer(0, pagination.value.rowsPerPage);
 });
 </script>
 
-<style lang="scss" scoped>
-.sticky-virtscroll-table {
-	// height or max-height is important
-	// height: 410px;
-	// :deep(.q-table__top) {
-	// 	padding: 0;
-	// }
-
-	:deep(thead tr th) {
-		position: sticky;
-		z-index: 1;
-	}
-	/* this will be the loading indicator */
-	:deep(thead tr:last-child th)
-    /* height of all previous header originalrows */ {
-		top: 48px;
-	}
-	:deep(thead tr:first-child th) {
-		top: 0;
-	}
-}
-</style>
+<style lang="scss" scoped></style>

@@ -18,6 +18,9 @@
 							: 'avatar-header--white',
 						,
 					]"
+					:to="{
+						name: 'user-profile',
+					}"
 				>
 					<q-item-section avatar>
 						<q-avatar size="60px">
@@ -44,7 +47,8 @@
 					:key="menuItem.id"
 					clickable
 					v-ripple
-					@click.prevent="menuItem.click"
+					@click="menuItem.click"
+					:to="menuItem.to"
 				>
 					<q-item-section avatar>
 						<q-avatar :icon="menuItem.icon" />
@@ -67,11 +71,11 @@
 								<q-btn
 									class="no-pointer-events"
 									color="positive"
-									icon="img:https://cdn3.xsolla.com/img/misc/images/247bd125c7cdc91ff8206a8a0697896e.png"
+									:icon="`img:${getCoin.imageUrl}`"
 									:label="
 										$filters.virtualCurrencyBalance(
 											$i18n.locale,
-											20000
+											getCoin.quantity
 										)
 									"
 									dense
@@ -88,11 +92,11 @@
 								<q-btn
 									class="no-pointer-events"
 									color="positive"
-									icon="img:https://cdn3.xsolla.com/img/misc/images/8522341cba4fa6f3fe686411b0590b65.png"
+									:icon="`img:${getMana.imageUrl}`"
 									:label="
 										$filters.virtualCurrencyBalance(
 											$i18n.locale,
-											2000000000
+											getMana.quantity
 										)
 									"
 									dense
@@ -113,16 +117,21 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, h, computed, cloneVNode } from "vue";
+import { ref, h, computed, cloneVNode, onBeforeMount } from "vue";
 import { QToggle, QItemLabel } from "quasar";
 import { useOidcStore } from "stores/modules/oidc-store";
 import { useQuasar } from "quasar";
 import { useUserProfileStore } from "stores/user-profile-store";
 import { useChatRoomStore } from "stores/components/chat-room-store";
 import { apiClient } from "boot/openapi-client";
+import { storeToRefs } from "pinia";
+import { useWalletStore } from "stores/wallet-store";
 const $q = useQuasar();
 const darkMode = ref(false);
 
+const walletStore = useWalletStore();
+
+const { getCoin, getMana } = storeToRefs(walletStore);
 const userProfileStore = useUserProfileStore();
 
 const logout = async () => {
@@ -130,34 +139,31 @@ const logout = async () => {
 	const chatRoomStore = useChatRoomStore();
 	try {
 		$q.loading.show();
-		await apiClient.chat
-			.leaveChatRoom(
-				chatRoomStore.chatHubSignalR.connection.connectionId ?? "",
+		if (
+			chatRoomStore.chatHubSignalR?.connection?.connectionId &&
+			chatRoomStore.chatRoom?.id
+		)
+			await apiClient.chat.leaveChatRoom(
+				chatRoomStore.chatHubSignalR.connection.connectionId,
 				chatRoomStore.chatRoom.id
-			)
-			.then(async () => {
-				await signOutOidcSilent()
-					.then(() => {
-						$q.notify({
-							color: "positive",
-							message: "Logout successful",
-						});
-						const logoutChannel = new BroadcastChannel("logout");
-						logoutChannel.postMessage("reload");
-					})
-					.catch(() => {
-						$q.notify({
-							color: "negative",
-							message: "Logout fail",
-						});
-					});
+			);
+
+		await signOutOidcSilent()
+			.then(() => {
+				$q.notify({
+					type: "positive",
+					message: "Logout successful",
+				});
+				const logoutChannel = new BroadcastChannel("logout");
+				logoutChannel.postMessage("reload");
 			})
-			.catch((error) => {
-				console.log(error);
-			})
-			.finally(() => {
-				$q.loading.hide();
+			.catch(() => {
+				$q.notify({
+					type: "negative",
+					message: "Logout fail",
+				});
 			});
+		$q.loading.hide();
 	} catch (error) {
 		console.log(error);
 	}
@@ -167,12 +173,12 @@ const qToggle = h(QToggle, {
 	color: "positive",
 });
 
-const onDarkmod = ref(false);
+const onDarkMod = ref(false);
 const qToggleDarkmod = () =>
 	cloneVNode(qToggle, {
-		modelValue: onDarkmod.value,
+		modelValue: onDarkMod.value,
 		"onUpdate:model-value": (value: boolean) => {
-			onDarkmod.value = value;
+			onDarkMod.value = value;
 			$q.dark.toggle();
 		},
 	});
@@ -187,6 +193,13 @@ const menuItems = ref([
 		type: MenuItemType.Wallet,
 		icon: "account_balance_wallet",
 		label: "My wallet",
+		click: (event: Event, go: any) => {
+			event.preventDefault();
+			go();
+		},
+		to: {
+			name: "user-wallet",
+		},
 	},
 	{
 		id: 2,

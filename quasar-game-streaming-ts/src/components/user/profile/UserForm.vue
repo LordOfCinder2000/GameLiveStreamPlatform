@@ -90,8 +90,7 @@ const simulateProgress = () => {
 
 		loading.value = false;
 		$q.notify({
-			icon: "done",
-			color: "positive",
+			type: "positive",
 			message: "Save successful!",
 			timeout: 500,
 		});

@@ -79,7 +79,6 @@
 import { ref } from "vue";
 import { useOidcStore } from "stores/modules/oidc-store";
 import { useQuasar } from "quasar";
-import { resolve } from "dns";
 const $q = useQuasar();
 const inputRules = [
 	(val: string) => (val && val.length > 0) || "Please type something",
@@ -110,7 +109,7 @@ const loginOidc = async () => {
 		})
 			.then((succ: any) => {
 				$q.notify({
-					color: "positive",
+					type: "positive",
 					message:
 						"Login successful, Hello " + succ.profile.unique_name,
 				});
@@ -128,7 +127,7 @@ const loginOidc = async () => {
 					// ageRef.value.validate();
 				}
 				$q.notify({
-					color: "negative",
+					type: "negative",
 					message: "Authentication mismatch.",
 				});
 

@@ -12,14 +12,12 @@ import type {
 
 const oidcSettings = <PiniaOidcClientSettings | StoreOidcClientSettings>{
 	authority: process.env.AUTH_URL + "/",
-	client_id: process.env.OIDC_CLIENT_ID as string,
-	redirect_uri:
-		(process.env.BASE_URL as string) + process.env.OIDC_REDIRECT_URI,
+	client_id: process.env.OIDC_CLIENT_ID,
+	redirect_uri: process.env.BASE_URL + process.env.OIDC_REDIRECT_URI,
 	silent_redirect_uri:
-		(process.env.BASE_URL as string) + process.env.OIDC_SILENT_REDIRECT_URI,
+		process.env.BASE_URL + process.env.OIDC_SILENT_REDIRECT_URI,
 	post_logout_redirect_uri:
-		(process.env.BASE_URL as string) +
-		process.env.OIDC_POST_LOGOUT_REDIRECT_URI,
+		process.env.BASE_URL + process.env.OIDC_POST_LOGOUT_REDIRECT_URI,
 	response_type: "code",
 	scope: process.env.OIDC_SCOPE,
 	automaticSilentRenew: true,

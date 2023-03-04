@@ -154,9 +154,6 @@ export interface Props {
 const ChatUserSetting = defineAsyncComponent(
 	() => import("components/chat/ChatUserSettingPopup.vue")
 );
-const ProfileAvatar = defineAsyncComponent(
-	() => import("components/ProfileAvatar.vue")
-);
 
 const emit = defineEmits<{
 	(e: "toggleBan", value: ChatRoomBlockTimeType): void;

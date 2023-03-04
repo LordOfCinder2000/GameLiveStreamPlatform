@@ -37,12 +37,14 @@
 								src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg"
 							/>
 						</q-avatar>
-						<img
+						<!-- <img
 							class="q-pl-sm"
 							src="https://text2image.com/user_images/202209/text2image_W9439224_20220915_135641.png"
 							alt=""
-						/>
-						<!-- <span class="q-pl-sm text-weight-bold">GameLive</span> -->
+						/> -->
+						<span class="q-pl-sm text-weight-bold text-positive"
+							>GameLive</span
+						>
 					</q-toolbar-title>
 
 					<q-tabs
@@ -179,6 +181,7 @@
 								:padding="
 									toolbarButton.label ? undefined : 'sm'
 								"
+								@click="toolbarButton.click"
 							/>
 							<q-btn
 								class="lt-lg"
@@ -198,8 +201,7 @@
 									color="positive"
 									label="Đăng ký"
 									@click.prevent="
-										accountPopupOpen = true;
-										accountMode = 'register';
+										openLoginDialog({ tab: 'register' })
 									"
 									class="gt-xs"
 								/>
@@ -209,8 +211,7 @@
 									color="positive"
 									label="Đăng nhập"
 									@click.prevent="
-										accountPopupOpen = true;
-										accountMode = 'login';
+										openLoginDialog({ tab: 'login' })
 									"
 								/>
 							</div>
@@ -335,18 +336,12 @@
 				</div>
 			</div>
 		</q-footer>
-		<AccountPopup
-			v-model="accountPopupOpen"
-			:tab="accountMode"
-			class="z-max"
-		/>
 	</q-layout>
 </template>
 
 <script lang="ts" setup>
 import { ref, onBeforeMount, watchEffect, defineAsyncComponent } from "vue";
 import { useQuasar } from "quasar";
-import EssentialLink from "components/EssentialLink.vue";
 import HomeSidebar from "components/sidebar/HomeSidebar.vue";
 import CustomTooltip from "components/CustomTooltip.vue";
 import CustomTooltipSimple from "components/CustomTooltipSimple.vue";
@@ -354,57 +349,11 @@ import { useRouter, onBeforeRouteUpdate } from "vue-router";
 import { useOidcStore } from "stores/modules/oidc-store";
 import { storeToRefs } from "pinia";
 import { useAccountStore } from "stores/components/account-store";
-const AccountPopup = defineAsyncComponent(
-	() => import("components/account/AccountPopup.vue")
-);
+import { useTopupStore } from "stores/topup-store";
 const AvatarMenu = defineAsyncComponent(
 	() => import("components/menus/AvatarMenu.vue")
 );
 
-const linksList = [
-	{
-		title: "Docs",
-		caption: "quasar.dev",
-		icon: "school",
-		link: "https://quasar.dev",
-	},
-	{
-		title: "Github",
-		caption: "github.com/quasarframework",
-		icon: "code",
-		link: "https://github.com/quasarframework",
-	},
-	{
-		title: "Discord Chat Channel",
-		caption: "chat.quasar.dev",
-		icon: "chat",
-		link: "https://chat.quasar.dev",
-	},
-	{
-		title: "Forum",
-		caption: "forum.quasar.dev",
-		icon: "record_voice_over",
-		link: "https://forum.quasar.dev",
-	},
-	{
-		title: "Twitter",
-		caption: "@quasarframework",
-		icon: "rss_feed",
-		link: "https://twitter.quasar.dev",
-	},
-	{
-		title: "Facebook",
-		caption: "@QuasarFramework",
-		icon: "public",
-		link: "https://facebook.quasar.dev",
-	},
-	{
-		title: "Quasar Awesome",
-		caption: "Community Quasar projects",
-		icon: "favorite",
-		link: "https://awesome.quasar.dev",
-	},
-];
 const $q = useQuasar();
 const rotateArrow = ref(false);
 const leftDrawerOpen = ref(false);
@@ -446,10 +395,8 @@ const layoutToggle = (val: boolean) => {
 };
 
 //Login
-const { loginPopupOpen } = storeToRefs(useAccountStore());
-const accountPopupOpen = loginPopupOpen;
+const { openLoginDialog } = useAccountStore();
 
-const accountMode = ref("login");
 const userLogin = ref(false);
 const oidcStore = storeToRefs(useOidcStore());
 watchEffect(() => {
@@ -459,6 +406,9 @@ watchEffect(() => {
 		userLogin.value = false;
 	}
 });
+
+//Topup
+const { openTopupDialog } = useTopupStore();
 
 const gotoHomePage = () => {
 	crRouter.push({ name: "home", path: "/" });
@@ -477,6 +427,7 @@ const toolbarButtons = ref([
 	{
 		id: 3,
 		icon: "monetization_on",
+		click: openTopupDialog,
 	},
 ]);
 
