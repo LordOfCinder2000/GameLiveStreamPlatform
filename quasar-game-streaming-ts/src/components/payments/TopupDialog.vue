@@ -157,7 +157,7 @@ const onLoadData = async (index: number, done: (stop: boolean) => void) => {
 	console.log(index);
 	await getVirtualCurrencyPackages(6 * index + 9, 6)
 		.then((data) => {
-			if (data.items?.length == 0) {
+			if (vcPackages.value.length === data.totalCount) {
 				done(true);
 			}
 		})

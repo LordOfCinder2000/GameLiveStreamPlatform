@@ -205,7 +205,7 @@ const onLoadData = async (index: number, done: (stop: boolean) => void) => {
 
 	await getChannelInChatRoom(5 * index + 15, 5)
 		.then((data) => {
-			if (data.items?.length == 0) {
+			if (followers.value.length === data.totalCount) {
 				done(true);
 			}
 		})

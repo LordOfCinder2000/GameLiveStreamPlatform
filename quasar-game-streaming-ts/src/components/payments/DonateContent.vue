@@ -209,7 +209,10 @@ const onLoadData = async (
 	console.log(event.index);
 	await getListGiftByGroupId(groupId, (event.index - 1) * 8, 8)
 		.then((data) => {
-			if (!data.items || data.items?.length == 0) {
+			const groupItemLength = giftGroups.value.find(
+				(x) => x.id === groupId
+			)?.gifts.length;
+			if (!data.items || groupItemLength === data.totalCount) {
 				event.done(true);
 				return;
 			}
